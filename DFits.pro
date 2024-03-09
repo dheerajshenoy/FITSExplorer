@@ -13,6 +13,7 @@ SOURCES += \
     imagewidget.cpp \
     main.cpp \
     dfits.cpp \
+    overview.cpp \
     statusbar.cpp \
     colormap.cpp
 
@@ -20,6 +21,7 @@ HEADERS += \
     aboutdialog.h \
     dfits.h \
     imagewidget.h \
+    overview.h \
     statusbar.h \
     colormap.h
 
@@ -28,7 +30,8 @@ LIBS += -lcfitsio
 FORMS += \
     aboutdialog.ui \
     dfits.ui \
-    imagewidget.ui
+    imagewidget.ui \
+    overview.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -65,7 +65,7 @@
            <bool>true</bool>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>-1</number>
           </property>
           <property name="tabsClosable">
            <bool>true</bool>
@@ -76,11 +76,6 @@
           <property name="tabBarAutoHide">
            <bool>false</bool>
           </property>
-          <widget class="QWidget" name="tab">
-           <attribute name="title">
-            <string>Page</string>
-           </attribute>
-          </widget>
          </widget>
         </item>
        </layout>
@@ -151,7 +146,9 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionopen_toolbar"/>
+   <addaction name="separator"/>
    <addaction name="actionoverview"/>
+   <addaction name="actionoverview_raw"/>
   </widget>
   <action name="actionOpen">
    <property name="text">
@@ -188,10 +185,14 @@
   </action>
   <action name="actionoverview">
    <property name="icon">
-    <iconset theme="accessories-text-editor"/>
+    <iconset>
+     <normaloff>../../Downloads/file-color-icon.svg</normaloff>../../Downloads/file-color-icon.svg</iconset>
    </property>
    <property name="text">
     <string>overview</string>
+   </property>
+   <property name="toolTip">
+    <string>Overview</string>
    </property>
    <property name="menuRole">
     <enum>QAction::NoRole</enum>
@@ -199,10 +200,22 @@
   </action>
   <action name="actionopen_toolbar">
    <property name="icon">
-    <iconset theme="applications-system"/>
+    <iconset>
+     <normaloff>../../Downloads/file-manager-icon.svg</normaloff>../../Downloads/file-manager-icon.svg</iconset>
    </property>
    <property name="text">
     <string>open_toolbar</string>
+   </property>
+   <property name="toolTip">
+    <string>Open File</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionoverview_raw">
+   <property name="text">
+    <string>Raw Overview</string>
    </property>
    <property name="menuRole">
     <enum>QAction::NoRole</enum>

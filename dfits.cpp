@@ -1,5 +1,8 @@
 #include "dfits.h"
 #include "ui_dfits.h"
+#include <QPlainTextEdit>
+#include <QWidget>
+#include <QVBoxLayout>
 
 DFits::DFits(QWidget *parent)
     : QMainWindow(parent)
@@ -46,6 +49,7 @@ int DFits::HandleAsciiTable()
 
 void DFits::OpenFile()
 {
+    /*
     QFileDialog openFileDialog;
     QString filename = openFileDialog.getOpenFileName(this, "Open File", "DD");
 
@@ -53,9 +57,10 @@ void DFits::OpenFile()
         ui->statusbar->setMsg("File Open Cancelled");
         return;
     }
+*/
 
     img_widget->GetSlider()->setEnabled(true);
-    //QString filename = "/home/neo/test.fits";
+    QString filename = "/home/neo/Gits/dfits/test.fits";
     HandleFile(filename);
     ui->statusbar->setMsg(QString("File {%1} Opened").arg(filename));
 }
@@ -223,16 +228,48 @@ void DFits::on_actionopen_toolbar_triggered()
     OpenFile();
 }
 
-void DFits::ShowOverview(int index)
+int DFits::ShowOverview(int index)
 {
+
     // Overview for all the HDUs present
     if(index == 0)
     {
+        if(fits_movabs_hdu(fptr, 1, NULL, &status))
+        {
+            fits_report_error(stderr, status);
+            QMessageBox::critical(this, "Error", "Cannot move to primary HDU");
+            return status;
+        }
 
+        int nkeys;
+        if (fits_get_hdrspace(fptr, &nkeys, NULL, &status)) {
+            fits_report_error(stderr, status);
+            QMessageBox::critical(this, "Error", "Cannot get keys from the HDU");
+            return status;
+        }
+
+        QVector<QString> vals(nkeys);
+        for (int i = 1; i <= nkeys; i++)
+        {
+            char card[FLEN_CARD];
+            if (fits_read_record(fptr, i, card, &status))
+            {
+                fits_report_error(stderr, status);
+                QMessageBox::critical(this, "Error", "Cannot get keys from the HDU");
+                return status;
+            }
+
+            vals.insert(i - 1, QString(card));
+        }
+
+        overview->SetRecords(vals);
+        ui->tab_widget->addTab(overview, "*Overview*");
     }
     else {
 
     }
+
+    return 0;
 }
 
 
@@ -246,5 +283,26 @@ void DFits::on_actionAbout_triggered()
 {
     AboutDialog *ab = new AboutDialog();
     ab->show();
+}
+
+void DFits::on_actionoverview_raw_triggered()
+{
+    if(!overview->hasBeenAlreadyShown())
+        ShowOverview(0);
+    QWidget *widget = new QWidget(this);
+    QVBoxLayout *layout = new QVBoxLayout();
+    widget->setLayout(layout);
+    QPlainTextEdit *rawEdit = new QPlainTextEdit();
+    layout->addWidget(rawEdit);
+
+    QVector<QString> texts = overview->getRecords();
+    foreach (QString text, texts) {
+        rawEdit->insertPlainText(text);
+        rawEdit->insertPlainText("\n");
+    }
+
+    rawEdit->moveCursor(QTextCursor::Start);
+
+    ui->tab_widget->addTab(widget, "*Raw Overview*");
 }
 

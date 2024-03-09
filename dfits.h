@@ -12,8 +12,9 @@
 #include <QTableWidget>
 #include "aboutdialog.h"
 #include <QTableWidgetItem>
-
+#include "overview.h"
 #include "imagewidget.h"
+#include <QTextCursor>
 
 
 QT_BEGIN_NAMESPACE
@@ -32,7 +33,7 @@ public:
     int HandleFile(QString filename);
     int HandleImage();
     int HandleAsciiTable();
-    void ShowOverview(int HDU_index);
+    int ShowOverview(int HDU_index);
 
 private slots:
     void OpenFile();
@@ -45,6 +46,8 @@ private slots:
 
     void on_actionAbout_triggered();
 
+    void on_actionoverview_raw_triggered();
+
 private:
     Ui::DFits *ui;
 
@@ -55,6 +58,9 @@ private:
 
     float *image_data;
     int width, height;
+
+
+    Overview *overview = new Overview();
 
 };
 #endif // DFITS_H
