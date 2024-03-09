@@ -10,6 +10,18 @@
     <height>600</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>200</width>
+    <height>0</height>
+   </size>
+  </property>
   <property name="windowTitle">
    <string>DFits</string>
   </property>
@@ -26,6 +38,18 @@
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>220</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="baseSize">
+        <size>
+         <width>220</width>
+         <height>0</height>
+        </size>
        </property>
        <property name="editTriggers">
         <set>QAbstractItemView::NoEditTriggers</set>
@@ -118,13 +142,26 @@
     <property name="title">
      <string>Tools</string>
     </property>
-    <widget class="QMenu" name="menuImage_Manipulation">
+    <widget class="QMenu" name="menuImage">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="title">
-      <string>Image Manipulation</string>
+      <string>Image</string>
      </property>
      <addaction name="actionColormap"/>
     </widget>
-    <addaction name="menuImage_Manipulation"/>
+    <widget class="QMenu" name="menuStatistics">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="title">
+      <string>Statistics</string>
+     </property>
+     <addaction name="actionLight_Curve"/>
+    </widget>
+    <addaction name="menuImage"/>
+    <addaction name="menuStatistics"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -184,6 +221,9 @@
    </property>
   </action>
   <action name="actionoverview">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset>
      <normaloff>../../Downloads/file-color-icon.svg</normaloff>../../Downloads/file-color-icon.svg</iconset>
@@ -214,11 +254,19 @@
    </property>
   </action>
   <action name="actionoverview_raw">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Raw Overview</string>
    </property>
    <property name="menuRole">
     <enum>QAction::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionLight_Curve">
+   <property name="text">
+    <string>Light Curve</string>
    </property>
   </action>
  </widget>

@@ -15,7 +15,10 @@
 #include "overview.h"
 #include "imagewidget.h"
 #include <QTextCursor>
-
+#include <QPlainTextEdit>
+#include <QWidget>
+#include <QVBoxLayout>
+#include "lightcurve.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -43,10 +46,9 @@ private slots:
 
     void on_actionopen_toolbar_triggered();
     void on_actionoverview_triggered();
-
     void on_actionAbout_triggered();
-
     void on_actionoverview_raw_triggered();
+    void on_actionLight_Curve_triggered();
 
 private:
     Ui::DFits *ui;

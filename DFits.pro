@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui widgets charts
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -11,6 +11,7 @@ CONFIG += c++17
 SOURCES += \
     aboutdialog.cpp \
     imagewidget.cpp \
+    lightcurve.cpp \
     main.cpp \
     dfits.cpp \
     overview.cpp \
@@ -21,6 +22,7 @@ HEADERS += \
     aboutdialog.h \
     dfits.h \
     imagewidget.h \
+    lightcurve.h \
     overview.h \
     statusbar.h \
     colormap.h
@@ -31,6 +33,7 @@ FORMS += \
     aboutdialog.ui \
     dfits.ui \
     imagewidget.ui \
+    lightcurve.ui \
     overview.ui
 
 # Default rules for deployment.

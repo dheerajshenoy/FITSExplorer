@@ -1,8 +1,5 @@
 #include "dfits.h"
 #include "ui_dfits.h"
-#include <QPlainTextEdit>
-#include <QWidget>
-#include <QVBoxLayout>
 
 DFits::DFits(QWidget *parent)
     : QMainWindow(parent)
@@ -13,6 +10,8 @@ DFits::DFits(QWidget *parent)
     connect(ui->actionOpen, SIGNAL(triggered()), SLOT(OpenFile()));
     connect(ui->HDU_List, SIGNAL(cellDoubleClicked(int,int)), SLOT(HDU_Table_Double_Clicked(int, int)));
     connect(ui->tab_widget, SIGNAL(tabCloseRequested(int)), SLOT(CloseTab(int)));
+
+    ui->splitter->setStretchFactor(1, 1);
 }
 
 void DFits::CloseTab(int index)
@@ -22,7 +21,6 @@ void DFits::CloseTab(int index)
 
 void DFits::HDU_Table_Double_Clicked(int row, int col)
 {
-    QMessageBox::information(this, "DD", QString::number(row));
     //QTableWidgetItem *typeItem = ui->HDU_List->item(row, col);
     int type;
     if(fits_movabs_hdu(fptr, row + 1, &type, &status))
@@ -63,6 +61,12 @@ void DFits::OpenFile()
     QString filename = "/home/neo/Gits/dfits/test.fits";
     HandleFile(filename);
     ui->statusbar->setMsg(QString("File {%1} Opened").arg(filename));
+    ui->statusbar->setFile(filename);
+
+    ui->actionoverview->setEnabled(true);
+    ui->actionoverview_raw->setEnabled(true);
+    ui->menuImage->setEnabled(true);
+    ui->menuStatistics->setEnabled(true);
 }
 
 int DFits::HandleFile(QString filename)
@@ -318,5 +322,13 @@ void DFits::on_actionoverview_raw_triggered()
     rawEdit->moveCursor(QTextCursor::Start);
 
     ui->tab_widget->addTab(widget, "*Raw Overview*");
+}
+
+
+void DFits::on_actionLight_Curve_triggered()
+{
+    LightCurve *lc = new LightCurve();
+    lc->setData(image_data, height, width);
+    lc->show();
 }
 
