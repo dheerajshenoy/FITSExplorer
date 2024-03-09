@@ -10,18 +10,19 @@ Overview::Overview(QWidget *parent)
     ui->setupUi(this);
 }
 
-void Overview::SetRecords(QVector<QString> records)
+void Overview::SetRecords(QMap<QString, QString> records)
 {
-    shownAlready = true;
-    m_records = records;
+    //m_records = records;
+    int i;
+    ui->records_table->setHorizontalHeaderLabels({"Key", "Value"});
     ui->records_table->setRowCount(records.size());
-
-    for(int i=0; i < records.size(); i++)
+    QMap<QString, QString>::const_iterator it;
+    for(i = 0, it = records.constBegin(); it != records.constEnd(); ++i, ++it)
     {
         QTableWidgetItem *keyItem = new QTableWidgetItem();
         QTableWidgetItem *valueItem = new QTableWidgetItem();
-        QTableWidgetItem *descItem = new QTableWidgetItem();
 
+        /*
         // Ignore if it's not a keyword
         if(!records[i].contains("="))
             return;
@@ -35,10 +36,13 @@ void Overview::SetRecords(QVector<QString> records)
             valueItem->setText(val_with_desc[0].split('=')[1]);
             descItem->setText(val_with_desc[1]);
         }
+*/
+
+        keyItem->setText(it.key());
+        valueItem->setText(it.value());
 
         ui->records_table->setItem(i, 0, keyItem);
         ui->records_table->setItem(i, 1, valueItem);
-        ui->records_table->setItem(i, 2, descItem);
     }
 }
 

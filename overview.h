@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QVector>
 #include <QString>
+#include <QMap>
 
 namespace Ui {
 class Overview;
@@ -17,7 +18,7 @@ public:
     explicit Overview(QWidget *parent = nullptr);
     ~Overview();
 
-    void SetRecords(QVector<QString>);
+    void SetRecords(QMap<QString, QString>);
     QVector<QString> getRecords();
     inline bool hasBeenAlreadyShown() { return shownAlready; }
 

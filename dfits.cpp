@@ -248,9 +248,12 @@ int DFits::ShowOverview(int index)
             return status;
         }
 
-        QVector<QString> vals(nkeys);
+        QMap<QString, QString> keyvals;
+        char keyname[FLEN_CARD];
+        char value[FLEN_CARD];
         for (int i = 1; i <= nkeys; i++)
         {
+            /*
             char card[FLEN_CARD];
             if (fits_read_record(fptr, i, card, &status))
             {
@@ -260,9 +263,20 @@ int DFits::ShowOverview(int index)
             }
 
             vals.insert(i - 1, QString(card));
+*/
+
+            if (fits_read_keyn(fptr, i, keyname, value, NULL, &status)) {
+                fits_report_error(stderr, status);
+                return status;
+            }
+
+            if(QString(keyname) != "")
+            {
+                keyvals.insert(keyname, value);
+            }
         }
 
-        overview->SetRecords(vals);
+        overview->SetRecords(keyvals);
         ui->tab_widget->addTab(overview, "*Overview*");
     }
     else {

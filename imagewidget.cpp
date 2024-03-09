@@ -19,11 +19,13 @@ void ImageWidget::setImage(QImage img)
     //originalImage = img;
 
 
-    ui->image_label->setPixmap(QPixmap::fromImage(img));
+    ui->image_label->setPixmap(QPixmap::fromImage(img).scaled(img.width(),
+                                                              img.height(),
+                                                              Qt::KeepAspectRatio));
     //QMessageBox::information(this, "DD",
     //                         QString("{%1} {%2} {%3}").arg(ui->image_label->size().height())
     //                             .arg(ui->image_label->size().width()).arg("DD"));
-    ui->image_label->resize(scaleFactor * img.size());
+    //ui->image_label->resize(scaleFactor * img.size());
 }
 
 void ImageWidget::wheelEvent(QWheelEvent *event)
@@ -39,8 +41,8 @@ void ImageWidget::scaleImage(float factor)
     scaleFactor *= factor;
     ui->image_label->resize(scaleFactor * ui->image_label->pixmap(Qt::ReturnByValue).size());
 
-    //adjustScrollBar(scrollArea->horizontalScrollBar(), factor);
-    //adjustScrollBar(scrollArea->verticalScrollBar(), factor);
+    adjustScrollBar(ui->scrollArea->horizontalScrollBar(), factor);
+    adjustScrollBar(ui->scrollArea->verticalScrollBar(), factor);
 
 //zoomInAct->setEnabled(scaleFactor < 3.0);
  //  zoomOutAct->setEnabled(scaleFactor > 0.333);

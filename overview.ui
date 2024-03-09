@@ -26,7 +26,7 @@
       <bool>true</bool>
      </property>
      <property name="columnCount">
-      <number>3</number>
+      <number>2</number>
      </property>
      <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
       <bool>true</bool>
@@ -34,7 +34,6 @@
      <attribute name="horizontalHeaderStretchLastSection">
       <bool>true</bool>
      </attribute>
-     <column/>
      <column/>
      <column/>
     </widget>
