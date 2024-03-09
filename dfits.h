@@ -10,6 +10,7 @@
 #include <QDebug>
 #include "colormap.h"
 #include <QTableWidget>
+#include "aboutdialog.h"
 #include <QTableWidgetItem>
 
 #include "imagewidget.h"
@@ -41,6 +42,8 @@ private slots:
 
     void on_actionopen_toolbar_triggered();
     void on_actionoverview_triggered();
+
+    void on_actionAbout_triggered();
 
 private:
     Ui::DFits *ui;

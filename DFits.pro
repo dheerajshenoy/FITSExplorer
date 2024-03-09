@@ -9,6 +9,7 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    aboutdialog.cpp \
     imagewidget.cpp \
     main.cpp \
     dfits.cpp \
@@ -16,6 +17,7 @@ SOURCES += \
     colormap.cpp
 
 HEADERS += \
+    aboutdialog.h \
     dfits.h \
     imagewidget.h \
     statusbar.h \
@@ -24,6 +26,7 @@ HEADERS += \
 LIBS += -lcfitsio
 
 FORMS += \
+    aboutdialog.ui \
     dfits.ui \
     imagewidget.ui
 

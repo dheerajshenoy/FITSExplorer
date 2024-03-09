@@ -241,3 +241,10 @@ void DFits::on_actionoverview_triggered()
     ShowOverview(0);
 }
 
+
+void DFits::on_actionAbout_triggered()
+{
+    AboutDialog *ab = new AboutDialog();
+    ab->show();
+}
+
