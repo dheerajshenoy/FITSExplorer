@@ -164,8 +164,8 @@ int DFits::ChangeBrightness()
         }
     }
 
-    // image = CM::jet(image);
-    img_widget->setImage(image);
+    //image = CM::jet(image);
+    img_widget->setPixmap(QPixmap::fromImage(image));
     return 0;
 }
 
@@ -214,8 +214,7 @@ int DFits::HandleImage()
 
     //image = CM::jet(image);
 
-    img_widget->setImage(image);
-    //img_widget->GetImageLabel()->setPixmap(QPixmap::fromImage(image).scaled(width, height, Qt::KeepAspectRatio));
+    img_widget->setPixmap(QPixmap::fromImage(image));
     ui->tab_widget->addTab(img_widget, "DD");
     return 0;
 }

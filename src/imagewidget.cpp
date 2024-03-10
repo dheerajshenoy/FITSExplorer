@@ -2,23 +2,23 @@
 #include "ui_imagewidget.h"
 #include <QMessageBox>
 #include <QString>
+#include "colormap.h"
 
 ImageWidget::ImageWidget(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::ImageWidget)
 {
     ui->setupUi(this);
-    ui->image_label->setScaledContents(true);
 }
 
 QSlider* ImageWidget::GetSlider() { return ui->slider; }
-QImage ImageWidget::GetImage() { return ui->image_label->pixmap(Qt::ReturnByValue).toImage(); }
+QImage ImageWidget::GetImage() {
+    return ui->graphics_view->GetPixmap().toImage();
+}
 
-void ImageWidget::setImage(QImage img)
+void ImageWidget::setPixmap(QPixmap pix)
 {
-    ui->image_label->setPixmap(QPixmap::fromImage(img).scaled(img.width(),
-                                                              img.height(),
-                                                              Qt::KeepAspectRatio));
+    ui->graphics_view->setPixmap(pix);
 }
 
 void ImageWidget::wheelEvent(QWheelEvent *event)
@@ -32,7 +32,6 @@ void ImageWidget::wheelEvent(QWheelEvent *event)
 void ImageWidget::scaleImage(float factor)
 {
     scaleFactor *= factor;
-    ui->image_label->resize(scaleFactor * ui->image_label->pixmap(Qt::ReturnByValue).size());
 
     adjustScrollBar(ui->scrollArea->horizontalScrollBar(), factor);
     adjustScrollBar(ui->scrollArea->verticalScrollBar(), factor);
@@ -70,4 +69,3 @@ void ImageWidget::on_zoomOutBtn_clicked()
 {
     ZoomOut();
 }
-

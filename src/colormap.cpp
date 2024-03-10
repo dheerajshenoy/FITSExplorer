@@ -102,6 +102,7 @@ QImage CM::hsv(const QImage& img) {
     }
     return ret;
 }
+
 QImage CM::jet(const QImage& img) {
     QImage ret;
     ret = QImage(img.width(), img.height(), QImage::Format_RGB888);

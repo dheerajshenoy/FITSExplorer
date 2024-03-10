@@ -12,6 +12,7 @@ INCLUDEPATH += include/
 VPATH += src/
 
 SOURCES += \
+    src/mygraphicsview.cpp \
     src/aboutdialog.cpp \
     src/imagewidget.cpp \
     src/lightcurve.cpp \
@@ -27,6 +28,7 @@ HEADERS += \
     include/dfits.h \
     include/imagewidget.h \
     include/lightcurve.h \
+    include/mygraphicsview.h \
     include/overview.h \
     include/statusbar.h \
     include/colormap.h \

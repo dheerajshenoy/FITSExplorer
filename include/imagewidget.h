@@ -24,7 +24,7 @@ public:
 
     QSlider* GetSlider();
     QImage GetImage();
-    void setImage(QImage);
+    void setPixmap(QPixmap);
     void ZoomIn();
     void ZoomOut();
     void scaleImage(float);
