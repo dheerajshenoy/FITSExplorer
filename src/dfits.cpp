@@ -11,13 +11,25 @@ DFits::DFits(QStringList argv, QWidget *parent)
     connect(img_widget->GetSlider(), SIGNAL(sliderReleased()),
             SLOT(ChangeBrightness()));
 
+    MyGraphicsView *gv = img_widget->GetGraphicsView();
+
     // Get signal when moves is moved inside the pixmap
-    connect(img_widget->GetGraphicsView(),
+    connect(gv,
             SIGNAL(mouseMoved(QPointF)),
             SLOT(ShowCoordinates(QPointF)));
 
+    connect(gv,
+            SIGNAL(markerAdded(QPointF)),
+            SLOT(MarkerAdded(QPointF)));
+
+    connect(gv,
+            &MyGraphicsView::markersRemoved,
+            this,
+            [&](){ this->RemoveAllMarkers(); });
+
+
     // Get signal when cursor moves outside the pixmap within the GraphicsView
-    connect(img_widget->GetGraphicsView(),
+    connect(gv,
             &MyGraphicsView::mouseOutsidePixmap,
             this,
             [&]() {
@@ -240,6 +252,15 @@ int DFits::HandleImage()
         return status;
     }
 
+    int bitpix;
+
+    if(fits_get_img_type(fptr, &bitpix, &status))
+    {
+        QMessageBox::critical(this, "Error", "Cannot get the image datatype");
+        fits_report_error(stderr, status);
+        return status;
+    }
+
     width = naxes[0];
     height = naxes[1];
 
@@ -277,6 +298,8 @@ int DFits::HandleImage()
     }
 
     QImage image(width, height, QImage::Format_Grayscale8);
+
+
 
     for (int x = 0; x < width; ++x) {
         double m = 0;
@@ -444,6 +467,26 @@ void DFits::ExportFile()
     }
 }
 
+void DFits::MarkerAdded(QPointF pos)
+{
+    m_line = new QCPItemStraightLine(ui->mini_light_curve_plot);
+    m_line->setPen(QColor::fromRgb(255, 0, 0));
+    m_line->point1->setCoords(pos.x(), ui->mini_light_curve_plot->yAxis->range().lower);
+    m_line->point2->setCoords(pos.x(), ui->mini_light_curve_plot->yAxis->range().upper);
+    m_lines_list.append(m_line);
+    ui->mini_light_curve_plot->replot();
+}
+
+void DFits::RemoveAllMarkers()
+{
+    printf("HELLO WORLD");
+    foreach(QCPItemStraightLine* line, m_lines_list)
+    {
+        ui->mini_light_curve_plot->removeItem(line);
+    }
+    ui->mini_light_curve_plot->replot();
+}
+
 void DFits::on_actionxport_triggered()
 {
     ExportFile();
@@ -460,3 +503,9 @@ void DFits::on_action_export_toolbar_triggered()
 {
     ExportFile();
 }
+
+void DFits::on_actionDeleteAllMarkers_triggered()
+{
+    img_widget->GetGraphicsView()->RemoveAllMarkers();
+}
+

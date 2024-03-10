@@ -14,11 +14,33 @@ void MyGraphicsView::setPixmap(QPixmap pix)
     //this->fitInView(m_img, Qt::KeepAspectRatio);
 }
 
+QPointF MyGraphicsView::GetCursorPositionInPixmap(QPoint pos)
+{
+    QPointF scenePos = this->mapToScene(pos);
+    return m_img->mapFromScene(scenePos);
+}
+
+void MyGraphicsView::RemoveAllMarkers()
+{
+    int count = m_scene->items().count();
+    if(count == 0)
+        return;
+
+    QList<QGraphicsItem*> items = m_scene->items();
+
+    foreach (QGraphicsItem* item, items) {
+        if(dynamic_cast<QGraphicsEllipseItem*>(item))
+        {
+            m_scene->removeItem(item);
+            delete item;
+        }
+    }
+    emit markersRemoved();
+}
+
 void MyGraphicsView::mouseMoveEvent(QMouseEvent *e)
 {
-    QPoint pos = e->pos();
-    QPointF scenePos = this->mapToScene(pos);
-    QPointF imagePos = m_img->mapFromScene(scenePos);
+    QPointF imagePos = GetCursorPositionInPixmap(e->pos());
 
     // Get the coordinates only when the cursor is within the pixmap
     if (m_img->pixmap().rect().contains(imagePos.toPoint()))
@@ -31,6 +53,37 @@ void MyGraphicsView::mouseMoveEvent(QMouseEvent *e)
     QGraphicsView::mouseMoveEvent(e);
 }
 
+void MyGraphicsView::mouseDoubleClickEvent(QMouseEvent *e)
+{
+    // Add marker only if cursor is within the image
+
+    if(e->button() == Qt::LeftButton)
+    {
+        QPointF imagePos = GetCursorPositionInPixmap(e->pos());
+        if(m_img->pixmap().rect().contains(imagePos.toPoint()))
+        {
+            QGraphicsEllipseItem *marker = new QGraphicsEllipseItem(-5, -5, 10, 10);
+            marker->setPen(QColor::fromRgb(255, 0, 0));
+            marker->setBrush(QColor::fromRgb(255, 0, 0));
+            marker->setFlag(QGraphicsEllipseItem::ItemIgnoresTransformations);
+            marker->setPos(imagePos);
+
+            QGraphicsTextItem *textItem = new QGraphicsTextItem("Ellipse");
+            textItem->setDefaultTextColor(Qt::white);
+            textItem->setScale(1.5);
+            textItem->setFlag(QGraphicsTextItem::ItemIgnoresTransformations);
+
+            // Position the text item relative to the ellipse
+            textItem->setPos(imagePos);
+
+            // Add the text item to the scene
+            m_scene->addItem(textItem);
+            m_scene->addItem(marker);
+
+            emit markerAdded(imagePos);
+        }
+    }
+}
 
 void MyGraphicsView::wheelEvent(QWheelEvent *e)
 {

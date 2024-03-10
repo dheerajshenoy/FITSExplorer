@@ -32,7 +32,7 @@ HEADERS += \
     include/overview.h \
     include/statusbar.h \
     include/colormap.h \
-    include/qcustomplot.h
+    include/qcustomplot.h \
 
 LIBS += -lcfitsio
 

@@ -28,7 +28,7 @@ public:
     void setPixmap(QPixmap);
 
     inline void SetData(float* data) { image_data = data; }
-    inline float* GetData() { return image_data; }
+    inline void* GetData() { return image_data; }
 
     MyGraphicsView* GetGraphicsView();
 

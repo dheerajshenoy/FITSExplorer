@@ -205,6 +205,7 @@
    <addaction name="actionoverview_raw"/>
    <addaction name="actionSave_toolbar"/>
    <addaction name="action_export_toolbar"/>
+   <addaction name="actionDeleteAllMarkers"/>
   </widget>
   <action name="actionOpen">
    <property name="text">
@@ -324,6 +325,14 @@
    </property>
    <property name="text">
     <string>export</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionDeleteAllMarkers">
+   <property name="text">
+    <string>DeleteAllMarkers</string>
    </property>
    <property name="menuRole">
     <enum>QAction::NoRole</enum>

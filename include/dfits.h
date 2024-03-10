@@ -38,6 +38,7 @@ public:
     int HandleAsciiTable();
     int HandleBinaryTable();
     int ShowOverview(int HDU_index);
+    void RemoveAllMarkers();
 
 private slots:
     void OpenFile(QString filename = nullptr);
@@ -46,6 +47,7 @@ private slots:
     void CloseTab(int);
     void ShowCoordinates(QPointF);
     void ExportFile();
+    void MarkerAdded(QPointF);
 
     void on_actionopen_toolbar_triggered();
     void on_actionoverview_triggered();
@@ -55,6 +57,8 @@ private slots:
     void on_actionxport_triggered();
     void on_actionSave_toolbar_triggered();
     void on_action_export_toolbar_triggered();
+
+    void on_actionDeleteAllMarkers_triggered();
 
 private:
     Ui::DFits *ui;
@@ -67,10 +71,14 @@ private:
     float *image_data;
     int width, height;
 
+    QCPItemStraightLine *m_line;
+
     int m_nhdu;
 
     Overview *overview;
     LightCurve *lc;
+
+    QVector<QCPItemStraightLine*> m_lines_list;
 
 };
 #endif // DFITS_H

@@ -1,6 +1,7 @@
 #ifndef MYGRAPHICSVIEW_H
 #define MYGRAPHICSVIEW_H
 
+#include <QGraphicsItem>
 #include <QGraphicsView>
 #include <QGraphicsPixmapItem>
 #include <QObject>
@@ -15,14 +16,20 @@ public:
     inline QPixmap GetPixmap() { return m_pix; }
     void setPixmap(QPixmap pix);
 
+    QPointF GetCursorPositionInPixmap(QPoint pos);
+
+    void RemoveAllMarkers();
+
 signals:
     void mouseMoved(QPointF);
     void mouseOutsidePixmap();
+    void markerAdded(QPointF);
+    void markersRemoved();
 
 protected:
     virtual void wheelEvent(QWheelEvent *e) override;
     virtual void mouseMoveEvent(QMouseEvent *e) override;
-    using QGraphicsView::QGraphicsView;
+    virtual void mouseDoubleClickEvent(QMouseEvent *e) override;
 
 private:
     QPixmap m_pix;
@@ -30,4 +37,4 @@ private:
     QGraphicsPixmapItem *m_img;
 };
 
-#endif // MYGRAPHICSVIEW_H
+#endif
