@@ -41,7 +41,7 @@ public:
 private slots:
     void OpenFile(QString filename = nullptr);
     int ChangeBrightness();
-    void HDU_Table_Double_Clicked(int, int);
+    int HDU_Table_Double_Clicked(int, int);
     void CloseTab(int);
     void ShowCoordinates(QPointF);
 
@@ -50,6 +50,8 @@ private slots:
     void on_actionAbout_triggered();
     void on_actionoverview_raw_triggered();
     void on_actionLight_Curve_triggered();
+
+    void on_actionxport_triggered();
 
 private:
     Ui::DFits *ui;

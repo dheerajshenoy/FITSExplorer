@@ -7,6 +7,15 @@
 * CFITSIO
 * QT (for GUI)
 
+# DONE
+
+- [x] Open and display FITS images
+- [x] Show image coordinates
+- [x] Change brightness
+- [x] Show HDU list
+- [x] Show HEADER information
+- [x] Show file information
+
 # TODO
 
 - [x] Display Image: The viewer should be able to load and display FITS images, including support for both single and multi-dimensional images.

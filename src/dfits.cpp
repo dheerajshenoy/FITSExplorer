@@ -1,5 +1,6 @@
 #include "dfits.h"
 #include "ui_dfits.h"
+#include <memory>
 
 DFits::DFits(QStringList argv, QWidget *parent)
     : QMainWindow(parent)
@@ -43,29 +44,32 @@ void DFits::CloseTab(int index)
     //ui->mini_light_curve_plot->removeGraph(index);
 }
 
-void DFits::HDU_Table_Double_Clicked(int row, int col)
+int DFits::HDU_Table_Double_Clicked(int row, int col)
 {
     //QTableWidgetItem *typeItem = ui->HDU_List->item(row, col);
     int type;
     if(fits_movabs_hdu(fptr, row + 1, &type, &status))
     {
-        QMessageBox::critical(this, "Error", "Unable to open the HDU");
-        return;
+        QMessageBox::critical(this, "Error", "Unable to move to the HDU");
+        //fits_movabs_hdu(fptr, row, &type, &status);
+        return status;
     }
 
     if(type == IMAGE_HDU)
     {
-        HandleImage();
+        return HandleImage();
     }
     else if(type == ASCII_TBL)
     {
-        HandleAsciiTable();
+        return HandleAsciiTable();
     }
+
+    return 0;
 }
 
 int DFits::HandleAsciiTable()
 {
-
+    QMessageBox::information(this, "Info", "TODO: Implement ASCII Table Processing");
     return 0;
 }
 
@@ -74,7 +78,7 @@ void DFits::OpenFile(QString filename)
     if (filename.isNull())
     {
         QFileDialog openFileDialog;
-        filename = openFileDialog.getOpenFileName(this, "Open File", "DD");
+        filename = openFileDialog.getOpenFileName(this, "Open File", "", "FITS (*.fits *.fit);;All Files (*)");
 
         if (openFileDialog.result() == QDialog::Accepted) {
         ui->statusbar->setMsg("File Open Cancelled");
@@ -215,7 +219,15 @@ int DFits::HandleImage()
 
     long fpixel = 1; // Starting pixel
 
-    image_data = new float[width * height];
+    try {
+        image_data = new float[width * height];
+    }
+    catch(std::bad_array_new_length *e)
+    {
+        QMessageBox::critical(this, "Error", e->what());
+        return 1;
+    }
+
     img_widget->SetData(image_data);
     //float *image_data = (float *)malloc(naxes[0] * naxes[1] * sizeof(float));
 
@@ -363,3 +375,18 @@ void DFits::ShowCoordinates(QPointF points)
 {
     ui->statusbar->setCoordinate(points);
 }
+
+void DFits::on_actionxport_triggered()
+{
+    QFileDialog fd;
+    QString filename = fd.getSaveFileName(this, "Export As",
+                                          "",
+                                          "Images (*.png *.jpeg);;All Files (*)");
+
+    if (fd.result() != QDialog::Rejected)
+    {
+        img_widget->GetImage().save(filename);
+        ui->statusbar->setMsg("File Exported Successfully!", 3000);
+    }
+}
+

@@ -135,6 +135,8 @@
     </property>
     <addaction name="actionOpen"/>
     <addaction name="actionOpen_Recent"/>
+    <addaction name="actionxport"/>
+    <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
@@ -279,6 +281,11 @@
   <action name="actionLight_Curve">
    <property name="text">
     <string>Light Curve</string>
+   </property>
+  </action>
+  <action name="actionxport">
+   <property name="text">
+    <string>Export As</string>
    </property>
   </action>
  </widget>
