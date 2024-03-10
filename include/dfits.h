@@ -36,6 +36,7 @@ public:
     int HandleFile(QString filename);
     int HandleImage();
     int HandleAsciiTable();
+    int HandleBinaryTable();
     int ShowOverview(int HDU_index);
 
 private slots:
@@ -64,6 +65,7 @@ private:
     float *image_data;
     int width, height;
 
+    int m_nhdu;
 
     Overview *overview;
     LightCurve *lc;

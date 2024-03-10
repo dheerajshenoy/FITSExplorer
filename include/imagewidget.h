@@ -26,10 +26,6 @@ public:
     QSlider* GetSlider();
     QImage GetImage();
     void setPixmap(QPixmap);
-    void ZoomIn();
-    void ZoomOut();
-    void scaleImage(float);
-    void adjustScrollBar(QScrollBar *scrollBar, double factor);
 
     inline void SetData(float* data) { image_data = data; }
     inline float* GetData() { return image_data; }
@@ -39,18 +35,10 @@ public:
 private:
     Ui::ImageWidget *ui;
 
-    QImage scaledImage;
-    QImage originalImage;
-
     double scaleFactor = 1;
 
     float *image_data;
 
-protected:
-    void wheelEvent(QWheelEvent *e) override;
-private slots:
-    void on_zoomInBtn_clicked();
-    void on_zoomOutBtn_clicked();
 };
 
 #endif // IMAGEWIDGET_H

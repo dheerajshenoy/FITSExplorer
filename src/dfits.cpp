@@ -48,10 +48,14 @@ int DFits::HDU_Table_Double_Clicked(int row, int col)
 {
     //QTableWidgetItem *typeItem = ui->HDU_List->item(row, col);
     int type;
+
+    if(row > m_nhdu)
+        return 0;
+
     if(fits_movabs_hdu(fptr, row + 1, &type, &status))
     {
+        fits_report_error(stderr, status);
         QMessageBox::critical(this, "Error", "Unable to move to the HDU");
-        //fits_movabs_hdu(fptr, row, &type, &status);
         return status;
     }
 
@@ -63,6 +67,10 @@ int DFits::HDU_Table_Double_Clicked(int row, int col)
     {
         return HandleAsciiTable();
     }
+    else if(type == BINARY_TBL)
+    {
+        return HandleBinaryTable();
+    }
 
     return 0;
 }
@@ -70,6 +78,12 @@ int DFits::HDU_Table_Double_Clicked(int row, int col)
 int DFits::HandleAsciiTable()
 {
     QMessageBox::information(this, "Info", "TODO: Implement ASCII Table Processing");
+    return 0;
+}
+
+int DFits::HandleBinaryTable()
+{
+    QMessageBox::information(this, "Info", "TODO: Implement Binary Table Processing");
     return 0;
 }
 
@@ -81,8 +95,8 @@ void DFits::OpenFile(QString filename)
         filename = openFileDialog.getOpenFileName(this, "Open File", "", "FITS (*.fits *.fit);;All Files (*)");
 
         if (openFileDialog.result() == QDialog::Accepted) {
-        ui->statusbar->setMsg("File Open Cancelled");
-        return;
+            ui->statusbar->setMsg("File Open Cancelled");
+            return;
         }
     }
 
@@ -108,32 +122,25 @@ int DFits::HandleFile(QString filename)
         return status;
     }
 
-    int nhdu;
-
-    if(fits_get_num_hdus(fptr, &nhdu, &status))
+    if(fits_get_num_hdus(fptr, &m_nhdu, &status))
     {
         fits_report_error(stderr, status);
         QMessageBox::critical(this, "Error", "Cannot get the number of HDUs!");
         return status;
     }
 
-    ui->HDU_List->setRowCount(nhdu);
+    if (m_nhdu < 1)
+        return 0;
 
-    for(int i=1; i <= nhdu; i++)
+    ui->HDU_List->setRowCount(m_nhdu);
+
+    for(int i=1; i <= m_nhdu; i++)
     {
         if(fits_movabs_hdu(fptr, i, nullptr, &status))
         {
             fits_report_error(stderr, status);
             return status;
         }
-
-        /*char hdu_name[FLEN_VALUE];
-
-        if (fits_read_keyword(fptr, "EXTNAME", hdu_name, NULL, &status)) {
-            if (status == KEY_NO_EXIST) {
-                //fits_report_error(stderr, status); // Report any errors
-            }
-        }*/
 
         int type;
 
@@ -210,6 +217,7 @@ int DFits::HandleImage()
 
     if(fits_get_img_size(fptr, naxis, naxes, &status))
     {
+        QMessageBox::critical(this, "Error", "Cannot get the image dimension");
         fits_report_error(stderr, status);
         return status;
     }
@@ -219,18 +227,29 @@ int DFits::HandleImage()
 
     long fpixel = 1; // Starting pixel
 
+    if(width == 0 || height == 0)
+    {
+        QMessageBox::critical(this, "Error", "Undefined height and width for Image");
+        return -1;
+    }
+
+    if(width < 0 || height < 0)
+    {
+        QMessageBox::critical(this, "Error", "Undefined height and width for Image");
+        return -1;
+    }
+
     try {
         image_data = new float[width * height];
     }
     catch(std::bad_array_new_length *e)
     {
+        qCritical() << "Caught std::bad_array_new_length: " << e->what();
         QMessageBox::critical(this, "Error", e->what());
         return 1;
     }
 
     img_widget->SetData(image_data);
-    //float *image_data = (float *)malloc(naxes[0] * naxes[1] * sizeof(float));
-
 
     if(fits_read_img(fptr, TFLOAT, fpixel, width * height,
                       NULL, image_data, NULL, &status))
@@ -240,6 +259,7 @@ int DFits::HandleImage()
     }
 
     QImage image(width, height, QImage::Format_Grayscale8);
+
     for (int y = 0; y < height; ++y) {
         double m = 0;
         for (int x = 0; x < width; ++x) {
@@ -253,7 +273,6 @@ int DFits::HandleImage()
 
     ui->mini_light_curve_plot->rescaleAxes(true);
     ui->mini_light_curve_plot->replot();
-
 
     img_widget->setPixmap(QPixmap::fromImage(image));
     ui->tab_widget->addTab(img_widget, "DD");
@@ -381,12 +400,29 @@ void DFits::on_actionxport_triggered()
     QFileDialog fd;
     QString filename = fd.getSaveFileName(this, "Export As",
                                           "",
-                                          "Images (*.png *.jpeg);;All Files (*)");
+                                          "Images (*.png *.jpeg);;PDF (*.pdf);;All Files (*)");
 
     if (fd.result() != QDialog::Rejected)
     {
-        img_widget->GetImage().save(filename);
+        QImage img = img_widget->GetImage();
+        if(filename.endsWith(".pdf"))
+        {
+            QString fileName = "/home/neo/output.pdf";
+            QPdfWriter pdfWriter(fileName);
+            pdfWriter.setPageSize(QPageSize(img.size(), QPageSize::Point));
+            QPainter pdfPainter(&pdfWriter);
+            pdfPainter.drawImage(QRectF(QPointF(0, 0), img.size()), img);
+            pdfPainter.end();
+        }
+        else
+        {
+            img.save(filename);
+        }
         ui->statusbar->setMsg("File Exported Successfully!", 3000);
+    }
+    else
+    {
+        ui->statusbar->setMsg("File Exporting Cancelled");
     }
 }
 
