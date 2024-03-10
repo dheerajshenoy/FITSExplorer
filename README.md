@@ -11,7 +11,7 @@
 
 - [x] Display Image: The viewer should be able to load and display FITS images, including support for both single and multi-dimensional images.
 
-- [ ] Zoom and Pan: Users should be able to zoom in and out of the image and pan across different parts of the image to explore details.
+- [x] Zoom and Pan: Users should be able to zoom in and out of the image and pan across different parts of the image to explore details.
 
 - [ ] Image Stretching: It should support different types of image stretching methods, such as linear, logarithmic, and histogram equalization, to enhance the visibility of faint details or adjust contrast.
 

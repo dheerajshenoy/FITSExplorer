@@ -31,7 +31,7 @@ class DFits : public QMainWindow
     Q_OBJECT
 
 public:
-    DFits(QWidget *parent = nullptr);
+    DFits(QStringList args, QWidget *parent = nullptr);
     ~DFits();
     int HandleFile(QString filename);
     int HandleImage();
@@ -39,7 +39,7 @@ public:
     int ShowOverview(int HDU_index);
 
 private slots:
-    void OpenFile();
+    void OpenFile(QString filename = nullptr);
     int ChangeBrightness();
     void HDU_Table_Double_Clicked(int, int);
     void CloseTab(int);

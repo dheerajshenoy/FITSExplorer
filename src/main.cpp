@@ -5,7 +5,7 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    DFits w;
+    DFits w(QApplication::arguments());
     w.show();
     return a.exec();
 }

@@ -1,7 +1,7 @@
 #include "dfits.h"
 #include "ui_dfits.h"
 
-DFits::DFits(QWidget *parent)
+DFits::DFits(QStringList argv, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::DFits)
 {
@@ -10,13 +10,31 @@ DFits::DFits(QWidget *parent)
     connect(ui->actionOpen, SIGNAL(triggered()), SLOT(OpenFile()));
     connect(ui->HDU_List, SIGNAL(cellDoubleClicked(int,int)), SLOT(HDU_Table_Double_Clicked(int, int)));
     connect(ui->tab_widget, SIGNAL(tabCloseRequested(int)), SLOT(CloseTab(int)));
-
     ui->splitter->setStretchFactor(1, 1);
+
+    ui->mini_light_curve_plot->addGraph();
+    ui->mini_light_curve_plot->setInteractions(QCP::iRangeDrag |
+                                               QCP::iRangeZoom |
+                                               QCP::iSelectPlottables |
+                                               QCP::iSelectAxes);
+    ui->mini_light_curve_plot->graph(0)->setAntialiased(true);
+    ui->mini_light_curve_plot->xAxis->setLabel("Image Width");
+    ui->mini_light_curve_plot->yAxis->setLabel("Mean Intensity");
+    ui->mini_light_curve_plot->plotLayout()->insertRow(0);
+    ui->mini_light_curve_plot->plotLayout()->addElement(0,
+                                                        0,
+                                                        new QCPTextElement(ui->mini_light_curve_plot,
+                                                                           "Light Curve"));
+    if(argv.size() > 1)
+    {
+        OpenFile(argv[1]);
+    }
 }
 
 void DFits::CloseTab(int index)
 {
     ui->tab_widget->removeTab(index);
+    //ui->mini_light_curve_plot->removeGraph(index);
 }
 
 void DFits::HDU_Table_Double_Clicked(int row, int col)
@@ -45,20 +63,20 @@ int DFits::HandleAsciiTable()
     return 0;
 }
 
-void DFits::OpenFile()
+void DFits::OpenFile(QString filename)
 {
-    /*
-    QFileDialog openFileDialog;
-    QString filename = openFileDialog.getOpenFileName(this, "Open File", "DD");
+    if (filename.isNull())
+    {
+        QFileDialog openFileDialog;
+        filename = openFileDialog.getOpenFileName(this, "Open File", "DD");
 
-    if (openFileDialog.result() == QDialog::Accepted) {
+        if (openFileDialog.result() == QDialog::Accepted) {
         ui->statusbar->setMsg("File Open Cancelled");
         return;
+        }
     }
-*/
 
     img_widget->GetSlider()->setEnabled(true);
-    QString filename = "/home/neo/Gits/dfits/test.fits";
     HandleFile(filename);
     ui->statusbar->setMsg(QString("File {%1} Opened").arg(filename));
     ui->statusbar->setFile(filename);
@@ -204,15 +222,20 @@ int DFits::HandleImage()
     }
 
     QImage image(width, height, QImage::Format_Grayscale8);
-
     for (int y = 0; y < height; ++y) {
+        double m = 0;
         for (int x = 0; x < width; ++x) {
             float value = image_data[y * width + x];
             image.setPixel(x, y, qRgb(value, value, value)); // Assuming grayscale image
+            m += value;
         }
+        m = m / height;
+        ui->mini_light_curve_plot->graph(0)->addData(y, m);
     }
 
-    //image = CM::jet(image);
+    ui->mini_light_curve_plot->rescaleAxes(true);
+    ui->mini_light_curve_plot->replot();
+
 
     img_widget->setPixmap(QPixmap::fromImage(image));
     ui->tab_widget->addTab(img_widget, "DD");

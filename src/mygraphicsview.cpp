@@ -11,7 +11,7 @@ void MyGraphicsView::setPixmap(QPixmap pix)
 {
     m_pix = pix;
     m_img->setPixmap(m_pix);
-    this->fitInView(m_img, Qt::KeepAspectRatio);
+    //this->fitInView(m_img, Qt::KeepAspectRatio);
 }
 
 void MyGraphicsView::wheelEvent(QWheelEvent *e)
