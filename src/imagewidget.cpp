@@ -69,3 +69,8 @@ void ImageWidget::on_zoomOutBtn_clicked()
 {
     ZoomOut();
 }
+
+MyGraphicsView* ImageWidget::GetGraphicsView()
+{
+    return ui->graphics_view;
+}

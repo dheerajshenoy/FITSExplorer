@@ -14,6 +14,22 @@ void MyGraphicsView::setPixmap(QPixmap pix)
     //this->fitInView(m_img, Qt::KeepAspectRatio);
 }
 
+void MyGraphicsView::mouseMoveEvent(QMouseEvent *e)
+{
+    QPoint pos = e->pos();
+    QPointF scenePos = this->mapToScene(pos);
+    QPointF imagePos = m_img->mapFromScene(scenePos);
+
+    // Get the coordinates only when the cursor is within the pixmap
+    if (m_img->pixmap().rect().contains(imagePos.toPoint()))
+    {
+        emit mouseMoved(imagePos);
+    }
+
+    QGraphicsView::mouseMoveEvent(e);
+}
+
+
 void MyGraphicsView::wheelEvent(QWheelEvent *e)
 {
     setTransformationAnchor(QGraphicsView::AnchorUnderMouse);

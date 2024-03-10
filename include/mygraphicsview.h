@@ -15,8 +15,12 @@ public:
     inline QPixmap GetPixmap() { return m_pix; }
     void setPixmap(QPixmap pix);
 
+signals:
+    void mouseMoved(QPointF);
+
 protected:
     virtual void wheelEvent(QWheelEvent *e) override;
+    virtual void mouseMoveEvent(QMouseEvent *e) override;
     using QGraphicsView::QGraphicsView;
 
 private:

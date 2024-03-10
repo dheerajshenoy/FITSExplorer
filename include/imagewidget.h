@@ -9,6 +9,7 @@
 #include <QPixmap>
 #include <QScrollArea>
 #include <QScrollBar>
+#include "mygraphicsview.h"
 
 namespace Ui {
 class ImageWidget;
@@ -33,6 +34,8 @@ public:
     inline void SetData(float* data) { image_data = data; }
     inline float* GetData() { return image_data; }
 
+    MyGraphicsView* GetGraphicsView();
+
 private:
     Ui::ImageWidget *ui;
 
@@ -42,7 +45,6 @@ private:
     double scaleFactor = 1;
 
     float *image_data;
-
 
 protected:
     void wheelEvent(QWheelEvent *e) override;

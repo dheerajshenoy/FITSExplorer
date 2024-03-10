@@ -16,8 +16,7 @@ public:
     explicit StatusBar(QWidget *parent = nullptr);
     void setMsg(QString msg, int time_in_ms = 1000);
     void setFile(QString filename);
-
-signals:
+    void setCoordinate(QPointF coordinate);
 
 private:
     QHBoxLayout *m_layout = new QHBoxLayout();
@@ -25,7 +24,7 @@ private:
     QLabel *m_file_name = new QLabel("");
     QLabel *m_file_size = new QLabel("");
     QLabel *m_msg_label = new QLabel("");
-
+    QLabel *m_coord_label = new QLabel("");
 };
 
 #endif // STATUSBAR_H

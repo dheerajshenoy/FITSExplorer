@@ -6,10 +6,16 @@ DFits::DFits(QStringList argv, QWidget *parent)
     , ui(new Ui::DFits)
 {
     ui->setupUi(this);
-    connect(img_widget->GetSlider(), SIGNAL(sliderReleased()), SLOT(ChangeBrightness()));
+    connect(img_widget->GetSlider(), SIGNAL(sliderReleased()),
+            SLOT(ChangeBrightness()));
+
+    connect(img_widget->GetGraphicsView(),
+            SIGNAL(mouseMoved(QPointF)),
+            SLOT(ShowCoordinates(QPointF)));
     connect(ui->actionOpen, SIGNAL(triggered()), SLOT(OpenFile()));
     connect(ui->HDU_List, SIGNAL(cellDoubleClicked(int,int)), SLOT(HDU_Table_Double_Clicked(int, int)));
     connect(ui->tab_widget, SIGNAL(tabCloseRequested(int)), SLOT(CloseTab(int)));
+
     ui->splitter->setStretchFactor(1, 1);
 
     ui->mini_light_curve_plot->addGraph();
@@ -353,3 +359,7 @@ void DFits::on_actionLight_Curve_triggered()
     lc->show();
 }
 
+void DFits::ShowCoordinates(QPointF points)
+{
+    ui->statusbar->setCoordinate(points);
+}

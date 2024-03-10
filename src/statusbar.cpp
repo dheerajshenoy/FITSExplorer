@@ -1,10 +1,11 @@
 #include "statusbar.h"
 
 StatusBar::StatusBar(QWidget *parent)
-    : QStatusBar{parent}
+    : QStatusBar(parent)
 {
     this->setLayout(m_layout);
     this->addWidget(m_msg_label);
+    this->addWidget(m_coord_label);
     this->addWidget(m_file_name, 1);
     this->addWidget(m_file_dir);
     this->addWidget(m_file_size);
@@ -42,3 +43,8 @@ void StatusBar::setFile(QString filename)
     m_file_dir->setText(fileInfo.absoluteFilePath());
 }
 
+void StatusBar::setCoordinate(QPointF point)
+{
+    m_coord_label->setText(QString("(%1, %2)").arg(point.x()).arg(point.y()));
+
+}

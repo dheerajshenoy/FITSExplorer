@@ -43,6 +43,7 @@ private slots:
     int ChangeBrightness();
     void HDU_Table_Double_Clicked(int, int);
     void CloseTab(int);
+    void ShowCoordinates(QPointF);
 
     void on_actionopen_toolbar_triggered();
     void on_actionoverview_triggered();
