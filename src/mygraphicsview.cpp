@@ -25,7 +25,9 @@ void MyGraphicsView::mouseMoveEvent(QMouseEvent *e)
     {
         emit mouseMoved(imagePos);
     }
-
+    else {
+        emit mouseOutsidePixmap();
+    }
     QGraphicsView::mouseMoveEvent(e);
 }
 

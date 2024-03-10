@@ -3,7 +3,6 @@
 StatusBar::StatusBar(QWidget *parent)
     : QStatusBar(parent)
 {
-    this->setLayout(m_layout);
     this->addWidget(m_msg_label);
     this->addWidget(m_coord_label);
     this->addWidget(m_file_name, 1);

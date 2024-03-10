@@ -45,14 +45,16 @@ private slots:
     int HDU_Table_Double_Clicked(int, int);
     void CloseTab(int);
     void ShowCoordinates(QPointF);
+    void ExportFile();
 
     void on_actionopen_toolbar_triggered();
     void on_actionoverview_triggered();
     void on_actionAbout_triggered();
     void on_actionoverview_raw_triggered();
     void on_actionLight_Curve_triggered();
-
     void on_actionxport_triggered();
+    void on_actionSave_toolbar_triggered();
+    void on_action_export_toolbar_triggered();
 
 private:
     Ui::DFits *ui;

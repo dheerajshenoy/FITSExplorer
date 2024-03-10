@@ -1,20 +1,33 @@
 #include "dfits.h"
 #include "ui_dfits.h"
-#include <memory>
 
 DFits::DFits(QStringList argv, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::DFits)
 {
     ui->setupUi(this);
+
+    // Change brightness when slider is moved and released
     connect(img_widget->GetSlider(), SIGNAL(sliderReleased()),
             SLOT(ChangeBrightness()));
 
+    // Get signal when moves is moved inside the pixmap
     connect(img_widget->GetGraphicsView(),
             SIGNAL(mouseMoved(QPointF)),
             SLOT(ShowCoordinates(QPointF)));
+
+    // Get signal when cursor moves outside the pixmap within the GraphicsView
+    connect(img_widget->GetGraphicsView(),
+            &MyGraphicsView::mouseOutsidePixmap,
+            this,
+            [&]() {
+                ui->statusbar->clearCoordinate();
+            });
+
     connect(ui->actionOpen, SIGNAL(triggered()), SLOT(OpenFile()));
+
     connect(ui->HDU_List, SIGNAL(cellDoubleClicked(int,int)), SLOT(HDU_Table_Double_Clicked(int, int)));
+
     connect(ui->tab_widget, SIGNAL(tabCloseRequested(int)), SLOT(CloseTab(int)));
 
     ui->splitter->setStretchFactor(1, 1);
@@ -105,10 +118,15 @@ void DFits::OpenFile(QString filename)
     ui->statusbar->setMsg(QString("File {%1} Opened").arg(filename));
     ui->statusbar->setFile(filename);
 
+    ui->mini_light_curve_plot->graph(0)->data()->clear();
+
     ui->actionoverview->setEnabled(true);
     ui->actionoverview_raw->setEnabled(true);
     ui->menuImage->setEnabled(true);
     ui->menuStatistics->setEnabled(true);
+    ui->action_export_toolbar->setEnabled(true);
+    ui->actionSave_toolbar->setEnabled(true);
+    ui->actionxport->setEnabled(true);
 }
 
 int DFits::HandleFile(QString filename)
@@ -260,15 +278,15 @@ int DFits::HandleImage()
 
     QImage image(width, height, QImage::Format_Grayscale8);
 
-    for (int y = 0; y < height; ++y) {
+    for (int x = 0; x < width; ++x) {
         double m = 0;
-        for (int x = 0; x < width; ++x) {
+        for (int y = 0; y < height; ++y) {
             float value = image_data[y * width + x];
             image.setPixel(x, y, qRgb(value, value, value)); // Assuming grayscale image
             m += value;
         }
         m = m / height;
-        ui->mini_light_curve_plot->graph(0)->addData(y, m);
+        ui->mini_light_curve_plot->graph(0)->addData(x, m);
     }
 
     ui->mini_light_curve_plot->rescaleAxes(true);
@@ -395,7 +413,7 @@ void DFits::ShowCoordinates(QPointF points)
     ui->statusbar->setCoordinate(points);
 }
 
-void DFits::on_actionxport_triggered()
+void DFits::ExportFile()
 {
     QFileDialog fd;
     QString filename = fd.getSaveFileName(this, "Export As",
@@ -426,3 +444,19 @@ void DFits::on_actionxport_triggered()
     }
 }
 
+void DFits::on_actionxport_triggered()
+{
+    ExportFile();
+}
+
+
+void DFits::on_actionSave_toolbar_triggered()
+{
+
+}
+
+
+void DFits::on_action_export_toolbar_triggered()
+{
+    ExportFile();
+}

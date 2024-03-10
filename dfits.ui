@@ -203,6 +203,8 @@
    <addaction name="separator"/>
    <addaction name="actionoverview"/>
    <addaction name="actionoverview_raw"/>
+   <addaction name="actionSave_toolbar"/>
+   <addaction name="action_export_toolbar"/>
   </widget>
   <action name="actionOpen">
    <property name="text">
@@ -274,6 +276,9 @@
    <property name="enabled">
     <bool>false</bool>
    </property>
+   <property name="icon">
+    <iconset theme="applications-development"/>
+   </property>
    <property name="text">
     <string>Raw Overview</string>
    </property>
@@ -287,8 +292,41 @@
    </property>
   </action>
   <action name="actionxport">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Export As</string>
+   </property>
+  </action>
+  <action name="actionSave_toolbar">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>../../Downloads/diskette-save-svgrepo-com.svg</normaloff>../../Downloads/diskette-save-svgrepo-com.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Save</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
+   </property>
+  </action>
+  <action name="action_export_toolbar">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>../../Downloads/export-svgrepo-com.svg</normaloff>../../Downloads/export-svgrepo-com.svg</iconset>
+   </property>
+   <property name="text">
+    <string>export</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
  </widget>

@@ -17,6 +17,7 @@ public:
 
 signals:
     void mouseMoved(QPointF);
+    void mouseOutsidePixmap();
 
 protected:
     virtual void wheelEvent(QWheelEvent *e) override;

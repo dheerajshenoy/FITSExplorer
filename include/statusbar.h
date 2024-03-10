@@ -17,6 +17,7 @@ public:
     void setMsg(QString msg, int time_in_ms = 1000);
     void setFile(QString filename);
     void setCoordinate(QPointF coordinate);
+    inline void clearCoordinate() { m_coord_label->clear(); }
 
 private:
     QHBoxLayout *m_layout = new QHBoxLayout();
