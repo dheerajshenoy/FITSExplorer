@@ -12,6 +12,9 @@ INCLUDEPATH += include/
 VPATH += src/
 
 SOURCES += \
+    listmarkers.cpp \
+    marker.cpp \
+    preferences.cpp \
     src/mystatusbar.cpp \
     src/mygraphicsview.cpp \
     src/aboutdialog.cpp \
@@ -33,7 +36,10 @@ HEADERS += \
     include/colormap.h \
     include/qcustomplot.h \
     include/toml.hpp \
-    include/mystatusbar.h
+    include/mystatusbar.h \
+    listmarkers.h \
+    marker.h \
+    preferences.h
 
 LIBS += -lcfitsio
 
@@ -42,8 +48,10 @@ FORMS += \
     aboutdialog.ui \
     imagewidget.ui \
     lightcurve.ui \
+    listmarkers.ui \
     mystatusbar.ui \
-    overview.ui
+    overview.ui \
+    preferences.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

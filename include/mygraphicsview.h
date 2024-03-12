@@ -6,6 +6,8 @@
 #include <QGraphicsPixmapItem>
 #include <QObject>
 #include <QWheelEvent>
+#include "marker.h"
+#include "listmarkers.h"
 
 class MyGraphicsView : public QGraphicsView
 {
@@ -20,6 +22,9 @@ public:
 
     void RemoveAllMarkers();
     void fitToWidth(qreal);
+    void setMarkerMode(bool);
+    void listMarkers();
+    void removeMarkerAtPos(int);
 
 signals:
     void mouseMoved(QPointF);
@@ -31,11 +36,16 @@ protected:
     virtual void wheelEvent(QWheelEvent *e) override;
     virtual void mouseMoveEvent(QMouseEvent *e) override;
     virtual void mouseDoubleClickEvent(QMouseEvent *e) override;
+    virtual void mousePressEvent(QMouseEvent *e) override;
 
 private:
     QPixmap m_pix;
     QGraphicsScene *m_scene = new QGraphicsScene();
     QGraphicsPixmapItem *m_img;
+    bool m_markerMode = false;
+
+    ListMarkers* lm = new ListMarkers();
+    QVector<Marker*> m_markerList;
 };
 
 #endif

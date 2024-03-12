@@ -5,6 +5,8 @@ MyGraphicsView::MyGraphicsView(QWidget *parent) : QGraphicsView(parent)
     this->setScene(m_scene);
 
     m_img = m_scene->addPixmap(m_pix);
+
+    connect(lm, SIGNAL(markerRemoved(int)), SLOT(removeMarkerAtPos(int)));
 }
 
 void MyGraphicsView::setPixmap(QPixmap pix)
@@ -22,19 +24,16 @@ QPointF MyGraphicsView::GetCursorPositionInPixmap(QPoint pos)
 
 void MyGraphicsView::RemoveAllMarkers()
 {
-    int count = m_scene->items().count();
-    if(count == 0)
+    if(m_markerList.isEmpty())
         return;
 
-    QList<QGraphicsItem*> items = m_scene->items();
-
-    foreach (QGraphicsItem* item, items) {
-        if(dynamic_cast<QGraphicsEllipseItem*>(item) || dynamic_cast<QGraphicsTextItem*>(item))
-        {
-            m_scene->removeItem(item);
-            delete item;
-        }
+    foreach(Marker* marker, m_markerList)
+    {
+        m_scene->removeItem(marker);
     }
+
+    m_markerList.clear();
+
     emit markersRemoved();
 }
 
@@ -60,34 +59,43 @@ void MyGraphicsView::mouseMoveEvent(QMouseEvent *e)
 
 void MyGraphicsView::mouseDoubleClickEvent(QMouseEvent *e)
 {
-    // Add marker only if cursor is within the image
 
     if(e->button() == Qt::LeftButton)
     {
-        QPointF imagePos = GetCursorPositionInPixmap(e->pos());
-        if(m_img->pixmap().rect().contains(imagePos.toPoint()))
+
+        // Check if marker mode is on
+        if(m_markerMode)
         {
-            QGraphicsEllipseItem *marker = new QGraphicsEllipseItem(-5, -5, 10, 10);
-            marker->setPen(QColor::fromRgb(255, 0, 0));
-            marker->setBrush(QColor::fromRgb(255, 0, 0));
-            marker->setFlag(QGraphicsEllipseItem::ItemIgnoresTransformations);
-            marker->setPos(imagePos);
+            QPointF imagePos = GetCursorPositionInPixmap(e->pos());
 
-            QGraphicsTextItem *textItem = new QGraphicsTextItem("Ellipse");
-            textItem->setDefaultTextColor(Qt::white);
-            textItem->setScale(1.5);
-            textItem->setFlag(QGraphicsTextItem::ItemIgnoresTransformations);
+            // Add marker only if cursor is within the image
+            if(m_img->pixmap().rect().contains(imagePos.toPoint()))
+            {
+                QGraphicsEllipseItem *ellipse = new QGraphicsEllipseItem(-5, -5, 10, 10);
+                ellipse->setPen(QColor::fromRgb(255, 0, 0));
+                ellipse->setBrush(QColor::fromRgb(255, 0, 0));
+                ellipse->setFlag(QGraphicsEllipseItem::ItemIgnoresTransformations);
+                ellipse->setPos(imagePos);
 
-            // Position the text item relative to the ellipse
-            textItem->setPos(imagePos);
-
-            // Add the text item to the scene
-            m_scene->addItem(textItem);
-            m_scene->addItem(marker);
-
-            emit markerAdded(imagePos);
+                QGraphicsTextItem *text = new QGraphicsTextItem("Ellipse");
+                text->setDefaultTextColor(Qt::white);
+                text->setScale(1.5);
+                text->setFlag(QGraphicsTextItem::ItemIgnoresTransformations);
+                text->setPos(imagePos);
+                // Add the text item to the scene
+                Marker *marker = new Marker();
+                marker->setMarker(ellipse, text, QString::number(m_markerList.count()));
+                m_scene->addItem(marker);
+                m_markerList.append(marker);
+                emit markerAdded(imagePos);
+            }
         }
     }
+}
+
+void MyGraphicsView::mousePressEvent(QMouseEvent *e)
+{
+    QGraphicsView::mousePressEvent(e);
 }
 
 void MyGraphicsView::wheelEvent(QWheelEvent *e)
@@ -104,4 +112,21 @@ void MyGraphicsView::wheelEvent(QWheelEvent *e)
     {
         scale(1/scaleFactor, 1/scaleFactor);
     }
+}
+
+void MyGraphicsView::setMarkerMode(bool state)
+{
+    m_markerMode = state;
+}
+
+void MyGraphicsView::listMarkers()
+{
+    lm->setMarkersList(m_markerList);
+}
+
+void MyGraphicsView::removeMarkerAtPos(int index)
+{
+    m_scene->removeItem(m_markerList[index]);
+    m_markerList.remove(index);
+    emit markersRemoved();
 }

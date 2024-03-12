@@ -35,6 +35,7 @@ void FITSExplorer::INIT_MiniLightCurve()
                                                         0,
                                                         new QCPTextElement(ui->mini_light_curve_plot,
                                                                            "Light Curve"));
+    ui->mini_light_curve_plot->setHidden(true);
 }
 
 void FITSExplorer::INIT_Configuration()
@@ -230,6 +231,7 @@ void FITSExplorer::OpenFile(QString filename)
         {
             // Enable the widgets only on first run of this function
 
+            ui->actionMarkerMode->setEnabled(true);
             ui->mini_light_curve_plot->graph(0)->data()->clear();
             img_widget->GetSlider()->setEnabled(true);
             ui->actionoverview->setEnabled(true);
@@ -428,6 +430,7 @@ int FITSExplorer::HandleImage()
 
     ui->mini_light_curve_plot->rescaleAxes(true);
     ui->mini_light_curve_plot->replot();
+    ui->mini_light_curve_plot->setHidden(false);
 
     //image.convertTo(QImage::Format_Indexed8);
     //image.setColorTable(m_inferno);
@@ -624,6 +627,16 @@ void FITSExplorer::RemoveAllMarkers()
 
 void FITSExplorer::CloseFile()
 {
+    ui->actionMarkerMode->setEnabled(false);
+    ui->mini_light_curve_plot->graph(0)->data()->clear();
+    img_widget->GetSlider()->setEnabled(false);
+    ui->actionoverview->setEnabled(false);
+    ui->actionoverview_raw->setEnabled(false);
+    ui->menuImage->setEnabled(false);
+    ui->menuStatistics->setEnabled(false);
+    ui->action_export_toolbar->setEnabled(false);
+    ui->actionSave_toolbar->setEnabled(false);
+    ui->actionxport->setEnabled(false);
     if(fptr)
     {
         delete fptr;
@@ -651,18 +664,36 @@ void FITSExplorer::on_action_export_toolbar_triggered()
 
 void FITSExplorer::on_actionDeleteAllMarkers_triggered()
 {
-    img_widget->GetGraphicsView()->RemoveAllMarkers();
+    gv->RemoveAllMarkers();
 }
 
 
 void FITSExplorer::on_actionFit_to_Width_triggered()
 {
-    img_widget->GetGraphicsView()->fitToWidth(ui->tab_widget->width());
+    gv->fitToWidth(ui->tab_widget->width());
 }
 
 
 void FITSExplorer::on_actionClose_File_triggered()
 {
     CloseFile();
+}
+
+
+void FITSExplorer::on_actionPreferences_triggered()
+{
+    prefs->show();
+}
+
+
+void FITSExplorer::on_actionMarkerMode_triggered(bool state)
+{
+    gv->setMarkerMode(state);
+}
+
+
+void FITSExplorer::on_actionList_Markers_triggered()
+{
+    gv->listMarkers();
 }
 

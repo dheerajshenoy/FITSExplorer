@@ -20,6 +20,7 @@
 #include "aboutdialog.h"
 #include "lightcurve.h"
 #include "toml.hpp"
+#include "preferences.h"
 
 const QString APPNAME = "DFits";
 const QString CONFIG_NAME = "config.toml";
@@ -73,6 +74,9 @@ private slots:
     void on_actionDeleteAllMarkers_triggered();
     void on_actionFit_to_Width_triggered();
     void on_actionClose_File_triggered();
+    void on_actionPreferences_triggered();
+    void on_actionMarkerMode_triggered(bool);
+    void on_actionList_Markers_triggered();
 
 private:
     Ui::DFits *ui;
@@ -99,6 +103,8 @@ private:
     QVector<QRgb> m_inferno;
 
     toml::value TOMLCFG;
+
+    Preferences *prefs = new Preferences();
 
 };
 #endif // DFITS_H

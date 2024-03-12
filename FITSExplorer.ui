@@ -187,8 +187,16 @@
      </property>
      <addaction name="actionLight_Curve"/>
     </widget>
+    <widget class="QMenu" name="menuMarker">
+     <property name="title">
+      <string>Marker</string>
+     </property>
+     <addaction name="actionList_Markers"/>
+     <addaction name="actionDelete_Markers"/>
+    </widget>
     <addaction name="menuImage"/>
     <addaction name="menuStatistics"/>
+    <addaction name="menuMarker"/>
    </widget>
    <widget class="QMenu" name="menuZoom">
     <property name="title">
@@ -228,6 +236,7 @@
    <addaction name="actionSave_toolbar"/>
    <addaction name="action_export_toolbar"/>
    <addaction name="actionDeleteAllMarkers"/>
+   <addaction name="actionMarkerMode"/>
   </widget>
   <action name="actionOpen">
    <property name="text">
@@ -398,6 +407,39 @@
   <action name="actionClose_File">
    <property name="text">
     <string>Close File</string>
+   </property>
+  </action>
+  <action name="actionMarkerMode">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset theme="applications-graphics"/>
+   </property>
+   <property name="text">
+    <string>MarkerMode</string>
+   </property>
+   <property name="shortcut">
+    <string>M</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionList_Markers">
+   <property name="text">
+    <string>List Markers</string>
+   </property>
+  </action>
+  <action name="actionDelete_Markers">
+   <property name="text">
+    <string>Delete Markers</string>
    </property>
   </action>
  </widget>
