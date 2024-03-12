@@ -1,4 +1,4 @@
-# DFITS
+# FITSExplorer
 
 * A modern FITS image viewer written using CFITSIO library.
 
