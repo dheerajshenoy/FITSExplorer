@@ -4,13 +4,10 @@
 #include <QMainWindow>
 #include <QFileDialog>
 #include <QDialog>
-#include "statusbar.h"
 #include <fitsio2.h>
 #include <QMessageBox>
 #include <QDebug>
-#include "colormap.h"
 #include <QTableWidget>
-#include "aboutdialog.h"
 #include <QTableWidgetItem>
 #include "overview.h"
 #include "imagewidget.h"
@@ -18,7 +15,14 @@
 #include <QPlainTextEdit>
 #include <QWidget>
 #include <QVBoxLayout>
+#include <QSettings>
+#include <QStandardPaths>
+#include "aboutdialog.h"
 #include "lightcurve.h"
+#include "toml.hpp"
+
+const QString APPNAME = "DFits";
+const QString CONFIG_NAME = "config.toml";
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -26,19 +30,28 @@ class DFits;
 }
 QT_END_NAMESPACE
 
-class DFits : public QMainWindow
+
+class FITSExplorer : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    DFits(QStringList args, QWidget *parent = nullptr);
-    ~DFits();
+    FITSExplorer(QStringList args, QWidget *parent = nullptr);
+    ~FITSExplorer();
     int HandleFile(QString filename);
     int HandleImage();
     int HandleAsciiTable();
     int HandleBinaryTable();
     int ShowOverview(int HDU_index);
     void RemoveAllMarkers();
+    void INIT_Connections();
+    void INIT_MiniLightCurve();
+    void INIT_Configuration();
+    inline void MSG(QString msg)
+    {
+        QMessageBox::information(this, "Information", msg);
+    }
+    void ReadConfigFile(QString filename = "");
 
 private slots:
     void OpenFile(QString filename = nullptr);
@@ -48,7 +61,7 @@ private slots:
     void ShowCoordinates(QPointF);
     void ExportFile();
     void MarkerAdded(QPointF);
-
+    void CloseFile();
     void on_actionopen_toolbar_triggered();
     void on_actionoverview_triggered();
     void on_actionAbout_triggered();
@@ -57,8 +70,9 @@ private slots:
     void on_actionxport_triggered();
     void on_actionSave_toolbar_triggered();
     void on_action_export_toolbar_triggered();
-
     void on_actionDeleteAllMarkers_triggered();
+    void on_actionFit_to_Width_triggered();
+    void on_actionClose_File_triggered();
 
 private:
     Ui::DFits *ui;
@@ -74,11 +88,17 @@ private:
     QCPItemStraightLine *m_line;
 
     int m_nhdu;
+    int m_nkeys;
 
-    Overview *overview;
-    LightCurve *lc;
+    MyGraphicsView *gv = img_widget->GetGraphicsView();
+
+    Overview *overview = new Overview();
+    LightCurve *lc = new LightCurve(img_widget);
 
     QVector<QCPItemStraightLine*> m_lines_list;
+    QVector<QRgb> m_inferno;
+
+    toml::value TOMLCFG;
 
 };
 #endif // DFITS_H

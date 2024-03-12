@@ -29,13 +29,18 @@ void MyGraphicsView::RemoveAllMarkers()
     QList<QGraphicsItem*> items = m_scene->items();
 
     foreach (QGraphicsItem* item, items) {
-        if(dynamic_cast<QGraphicsEllipseItem*>(item))
+        if(dynamic_cast<QGraphicsEllipseItem*>(item) || dynamic_cast<QGraphicsTextItem*>(item))
         {
             m_scene->removeItem(item);
             delete item;
         }
     }
     emit markersRemoved();
+}
+
+void MyGraphicsView::fitToWidth(qreal width)
+{
+    // TODO
 }
 
 void MyGraphicsView::mouseMoveEvent(QMouseEvent *e)

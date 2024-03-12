@@ -1,17 +1,101 @@
-#include "dfits.h"
-#include "ui_dfits.h"
+#include "FITSExplorer.h"
+#include "ui_FITSExplorer.h"
 
-DFits::DFits(QStringList argv, QWidget *parent)
+FITSExplorer::FITSExplorer(QStringList argv, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::DFits)
 {
     ui->setupUi(this);
+    INIT_Connections();
+    INIT_Configuration();
+    INIT_MiniLightCurve();
+    ui->splitter->setStretchFactor(1, 1);
 
+    if(argv.size() > 1)
+    {
+        OpenFile(argv[1]);
+    }
+}
+
+void FITSExplorer::INIT_MiniLightCurve()
+{
+    //ui->mini_light_curve_plot->setVisible(toml::find<bool>(TOMLCFG,
+    //                                                       "GUI.Mini_Light_Curve.shown"));
+    ui->mini_light_curve_plot->addGraph();
+    ui->mini_light_curve_plot->setInteractions(QCP::iRangeDrag |
+                                               QCP::iRangeZoom |
+                                               QCP::iSelectPlottables |
+                                               QCP::iSelectAxes);
+
+    ui->mini_light_curve_plot->graph(0)->setAntialiased(true);
+    ui->mini_light_curve_plot->xAxis->setLabel("Image Width");
+    ui->mini_light_curve_plot->yAxis->setLabel("Mean Intensity");
+    ui->mini_light_curve_plot->plotLayout()->insertRow(0);
+    ui->mini_light_curve_plot->plotLayout()->addElement(0,
+                                                        0,
+                                                        new QCPTextElement(ui->mini_light_curve_plot,
+                                                                           "Light Curve"));
+}
+
+void FITSExplorer::INIT_Configuration()
+{
+    /*
+    const QDir XDG_CONFIG_DIR = QDir(QStandardPaths::
+                                     writableLocation(QStandardPaths::ConfigLocation));
+
+    QDir configDir = XDG_CONFIG_DIR.filePath(APPNAME);
+
+    MSG(configDir.path());
+
+    // Check if  file exists
+    if (configDir.exists())
+    {
+        /*
+        QFile configFile(configDir.path() + "config.toml");
+
+        if(configFile.exists())
+        {
+            // READ THE CONFIG FILE
+        }
+        else
+        {
+        }
+    }
+    else {
+        /*
+        auto msgbox = QMessageBox();
+        msgbox.setText("Config directory doesn't exist, create it at " + configDir.path());
+        msgbox.setWindowTitle("Create Config Directory?");
+        msgbox.addButton("Ok", QMessageBox::AcceptRole);
+        msgbox.addButton("Cancel", QMessageBox::RejectRole);
+        msgbox.exec();
+
+        // If yes, create the config directory
+        if (msgbox.result() == QMessageBox::Ok)
+        {
+            QDir(XDG_CONFIG_DIR).mkdir(APPNAME);
+        }
+    }
+*/
+    ReadConfigFile("/home/neo/.config/FITSExplorer/config.toml");
+}
+
+void FITSExplorer::ReadConfigFile(QString cfgfile)
+{
+    // If no config file is specified use the default at ~/.config/DFITS/config.toml
+    if (cfgfile.isEmpty() || cfgfile.isNull())
+    {
+    }
+
+    //TOMLCFG = toml::parse(cfgfile.toStdString());
+
+}
+
+void FITSExplorer::INIT_Connections()
+{
     // Change brightness when slider is moved and released
     connect(img_widget->GetSlider(), SIGNAL(sliderReleased()),
             SLOT(ChangeBrightness()));
-
-    MyGraphicsView *gv = img_widget->GetGraphicsView();
 
     // Get signal when moves is moved inside the pixmap
     connect(gv,
@@ -27,7 +111,6 @@ DFits::DFits(QStringList argv, QWidget *parent)
             this,
             [&](){ this->RemoveAllMarkers(); });
 
-
     // Get signal when cursor moves outside the pixmap within the GraphicsView
     connect(gv,
             &MyGraphicsView::mouseOutsidePixmap,
@@ -37,39 +120,18 @@ DFits::DFits(QStringList argv, QWidget *parent)
             });
 
     connect(ui->actionOpen, SIGNAL(triggered()), SLOT(OpenFile()));
-
     connect(ui->HDU_List, SIGNAL(cellDoubleClicked(int,int)), SLOT(HDU_Table_Double_Clicked(int, int)));
-
     connect(ui->tab_widget, SIGNAL(tabCloseRequested(int)), SLOT(CloseTab(int)));
 
-    ui->splitter->setStretchFactor(1, 1);
-
-    ui->mini_light_curve_plot->addGraph();
-    ui->mini_light_curve_plot->setInteractions(QCP::iRangeDrag |
-                                               QCP::iRangeZoom |
-                                               QCP::iSelectPlottables |
-                                               QCP::iSelectAxes);
-    ui->mini_light_curve_plot->graph(0)->setAntialiased(true);
-    ui->mini_light_curve_plot->xAxis->setLabel("Image Width");
-    ui->mini_light_curve_plot->yAxis->setLabel("Mean Intensity");
-    ui->mini_light_curve_plot->plotLayout()->insertRow(0);
-    ui->mini_light_curve_plot->plotLayout()->addElement(0,
-                                                        0,
-                                                        new QCPTextElement(ui->mini_light_curve_plot,
-                                                                           "Light Curve"));
-    if(argv.size() > 1)
-    {
-        OpenFile(argv[1]);
-    }
 }
 
-void DFits::CloseTab(int index)
+void FITSExplorer::CloseTab(int index)
 {
     ui->tab_widget->removeTab(index);
     //ui->mini_light_curve_plot->removeGraph(index);
 }
 
-int DFits::HDU_Table_Double_Clicked(int row, int col)
+int FITSExplorer::HDU_Table_Double_Clicked(int row, int col)
 {
     //QTableWidgetItem *typeItem = ui->HDU_List->item(row, col);
     int type;
@@ -100,51 +162,103 @@ int DFits::HDU_Table_Double_Clicked(int row, int col)
     return 0;
 }
 
-int DFits::HandleAsciiTable()
+int FITSExplorer::HandleAsciiTable()
 {
     QMessageBox::information(this, "Info", "TODO: Implement ASCII Table Processing");
     return 0;
 }
 
-int DFits::HandleBinaryTable()
+int FITSExplorer::HandleBinaryTable()
 {
-    QMessageBox::information(this, "Info", "TODO: Implement Binary Table Processing");
+
+    // Get the number of rows and columns in the binary table
+    int ncols;
+    long nrows;
+    fits_get_num_rows(fptr, &nrows, &status);
+    fits_get_num_cols(fptr, &ncols, &status);
+
+    // Allocate memory to store the data
+    uchar *data = new uchar[nrows * ncols];
+
+    // Read the binary table data
+    if(fits_read_tblbytes(fptr, 1, 1, ncols * nrows * sizeof(uchar), data, &status))
+    {
+        fits_report_error(stderr, status);
+        delete[] data;
+        return status;
+    }
+
+    QTableWidget *table = new QTableWidget();
+    table->setColumnCount(ncols);
+    table->setRowCount(nrows);
+
+    printf("%u", data[0]);
+
+    QImage image(ncols, nrows, QImage::Format_Grayscale8);
+
+    for (int x = 0; x < ncols; ++x) {
+        double m = 0;
+        for (int y = 0; y < nrows; ++y) {
+            float value = static_cast<float>(data[y * ncols + x]);
+            image.setPixel(x, y, qRgb(value, value, value)); // Assuming grayscale image
+            m += value;
+        }
+        m = m / height;
+        ui->mini_light_curve_plot->graph(0)->addData(x, m);
+    }
+
+    ui->mini_light_curve_plot->rescaleAxes(true);
+    ui->mini_light_curve_plot->replot();
+
+    img_widget->setPixmap(QPixmap::fromImage(image));
+    ui->tab_widget->addTab(img_widget, "DD");
+
+    delete[] data;
+
     return 0;
 }
 
-void DFits::OpenFile(QString filename)
+// Handle Opening of files
+void FITSExplorer::OpenFile(QString filename)
 {
     if (filename.isNull())
     {
-        QFileDialog openFileDialog;
-        filename = openFileDialog.getOpenFileName(this, "Open File", "", "FITS (*.fits *.fit);;All Files (*)");
+        QFileDialog openFileDialog(this, "Open File", "", "FITS (*.fits *.fit);;All Files (*)");
+        openFileDialog.setAcceptMode(QFileDialog::AcceptOpen);
 
-        if (openFileDialog.result() == QDialog::Accepted) {
-            ui->statusbar->setMsg("File Open Cancelled");
+        if (openFileDialog.exec())
+        {
+            // Enable the widgets only on first run of this function
+
+            ui->mini_light_curve_plot->graph(0)->data()->clear();
+            img_widget->GetSlider()->setEnabled(true);
+            ui->actionoverview->setEnabled(true);
+            ui->actionoverview_raw->setEnabled(true);
+            ui->menuImage->setEnabled(true);
+            ui->menuStatistics->setEnabled(true);
+            ui->action_export_toolbar->setEnabled(true);
+            ui->actionSave_toolbar->setEnabled(true);
+            ui->actionxport->setEnabled(true);
+            filename = openFileDialog.selectedFiles()[0];
+            // Till here
+
+            ui->statusbar->setMsg(QString("File {%1} Opened").arg(filename));
+            ui->statusbar->setFile(filename);
+            HandleFile(openFileDialog.selectedFiles().at(0));
             return;
         }
     }
 
-    img_widget->GetSlider()->setEnabled(true);
-    HandleFile(filename);
-    ui->statusbar->setMsg(QString("File {%1} Opened").arg(filename));
-    ui->statusbar->setFile(filename);
-
-    ui->mini_light_curve_plot->graph(0)->data()->clear();
-
-    ui->actionoverview->setEnabled(true);
-    ui->actionoverview_raw->setEnabled(true);
-    ui->menuImage->setEnabled(true);
-    ui->menuStatistics->setEnabled(true);
-    ui->action_export_toolbar->setEnabled(true);
-    ui->actionSave_toolbar->setEnabled(true);
-    ui->actionxport->setEnabled(true);
+    // If user cancels opening the file
+    ui->statusbar->setMsg("File Open Cancelled");
+    return;
 }
 
-int DFits::HandleFile(QString filename)
+// Helper function for opening the file at path `filename`
+int FITSExplorer::HandleFile(QString filename)
 {
+    // set status before opening the file according to then norms of cfitsio
     status = 0;
-    qDebug() << "OUTPUT " << filename;
     if(fits_open_file(&fptr, filename.toStdString().c_str(), READONLY, &status))
     {
         fits_report_error(stderr, status);
@@ -215,7 +329,7 @@ int DFits::HandleFile(QString filename)
     return 0;
 }
 
-int DFits::ChangeBrightness()
+int FITSExplorer::ChangeBrightness()
 {
     QImage image = img_widget->GetImage();
     //QImage image = pixmap.toImage();
@@ -229,12 +343,14 @@ int DFits::ChangeBrightness()
         }
     }
 
-    //image = CM::jet(image);
+    //image.convertTo(QImage::Format_Indexed8);
+    //image.setColorTable(m_inferno);
+
     img_widget->setPixmap(QPixmap::fromImage(image));
     return 0;
 }
 
-int DFits::HandleImage()
+int FITSExplorer::HandleImage()
 {
     int naxis;
     if(fits_get_img_dim(fptr, &naxis, &status))
@@ -299,8 +415,6 @@ int DFits::HandleImage()
 
     QImage image(width, height, QImage::Format_Grayscale8);
 
-
-
     for (int x = 0; x < width; ++x) {
         double m = 0;
         for (int y = 0; y < height; ++y) {
@@ -315,25 +429,27 @@ int DFits::HandleImage()
     ui->mini_light_curve_plot->rescaleAxes(true);
     ui->mini_light_curve_plot->replot();
 
+    //image.convertTo(QImage::Format_Indexed8);
+    //image.setColorTable(m_inferno);
+
     img_widget->setPixmap(QPixmap::fromImage(image));
     ui->tab_widget->addTab(img_widget, "DD");
     return 0;
 }
 
-DFits::~DFits()
+FITSExplorer::~FITSExplorer()
 {
+    CloseFile();
     delete ui;
 }
 
-void DFits::on_actionopen_toolbar_triggered()
+void FITSExplorer::on_actionopen_toolbar_triggered()
 {
     OpenFile();
 }
 
-int DFits::ShowOverview(int index)
+int FITSExplorer::ShowOverview(int index)
 {
-
-    overview = new Overview();
     // Overview for all the HDUs present
     if(index == 0)
     {
@@ -344,8 +460,7 @@ int DFits::ShowOverview(int index)
             return status;
         }
 
-        int nkeys;
-        if (fits_get_hdrspace(fptr, &nkeys, NULL, &status)) {
+        if (fits_get_hdrspace(fptr, &m_nkeys, NULL, &status)) {
             fits_report_error(stderr, status);
             QMessageBox::critical(this, "Error", "Cannot get keys from the HDU");
             return status;
@@ -354,7 +469,7 @@ int DFits::ShowOverview(int index)
         QMap<QString, QString> keyvals;
         char keyname[FLEN_CARD];
         char value[FLEN_CARD];
-        for (int i = 1; i <= nkeys; i++)
+        for (int i = 1; i <= m_nkeys; i++)
         {
             /*
             char card[FLEN_CARD];
@@ -390,31 +505,51 @@ int DFits::ShowOverview(int index)
 }
 
 
-void DFits::on_actionoverview_triggered()
+void FITSExplorer::on_actionoverview_triggered()
 {
     ShowOverview(0);
 }
 
 
-void DFits::on_actionAbout_triggered()
+void FITSExplorer::on_actionAbout_triggered()
 {
     AboutDialog *ab = new AboutDialog();
     ab->show();
 }
 
-void DFits::on_actionoverview_raw_triggered()
+void FITSExplorer::on_actionoverview_raw_triggered()
 {
-    if(!overview->hasBeenAlreadyShown())
-        ShowOverview(0);
+    if(fits_movabs_hdu(fptr, 1, NULL, &status))
+    {
+        fits_report_error(stderr, status);
+        QMessageBox::critical(this, "Error", "Cannot move to primary HDU");
+        return;
+    }
+
+    if (fits_get_hdrspace(fptr, &m_nkeys, NULL, &status)) {
+        fits_report_error(stderr, status);
+        QMessageBox::critical(this, "Error", "Cannot get keys from the HDU");
+        return;
+    }
+
     QWidget *widget = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout();
     widget->setLayout(layout);
     QPlainTextEdit *rawEdit = new QPlainTextEdit();
     layout->addWidget(rawEdit);
 
-    QVector<QString> texts = overview->getRecords();
-    foreach (QString text, texts) {
-        rawEdit->insertPlainText(text);
+    char keyname[FLEN_CARD];
+    char value[FLEN_CARD];
+    for (int i = 1; i <= m_nkeys; i++)
+    {
+        char card[FLEN_CARD];
+        if (fits_read_record(fptr, i, card, &status))
+        {
+            fits_report_error(stderr, status);
+            QMessageBox::critical(this, "Error", "Cannot get keys from the HDU");
+            return;
+        }
+        rawEdit->insertPlainText(card);
         rawEdit->insertPlainText("\n");
     }
 
@@ -424,19 +559,19 @@ void DFits::on_actionoverview_raw_triggered()
 }
 
 
-void DFits::on_actionLight_Curve_triggered()
+void FITSExplorer::on_actionLight_Curve_triggered()
 {
     lc = new LightCurve(img_widget);
     lc->setData(image_data, width, height);
     lc->show();
 }
 
-void DFits::ShowCoordinates(QPointF points)
+void FITSExplorer::ShowCoordinates(QPointF points)
 {
     ui->statusbar->setCoordinate(points);
 }
 
-void DFits::ExportFile()
+void FITSExplorer::ExportFile()
 {
     QFileDialog fd;
     QString filename = fd.getSaveFileName(this, "Export As",
@@ -467,7 +602,7 @@ void DFits::ExportFile()
     }
 }
 
-void DFits::MarkerAdded(QPointF pos)
+void FITSExplorer::MarkerAdded(QPointF pos)
 {
     m_line = new QCPItemStraightLine(ui->mini_light_curve_plot);
     m_line->setPen(QColor::fromRgb(255, 0, 0));
@@ -477,7 +612,7 @@ void DFits::MarkerAdded(QPointF pos)
     ui->mini_light_curve_plot->replot();
 }
 
-void DFits::RemoveAllMarkers()
+void FITSExplorer::RemoveAllMarkers()
 {
     printf("HELLO WORLD");
     foreach(QCPItemStraightLine* line, m_lines_list)
@@ -487,25 +622,47 @@ void DFits::RemoveAllMarkers()
     ui->mini_light_curve_plot->replot();
 }
 
-void DFits::on_actionxport_triggered()
+void FITSExplorer::CloseFile()
+{
+    if(fptr)
+    {
+        delete fptr;
+        delete [] image_data;
+        status = 0;
+    }
+}
+
+void FITSExplorer::on_actionxport_triggered()
 {
     ExportFile();
 }
 
 
-void DFits::on_actionSave_toolbar_triggered()
+void FITSExplorer::on_actionSave_toolbar_triggered()
 {
 
 }
 
 
-void DFits::on_action_export_toolbar_triggered()
+void FITSExplorer::on_action_export_toolbar_triggered()
 {
     ExportFile();
 }
 
-void DFits::on_actionDeleteAllMarkers_triggered()
+void FITSExplorer::on_actionDeleteAllMarkers_triggered()
 {
     img_widget->GetGraphicsView()->RemoveAllMarkers();
+}
+
+
+void FITSExplorer::on_actionFit_to_Width_triggered()
+{
+    img_widget->GetGraphicsView()->fitToWidth(ui->tab_widget->width());
+}
+
+
+void FITSExplorer::on_actionClose_File_triggered()
+{
+    CloseFile();
 }
 

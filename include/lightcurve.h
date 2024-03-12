@@ -19,9 +19,10 @@ class LightCurve : public QWidget
     friend ImageWidget;
 
 public:
-    explicit LightCurve(ImageWidget *img_widget);
+    explicit LightCurve(ImageWidget *img_widget = nullptr);
     ~LightCurve();
 
+    void setImageWidget(ImageWidget *img_widget);
     void setData(float*, int, int);
     void INIT_Graph();
 

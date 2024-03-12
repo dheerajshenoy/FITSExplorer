@@ -26,6 +26,12 @@
    <string>DFits</string>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Maximum" vsizetype="Minimum">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
    <layout class="QVBoxLayout" name="verticalLayout_3">
     <item>
      <widget class="QSplitter" name="splitter">
@@ -121,6 +127,9 @@
       </widget>
      </widget>
     </item>
+    <item>
+     <widget class="MyStatusBar" name="statusbar" native="true"/>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -138,6 +147,7 @@
     </property>
     <addaction name="actionOpen"/>
     <addaction name="actionOpen_Recent"/>
+    <addaction name="actionClose_File"/>
     <addaction name="actionxport"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
@@ -180,12 +190,24 @@
     <addaction name="menuImage"/>
     <addaction name="menuStatistics"/>
    </widget>
+   <widget class="QMenu" name="menuZoom">
+    <property name="title">
+     <string>Zoom</string>
+    </property>
+    <addaction name="actionFit_to_Width"/>
+    <addaction name="actionFit_to_Height"/>
+    <addaction name="actionZoom0"/>
+    <addaction name="actionZoom25"/>
+    <addaction name="actionZoom50"/>
+    <addaction name="actionZoom75"/>
+    <addaction name="actionZoom100"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuTools"/>
+   <addaction name="menuZoom"/>
    <addaction name="menuHelp"/>
   </widget>
-  <widget class="StatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolbar">
    <property name="windowTitle">
     <string>toolBar</string>
@@ -338,17 +360,58 @@
     <enum>QAction::NoRole</enum>
    </property>
   </action>
+  <action name="actionFit_to_Width">
+   <property name="text">
+    <string>Fit to Width</string>
+   </property>
+  </action>
+  <action name="actionFit_to_Height">
+   <property name="text">
+    <string>Fit to Height</string>
+   </property>
+  </action>
+  <action name="actionZoom0">
+   <property name="text">
+    <string>0%</string>
+   </property>
+  </action>
+  <action name="actionZoom25">
+   <property name="text">
+    <string>25%</string>
+   </property>
+  </action>
+  <action name="actionZoom50">
+   <property name="text">
+    <string>50%</string>
+   </property>
+  </action>
+  <action name="actionZoom75">
+   <property name="text">
+    <string>75%</string>
+   </property>
+  </action>
+  <action name="actionZoom100">
+   <property name="text">
+    <string>100%</string>
+   </property>
+  </action>
+  <action name="actionClose_File">
+   <property name="text">
+    <string>Close File</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>StatusBar</class>
-   <extends>QStatusBar</extends>
-   <header>statusbar.h</header>
-  </customwidget>
   <customwidget>
    <class>QCustomPlot</class>
    <extends>QWidget</extends>
    <header location="global">qcustomplot.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>MyStatusBar</class>
+   <extends>QWidget</extends>
+   <header location="global">mystatusbar.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

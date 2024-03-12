@@ -12,6 +12,11 @@ LightCurve::LightCurve(ImageWidget *img_widget)
     INIT_Graph();
 }
 
+void LightCurve::setImageWidget(ImageWidget *img_widget)
+{
+    m_img_widget = img_widget;
+}
+
 void LightCurve::INIT_Graph()
 {
     ui->plot_widget->addGraph();

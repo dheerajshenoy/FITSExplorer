@@ -19,6 +19,7 @@ public:
     QPointF GetCursorPositionInPixmap(QPoint pos);
 
     void RemoveAllMarkers();
+    void fitToWidth(qreal);
 
 signals:
     void mouseMoved(QPointF);
