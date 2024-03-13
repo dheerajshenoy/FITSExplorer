@@ -43,3 +43,21 @@ void ListMarkers::on_delete_marker_btn_clicked()
     emit markerRemoved(markernum);
 }
 
+
+void ListMarkers::on_cancel_btn_clicked()
+{
+    this->destroy();
+}
+
+
+void ListMarkers::on_markers_list_widget_currentTextChanged(const QString &currentText)
+{
+    /*
+    int markernum = ui->markers_list_widget->currentItem()->text().toInt();
+    Marker *marker = m_markers_list[markernum];
+
+    //marker->setShapeColor(ui->color_field->text());
+    //marker->addVisualizer();
+    marker->setText(ui->text_field->text());
+*/
+}

@@ -210,9 +210,32 @@
     <addaction name="actionZoom75"/>
     <addaction name="actionZoom100"/>
    </widget>
+   <widget class="QMenu" name="menuColormap">
+    <property name="title">
+     <string>Colormap</string>
+    </property>
+    <addaction name="actionGrayscale"/>
+    <addaction name="actionBone"/>
+    <addaction name="actionCool"/>
+    <addaction name="actionHot"/>
+    <addaction name="actionHSV"/>
+    <addaction name="actionJet"/>
+    <addaction name="actionOcean"/>
+    <addaction name="actionParula"/>
+    <addaction name="actionPink"/>
+    <addaction name="actionRainbow"/>
+    <addaction name="actionSpring"/>
+    <addaction name="actionSummer"/>
+    <addaction name="actionTurbo"/>
+    <addaction name="actionWinter"/>
+    <addaction name="actionAutumn"/>
+    <addaction name="separator"/>
+    <addaction name="actionCustom"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuTools"/>
+   <addaction name="menuColormap"/>
    <addaction name="menuZoom"/>
    <addaction name="menuHelp"/>
   </widget>
@@ -440,6 +463,134 @@
   <action name="actionDelete_Markers">
    <property name="text">
     <string>Delete Markers</string>
+   </property>
+  </action>
+  <action name="actionBone">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Bone</string>
+   </property>
+  </action>
+  <action name="actionCool">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Cool</string>
+   </property>
+  </action>
+  <action name="actionHot">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Hot</string>
+   </property>
+  </action>
+  <action name="actionHSV">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>HSV</string>
+   </property>
+  </action>
+  <action name="actionJet">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Jet</string>
+   </property>
+  </action>
+  <action name="actionOcean">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Ocean</string>
+   </property>
+  </action>
+  <action name="actionParula">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Parula</string>
+   </property>
+  </action>
+  <action name="actionPink">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Pink</string>
+   </property>
+  </action>
+  <action name="actionRainbow">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Rainbow</string>
+   </property>
+  </action>
+  <action name="actionSpring">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Spring</string>
+   </property>
+  </action>
+  <action name="actionSummer">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Summer</string>
+   </property>
+  </action>
+  <action name="actionTurbo">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Turbo</string>
+   </property>
+  </action>
+  <action name="actionWinter">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Winter</string>
+   </property>
+  </action>
+  <action name="actionAutumn">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Autumn</string>
+   </property>
+  </action>
+  <action name="actionGrayscale">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Grayscale</string>
+   </property>
+  </action>
+  <action name="actionCustom">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Custom</string>
    </property>
   </action>
  </widget>

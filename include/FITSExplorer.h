@@ -21,6 +21,26 @@
 #include "lightcurve.h"
 #include "toml.hpp"
 #include "preferences.h"
+#include "colormap.h"
+
+enum Colormap
+{
+    Grayscale,
+    Winter,
+    Autumn,
+    Bone,
+    Cool,
+    Hot,
+    HSV,
+    Jet,
+    Ocean,
+    Parula,
+    Pink,
+    Rainbow,
+    Spring,
+    Summer,
+    Turbo
+};
 
 const QString APPNAME = "DFits";
 const QString CONFIG_NAME = "config.toml";
@@ -53,6 +73,11 @@ public:
         QMessageBox::information(this, "Information", msg);
     }
     void ReadConfigFile(QString filename = "");
+    bool isColormapSelected();
+    QImage ApplyColormap(QImage);
+
+public slots:
+    void HandleColorMapSelect(Colormap);
 
 private slots:
     void OpenFile(QString filename = nullptr);
@@ -77,6 +102,36 @@ private slots:
     void on_actionPreferences_triggered();
     void on_actionMarkerMode_triggered(bool);
     void on_actionList_Markers_triggered();
+
+    void on_actionGrayscale_triggered();
+
+    void on_actionBone_triggered();
+
+    void on_actionCool_triggered();
+
+    void on_actionHot_triggered();
+
+    void on_actionHSV_triggered();
+
+    void on_actionJet_triggered();
+
+    void on_actionOcean_triggered();
+
+    void on_actionParula_triggered();
+
+    void on_actionPink_triggered();
+
+    void on_actionRainbow_triggered();
+
+    void on_actionSpring_triggered();
+
+    void on_actionSummer_triggered();
+
+    void on_actionTurbo_triggered();
+
+    void on_actionWinter_triggered();
+
+    void on_actionAutumn_triggered();
 
 private:
     Ui::DFits *ui;
@@ -106,5 +161,6 @@ private:
 
     Preferences *prefs = new Preferences();
 
+    Colormap m_cur_colormap;
 };
 #endif // DFITS_H

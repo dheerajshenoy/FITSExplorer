@@ -22,6 +22,7 @@ public:
     void setShape(QGraphicsItem*);
     void setText(QString);
     void setTextItem(QGraphicsTextItem*);
+    void addVisualizer();
 
 private:
     QGraphicsEllipseItem *m_ellipse;

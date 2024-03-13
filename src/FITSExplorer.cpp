@@ -1,5 +1,7 @@
 #include "FITSExplorer.h"
 #include "ui_FITSExplorer.h"
+#include "colormap.h"
+#include <QActionGroup>
 
 FITSExplorer::FITSExplorer(QStringList argv, QWidget *parent)
     : QMainWindow(parent)
@@ -10,6 +12,26 @@ FITSExplorer::FITSExplorer(QStringList argv, QWidget *parent)
     INIT_Configuration();
     INIT_MiniLightCurve();
     ui->splitter->setStretchFactor(1, 1);
+
+    QActionGroup *colormapActionGroup = new QActionGroup(this);
+
+    colormapActionGroup->addAction(ui->actionAutumn);
+    colormapActionGroup->addAction(ui->actionWinter);
+    colormapActionGroup->addAction(ui->actionBone);
+    colormapActionGroup->addAction(ui->actionHot);
+    colormapActionGroup->addAction(ui->actionHSV);
+    colormapActionGroup->addAction(ui->actionJet);
+    colormapActionGroup->addAction(ui->actionPink);
+    colormapActionGroup->addAction(ui->actionCool);
+    colormapActionGroup->addAction(ui->actionOcean);
+    colormapActionGroup->addAction(ui->actionParula);
+    colormapActionGroup->addAction(ui->actionGrayscale);
+    colormapActionGroup->addAction(ui->actionRainbow);
+    colormapActionGroup->addAction(ui->actionTurbo);
+    colormapActionGroup->addAction(ui->actionSpring);
+    colormapActionGroup->addAction(ui->actionSummer);
+
+    //colormapActionGroup->addAction(ui->actionColormap);
 
     if(argv.size() > 1)
     {
@@ -90,6 +112,48 @@ void FITSExplorer::ReadConfigFile(QString cfgfile)
 
     //TOMLCFG = toml::parse(cfgfile.toStdString());
 
+}
+
+bool FITSExplorer::isColormapSelected()
+{
+    return true;
+}
+
+QImage FITSExplorer::ApplyColormap(QImage img)
+{
+    switch(m_cur_colormap)
+    {
+    case Colormap::Autumn:
+        return CM::autumn(img);
+        break;
+
+    case Colormap::Bone:
+        return CM::bone(img);
+        break;
+
+    case Colormap::Cool:
+        return CM::cool(img);
+        break;
+
+    case Colormap::Grayscale:
+        break;
+
+    case Colormap::HSV:
+        return CM::hsv(img);
+        break;
+
+    case Colormap::Hot:
+        return CM::hot(img);
+        break;
+
+    default:
+        return CM::autumn(img);
+    }
+}
+
+void FITSExplorer::HandleColorMapSelect(Colormap colormap)
+{
+    m_cur_colormap = colormap;
 }
 
 void FITSExplorer::INIT_Connections()
@@ -345,8 +409,11 @@ int FITSExplorer::ChangeBrightness()
         }
     }
 
-    //image.convertTo(QImage::Format_Indexed8);
-    //image.setColorTable(m_inferno);
+    if (isColormapSelected())
+    {
+        image.convertTo(QImage::Format_Indexed8);
+        image = ApplyColormap(image);
+    }
 
     img_widget->setPixmap(QPixmap::fromImage(image));
     return 0;
@@ -695,5 +762,95 @@ void FITSExplorer::on_actionMarkerMode_triggered(bool state)
 void FITSExplorer::on_actionList_Markers_triggered()
 {
     gv->listMarkers();
+}
+
+
+void FITSExplorer::on_actionGrayscale_triggered()
+{
+    HandleColorMapSelect(Colormap::Grayscale);
+}
+
+
+void FITSExplorer::on_actionBone_triggered()
+{
+    HandleColorMapSelect(Colormap::Bone);
+}
+
+
+void FITSExplorer::on_actionCool_triggered()
+{
+    HandleColorMapSelect(Colormap::Cool);
+}
+
+
+void FITSExplorer::on_actionHot_triggered()
+{
+    HandleColorMapSelect(Colormap::Hot);
+}
+
+
+void FITSExplorer::on_actionHSV_triggered()
+{
+    HandleColorMapSelect(Colormap::HSV);
+}
+
+
+void FITSExplorer::on_actionJet_triggered()
+{
+    HandleColorMapSelect(Colormap::Jet);
+}
+
+
+void FITSExplorer::on_actionOcean_triggered()
+{
+    HandleColorMapSelect(Colormap::Ocean);
+}
+
+
+void FITSExplorer::on_actionParula_triggered()
+{
+    HandleColorMapSelect(Colormap::Parula);
+}
+
+
+void FITSExplorer::on_actionPink_triggered()
+{
+    HandleColorMapSelect(Colormap::Pink);
+}
+
+
+void FITSExplorer::on_actionRainbow_triggered()
+{
+    HandleColorMapSelect(Colormap::Rainbow);
+}
+
+
+void FITSExplorer::on_actionSpring_triggered()
+{
+    HandleColorMapSelect(Colormap::Spring);
+}
+
+
+void FITSExplorer::on_actionSummer_triggered()
+{
+    HandleColorMapSelect(Colormap::Summer);
+}
+
+
+void FITSExplorer::on_actionTurbo_triggered()
+{
+    HandleColorMapSelect(Colormap::Turbo);
+}
+
+
+void FITSExplorer::on_actionWinter_triggered()
+{
+    HandleColorMapSelect(Colormap::Winter);
+}
+
+
+void FITSExplorer::on_actionAutumn_triggered()
+{
+    HandleColorMapSelect(Colormap::Autumn);
 }
 

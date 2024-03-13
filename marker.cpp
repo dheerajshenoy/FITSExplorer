@@ -1,4 +1,6 @@
 #include "marker.h"
+#include <QColor>
+#include <QPen>
 
 Marker::Marker(QGraphicsItem *parent)
     : QGraphicsItemGroup(parent)
@@ -34,6 +36,14 @@ void Marker::setText(QString text)
 void Marker::setTextItem(QGraphicsTextItem *textItem)
 {
     m_text = textItem;
+}
+
+void Marker::addVisualizer()
+{
+    QGraphicsEllipseItem *visualizer = new QGraphicsEllipseItem(m_ellipse);
+    visualizer->setPen(QColor(Qt::green));
+    visualizer->setScale(1.5);
+    this->addToGroup(visualizer);
 }
 
 

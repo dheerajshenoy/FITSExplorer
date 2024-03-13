@@ -26,6 +26,10 @@ private slots:
     void on_ok_btn_clicked();
     void on_delete_marker_btn_clicked();
 
+    void on_cancel_btn_clicked();
+
+    void on_markers_list_widget_currentTextChanged(const QString &currentText);
+
 private:
     Ui::ListMarkers *ui;
     QVector<Marker*> m_markers_list;
