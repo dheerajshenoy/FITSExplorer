@@ -29,7 +29,6 @@ public:
 public slots:
 
 private slots:
-
     void on_save_btn_clicked();
 
 private:

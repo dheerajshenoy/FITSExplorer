@@ -40,7 +40,7 @@ private:
 
     double scaleFactor = 1;
 
-    float *image_data;
+    float *image_data = nullptr;
 
 };
 

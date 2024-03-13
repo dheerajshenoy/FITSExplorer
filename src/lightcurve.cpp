@@ -1,6 +1,7 @@
 #include "lightcurve.h"
 #include "ui_lightcurve.h"
 #include <QFileDialog>
+#include "imagewidget.h"
 
 
 LightCurve::LightCurve(ImageWidget *img_widget)
@@ -8,8 +9,8 @@ LightCurve::LightCurve(ImageWidget *img_widget)
     , ui(new Ui::LightCurve)
 {
     ui->setupUi(this);
-
     INIT_Graph();
+
 }
 
 void LightCurve::setImageWidget(ImageWidget *img_widget)

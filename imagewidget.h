@@ -9,6 +9,7 @@
 #include <QPixmap>
 #include <QScrollArea>
 #include <QScrollBar>
+#include "mygraphicsview.h"
 
 namespace Ui {
 class ImageWidget;
@@ -30,11 +31,15 @@ public:
     void scaleImage(float);
     void adjustScrollBar(QScrollBar *scrollBar, double factor);
 
+    MyGraphicsView *GetGraphicsView();
+    void setPixmap(QPixmap pix);
 private:
     Ui::ImageWidget *ui;
 
     QImage scaledImage;
     QImage originalImage;
+
+    float *image_data;
 
     double scaleFactor = 1;
 
@@ -44,6 +49,7 @@ protected:
 private slots:
     void on_zoomInBtn_clicked();
     void on_zoomOutBtn_clicked();
+    void on_reset_brightness_btn_clicked();
 };
 
 #endif // IMAGEWIDGET_H

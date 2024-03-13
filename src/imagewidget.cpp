@@ -45,7 +45,6 @@ void ImageWidget::on_reset_brightness_btn_clicked()
         }
         m = m / p.height();
     }
-
     ui->graphics_view->setPixmap(QPixmap::fromImage(image));
 }
 

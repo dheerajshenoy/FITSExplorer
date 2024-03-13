@@ -1,6 +1,5 @@
 #include "FITSExplorer.h"
 #include "ui_FITSExplorer.h"
-#include "colormap.h"
 #include <QActionGroup>
 
 FITSExplorer::FITSExplorer(QStringList argv, QWidget *parent)
