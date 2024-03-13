@@ -4,6 +4,9 @@ MyGraphicsView::MyGraphicsView(QWidget *parent) : QGraphicsView(parent)
 {
     this->setScene(m_scene);
 
+    this->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+    this->setDragMode(QGraphicsView::ScrollHandDrag);
+
     m_img = m_scene->addPixmap(m_pix);
 
     connect(lm, SIGNAL(markerRemoved(int)), SLOT(removeMarkerAtPos(int)));
@@ -39,7 +42,8 @@ void MyGraphicsView::RemoveAllMarkers()
 
 void MyGraphicsView::fitToWidth(qreal width)
 {
-    // TODO
+    auto imgwidth = m_img->pixmap().width();
+    scale(this->width() / imgwidth, this->height() / m_img->pixmap().height());
 }
 
 void MyGraphicsView::mouseMoveEvent(QMouseEvent *e)
@@ -100,8 +104,6 @@ void MyGraphicsView::mousePressEvent(QMouseEvent *e)
 
 void MyGraphicsView::wheelEvent(QWheelEvent *e)
 {
-    setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-    setDragMode(QGraphicsView::ScrollHandDrag);
     double scaleFactor = 1.5;
 
     if(e->angleDelta().y() > 0)
@@ -129,4 +131,16 @@ void MyGraphicsView::removeMarkerAtPos(int index)
     m_scene->removeItem(m_markerList[index]);
     m_markerList.remove(index);
     emit markersRemoved();
+}
+
+void MyGraphicsView::ZoomIn()
+{
+    double scaleFactor = 1.5;
+    scale(scaleFactor, scaleFactor);
+}
+
+void MyGraphicsView::ZoomOut()
+{
+    double scaleFactor = 1.5;
+    scale(1/scaleFactor, 1/scaleFactor);
 }

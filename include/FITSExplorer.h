@@ -22,9 +22,12 @@
 #include "toml.hpp"
 #include "preferences.h"
 #include "colormap.h"
+#include <QShortcut>
+#include <QKeySequence>
 
 enum Colormap
 {
+    None,
     Grayscale,
     Winter,
     Autumn,
@@ -39,7 +42,8 @@ enum Colormap
     Rainbow,
     Spring,
     Summer,
-    Turbo
+    Turbo,
+    Custom
 };
 
 const QString APPNAME = "DFits";
@@ -50,7 +54,6 @@ namespace Ui {
 class DFits;
 }
 QT_END_NAMESPACE
-
 
 class FITSExplorer : public QMainWindow
 {
@@ -75,6 +78,7 @@ public:
     void ReadConfigFile(QString filename = "");
     bool isColormapSelected();
     QImage ApplyColormap(QImage);
+    void INIT_Shortcuts();
 
 public slots:
     void HandleColorMapSelect(Colormap);
@@ -102,65 +106,39 @@ private slots:
     void on_actionPreferences_triggered();
     void on_actionMarkerMode_triggered(bool);
     void on_actionList_Markers_triggered();
-
     void on_actionGrayscale_triggered();
-
     void on_actionBone_triggered();
-
     void on_actionCool_triggered();
-
     void on_actionHot_triggered();
-
     void on_actionHSV_triggered();
-
     void on_actionJet_triggered();
-
     void on_actionOcean_triggered();
-
     void on_actionParula_triggered();
-
     void on_actionPink_triggered();
-
     void on_actionRainbow_triggered();
-
     void on_actionSpring_triggered();
-
     void on_actionSummer_triggered();
-
     void on_actionTurbo_triggered();
-
     void on_actionWinter_triggered();
-
     void on_actionAutumn_triggered();
 
 private:
     Ui::DFits *ui;
-
     ImageWidget *img_widget = new ImageWidget();
-
     fitsfile *fptr;
     int status = 0;
-
     float *image_data;
     int width, height;
-
     QCPItemStraightLine *m_line;
-
     int m_nhdu;
     int m_nkeys;
-
     MyGraphicsView *gv = img_widget->GetGraphicsView();
-
     Overview *overview = new Overview();
     LightCurve *lc = new LightCurve(img_widget);
-
     QVector<QCPItemStraightLine*> m_lines_list;
     QVector<QRgb> m_inferno;
-
     toml::value TOMLCFG;
-
     Preferences *prefs = new Preferences();
-
-    Colormap m_cur_colormap;
+    Colormap m_cur_colormap = Colormap::None;
 };
 #endif // DFITS_H

@@ -32,6 +32,9 @@ public:
 
     MyGraphicsView* GetGraphicsView();
 
+private slots:
+    void on_reset_brightness_btn_clicked();
+
 private:
     Ui::ImageWidget *ui;
 

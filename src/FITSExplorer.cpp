@@ -11,6 +11,7 @@ FITSExplorer::FITSExplorer(QStringList argv, QWidget *parent)
     INIT_Connections();
     INIT_Configuration();
     INIT_MiniLightCurve();
+    INIT_Shortcuts();
     ui->splitter->setStretchFactor(1, 1);
 
     QActionGroup *colormapActionGroup = new QActionGroup(this);
@@ -37,6 +38,8 @@ FITSExplorer::FITSExplorer(QStringList argv, QWidget *parent)
     {
         OpenFile(argv[1]);
     }
+
+    OpenFile("/home/neo/test.fits");
 }
 
 void FITSExplorer::INIT_MiniLightCurve()
@@ -116,6 +119,8 @@ void FITSExplorer::ReadConfigFile(QString cfgfile)
 
 bool FITSExplorer::isColormapSelected()
 {
+    if(m_cur_colormap == Colormap::None)
+        return false;
     return true;
 }
 
@@ -136,6 +141,7 @@ QImage FITSExplorer::ApplyColormap(QImage img)
         break;
 
     case Colormap::Grayscale:
+        return CM::grayscale(img);
         break;
 
     case Colormap::HSV:
@@ -146,14 +152,50 @@ QImage FITSExplorer::ApplyColormap(QImage img)
         return CM::hot(img);
         break;
 
-    default:
-        return CM::autumn(img);
+    case Colormap::Winter:
+        return CM::winter(img);
+        break;
+
+    case Colormap::Jet:
+        return CM::jet(img);
+        break;
+
+    case Colormap::Ocean:
+        return CM::ocean(img);
+        break;
+
+    case Colormap::Parula:
+        return CM::parula(img);
+        break;
+
+    case Colormap::Pink:
+        return CM::pink(img);
+        break;
+
+    case Colormap::Summer:
+        return CM::summer(img);
+        break;
+
+    case Colormap::Rainbow:
+        return CM::rainbow(img);
+        break;
+
+    case Colormap::Turbo:
+        return CM::turbo(img);
+        break;
+
+    case Colormap::Spring:
+        return CM::spring(img);
+        break;
     }
 }
 
 void FITSExplorer::HandleColorMapSelect(Colormap colormap)
 {
     m_cur_colormap = colormap;
+    QImage image = gv->GetPixmap().toImage();
+    image.convertTo(QImage::Format_Indexed8);
+    gv->setPixmap(QPixmap::fromImage(ApplyColormap(image)));
 }
 
 void FITSExplorer::INIT_Connections()
@@ -314,7 +356,22 @@ void FITSExplorer::OpenFile(QString filename)
             return;
         }
     }
-
+    else {
+        ui->actionMarkerMode->setEnabled(true);
+        ui->mini_light_curve_plot->graph(0)->data()->clear();
+        img_widget->GetSlider()->setEnabled(true);
+        ui->actionoverview->setEnabled(true);
+        ui->actionoverview_raw->setEnabled(true);
+        ui->menuImage->setEnabled(true);
+        ui->menuStatistics->setEnabled(true);
+        ui->action_export_toolbar->setEnabled(true);
+        ui->actionSave_toolbar->setEnabled(true);
+        ui->actionxport->setEnabled(true);
+        ui->statusbar->setMsg(QString("File {%1} Opened").arg(filename));
+        ui->statusbar->setFile(filename);
+        HandleFile(filename);
+        return;
+    }
     // If user cancels opening the file
     ui->statusbar->setMsg("File Open Cancelled");
     return;
@@ -473,6 +530,7 @@ int FITSExplorer::HandleImage()
         return 1;
     }
 
+    // This is just to copy the original data, if in case we want to retrieve it again.
     img_widget->SetData(image_data);
 
     if(fits_read_img(fptr, TFLOAT, fpixel, width * height,
@@ -574,12 +632,10 @@ int FITSExplorer::ShowOverview(int index)
     return 0;
 }
 
-
 void FITSExplorer::on_actionoverview_triggered()
 {
     ShowOverview(0);
 }
-
 
 void FITSExplorer::on_actionAbout_triggered()
 {
@@ -628,7 +684,6 @@ void FITSExplorer::on_actionoverview_raw_triggered()
     ui->tab_widget->addTab(widget, "*Raw Overview*");
 }
 
-
 void FITSExplorer::on_actionLight_Curve_triggered()
 {
     lc = new LightCurve(img_widget);
@@ -636,11 +691,13 @@ void FITSExplorer::on_actionLight_Curve_triggered()
     lc->show();
 }
 
+// Show the coordinates in the statusbar of the mouse position in the image
 void FITSExplorer::ShowCoordinates(QPointF points)
 {
     ui->statusbar->setCoordinate(points);
 }
 
+// Export the file to a given format
 void FITSExplorer::ExportFile()
 {
     QFileDialog fd;
@@ -682,9 +739,9 @@ void FITSExplorer::MarkerAdded(QPointF pos)
     ui->mini_light_curve_plot->replot();
 }
 
+// Remove all the markers added to the image
 void FITSExplorer::RemoveAllMarkers()
 {
-    printf("HELLO WORLD");
     foreach(QCPItemStraightLine* line, m_lines_list)
     {
         ui->mini_light_curve_plot->removeItem(line);
@@ -692,6 +749,7 @@ void FITSExplorer::RemoveAllMarkers()
     ui->mini_light_curve_plot->replot();
 }
 
+// Close the opened file
 void FITSExplorer::CloseFile()
 {
     ui->actionMarkerMode->setEnabled(false);
@@ -704,6 +762,7 @@ void FITSExplorer::CloseFile()
     ui->action_export_toolbar->setEnabled(false);
     ui->actionSave_toolbar->setEnabled(false);
     ui->actionxport->setEnabled(false);
+    ui->HDU_List->clear();
     if(fptr)
     {
         delete fptr;
@@ -717,12 +776,10 @@ void FITSExplorer::on_actionxport_triggered()
     ExportFile();
 }
 
-
 void FITSExplorer::on_actionSave_toolbar_triggered()
 {
 
 }
-
 
 void FITSExplorer::on_action_export_toolbar_triggered()
 {
@@ -734,123 +791,116 @@ void FITSExplorer::on_actionDeleteAllMarkers_triggered()
     gv->RemoveAllMarkers();
 }
 
-
 void FITSExplorer::on_actionFit_to_Width_triggered()
 {
     gv->fitToWidth(ui->tab_widget->width());
 }
-
 
 void FITSExplorer::on_actionClose_File_triggered()
 {
     CloseFile();
 }
 
-
 void FITSExplorer::on_actionPreferences_triggered()
 {
     prefs->show();
 }
-
 
 void FITSExplorer::on_actionMarkerMode_triggered(bool state)
 {
     gv->setMarkerMode(state);
 }
 
-
 void FITSExplorer::on_actionList_Markers_triggered()
 {
     gv->listMarkers();
 }
-
 
 void FITSExplorer::on_actionGrayscale_triggered()
 {
     HandleColorMapSelect(Colormap::Grayscale);
 }
 
-
 void FITSExplorer::on_actionBone_triggered()
 {
     HandleColorMapSelect(Colormap::Bone);
 }
-
 
 void FITSExplorer::on_actionCool_triggered()
 {
     HandleColorMapSelect(Colormap::Cool);
 }
 
-
 void FITSExplorer::on_actionHot_triggered()
 {
     HandleColorMapSelect(Colormap::Hot);
 }
-
 
 void FITSExplorer::on_actionHSV_triggered()
 {
     HandleColorMapSelect(Colormap::HSV);
 }
 
-
 void FITSExplorer::on_actionJet_triggered()
 {
     HandleColorMapSelect(Colormap::Jet);
 }
-
 
 void FITSExplorer::on_actionOcean_triggered()
 {
     HandleColorMapSelect(Colormap::Ocean);
 }
 
-
 void FITSExplorer::on_actionParula_triggered()
 {
     HandleColorMapSelect(Colormap::Parula);
 }
-
 
 void FITSExplorer::on_actionPink_triggered()
 {
     HandleColorMapSelect(Colormap::Pink);
 }
 
-
 void FITSExplorer::on_actionRainbow_triggered()
 {
     HandleColorMapSelect(Colormap::Rainbow);
 }
-
 
 void FITSExplorer::on_actionSpring_triggered()
 {
     HandleColorMapSelect(Colormap::Spring);
 }
 
-
 void FITSExplorer::on_actionSummer_triggered()
 {
     HandleColorMapSelect(Colormap::Summer);
 }
-
 
 void FITSExplorer::on_actionTurbo_triggered()
 {
     HandleColorMapSelect(Colormap::Turbo);
 }
 
-
 void FITSExplorer::on_actionWinter_triggered()
 {
     HandleColorMapSelect(Colormap::Winter);
 }
-
 
 void FITSExplorer::on_actionAutumn_triggered()
 {
     HandleColorMapSelect(Colormap::Autumn);
 }
 
+void FITSExplorer::INIT_Shortcuts()
+{
+    QShortcut *shortcut_zoom_in = new QShortcut(QKeySequence("="), this);
+    QShortcut *shortcut_zoom_out = new QShortcut(QKeySequence("-"), this);
+
+    connect(shortcut_zoom_in, &QShortcut::activated, this, [&](){
+        gv->ZoomIn();
+    });
+
+    connect(shortcut_zoom_out, &QShortcut::activated, this, [&](){
+        gv->ZoomOut();
+    });
+}

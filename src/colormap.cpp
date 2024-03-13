@@ -292,3 +292,10 @@ QImage CM::winter(const QImage& img) {
     }
     return ret;
 }
+
+QImage CM::grayscale(const QImage& img)
+{
+    QImage ret;
+    ret = img.convertToFormat(QImage::Format_Grayscale8);
+    return ret;
+}

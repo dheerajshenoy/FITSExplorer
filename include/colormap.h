@@ -20,4 +20,5 @@ class CM
         static QImage spring(const QImage& img);
         static QImage summer(const QImage& img);
         static QImage turbo(const QImage& img);
+        static QImage grayscale(const QImage& img);
 };

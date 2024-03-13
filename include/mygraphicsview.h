@@ -25,6 +25,8 @@ public:
     void setMarkerMode(bool);
     void listMarkers();
     void removeMarkerAtPos(int);
+    void ZoomIn();
+    void ZoomOut();
 
 signals:
     void mouseMoved(QPointF);
@@ -43,7 +45,6 @@ private:
     QGraphicsScene *m_scene = new QGraphicsScene();
     QGraphicsPixmapItem *m_img;
     bool m_markerMode = false;
-
     ListMarkers* lm = new ListMarkers();
     QVector<Marker*> m_markerList;
 };
