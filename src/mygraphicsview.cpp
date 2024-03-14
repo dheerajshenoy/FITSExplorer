@@ -63,10 +63,8 @@ void MyGraphicsView::mouseMoveEvent(QMouseEvent *e)
 
 void MyGraphicsView::mouseDoubleClickEvent(QMouseEvent *e)
 {
-
     if(e->button() == Qt::LeftButton)
     {
-
         // Check if marker mode is on
         if(m_markerMode)
         {

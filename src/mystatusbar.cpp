@@ -49,7 +49,6 @@ void MyStatusBar::setFile(QString filename)
 void MyStatusBar::setCoordinate(QPointF point)
 {
     ui->label_coord->setText(QString("(%1, %2)").arg(point.x()).arg(point.y()));
-
 }
 
 void MyStatusBar::clearCoordinate()

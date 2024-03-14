@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>ListMarkers</class>
  <widget class="QWidget" name="ListMarkers">
+  <property name="windowModality">
+   <enum>Qt::NonModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +14,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>List Markers</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -29,12 +32,19 @@
            <item>
             <widget class="QLabel" name="label">
              <property name="text">
-              <string>Color</string>
+              <string>Marker Color</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="color_field"/>
+            <widget class="QPushButton" name="color_btn">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -48,7 +58,32 @@
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="text_field"/>
+            <widget class="QLineEdit" name="text_field">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_5">
+           <item>
+            <widget class="QLabel" name="label_4">
+             <property name="text">
+              <string>Text Color</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="text_color_btn">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -62,7 +97,14 @@
             </widget>
            </item>
            <item>
-            <widget class="QComboBox" name="shape_combo"/>
+            <widget class="QComboBox" name="shape_combo">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="placeholderText">
+              <string>Not implemented yet</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -70,6 +112,9 @@
        </item>
        <item>
         <widget class="QPushButton" name="delete_marker_btn">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>Delete</string>
          </property>
@@ -104,32 +149,6 @@
        </property>
        <property name="text">
         <string>Ok</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="cancel_btn">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Cancel</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="apply_btn">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Apply</string>
        </property>
       </widget>
      </item>

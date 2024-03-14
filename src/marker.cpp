@@ -22,6 +22,7 @@ void Marker::setMarker(QGraphicsEllipseItem *ellipse,
 void Marker::setShapeColor(QColor color)
 {
     m_ellipse->setBrush(QBrush(color));
+    m_ellipse->setPen(QPen(color));
 }
 
 void Marker::setShape(QGraphicsItem *)
@@ -45,5 +46,3 @@ void Marker::addVisualizer()
     visualizer->setScale(1.5);
     this->addToGroup(visualizer);
 }
-
-

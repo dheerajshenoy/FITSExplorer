@@ -12,6 +12,7 @@ INCLUDEPATH += include/
 VPATH += src/
 
 SOURCES += \
+    image_statistics_overview.cpp \
     src/listmarkers.cpp \
     src/marker.cpp \
     preferences.cpp \
@@ -27,6 +28,7 @@ SOURCES += \
     src/colormap.cpp
 
 HEADERS += \
+    image_statistics_overview.h \
     include/aboutdialog.h \
     include/FITSExplorer.h \
     include/imagewidget.h \
@@ -46,6 +48,7 @@ LIBS += -lcfitsio
 FORMS += \
     FITSExplorer.ui \
     aboutdialog.ui \
+    image_statistics_overview.ui \
     imagewidget.ui \
     lightcurve.ui \
     listmarkers.ui \

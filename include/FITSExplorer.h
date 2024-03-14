@@ -1,6 +1,8 @@
 #ifndef DFITS_H
 #define DFITS_H
 
+
+#include <QActionGroup>
 #include <QMainWindow>
 #include <QFileDialog>
 #include <QDialog>
@@ -25,6 +27,7 @@
 #include <QShortcut>
 #include <QKeySequence>
 #include "qcustomplot.h"
+#include "image_statistics_overview.h"
 
 enum Colormap
 {
@@ -124,6 +127,8 @@ private slots:
     void on_actionAutumn_triggered();
     void on_actionMarker_Mode_triggered(bool);
 
+    void on_actionImageStatisticsOverview_triggered();
+
 private:
     Ui::DFits *ui;
     ImageWidget *img_widget = new ImageWidget();
@@ -140,7 +145,6 @@ private:
     QVector<QCPItemStraightLine*> m_lines_list;
     QVector<QRgb> m_inferno;
     toml::value TOMLCFG;
-    Preferences *prefs = new Preferences();
     Colormap m_cur_colormap = Colormap::None;
 };
 #endif // DFITS_H

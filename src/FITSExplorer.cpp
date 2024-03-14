@@ -1,6 +1,5 @@
 #include "FITSExplorer.h"
 #include "ui_FITSExplorer.h"
-#include <QActionGroup>
 
 FITSExplorer::FITSExplorer(QStringList argv, QWidget *parent)
     : QMainWindow(parent)
@@ -738,7 +737,7 @@ void FITSExplorer::MarkerAdded(QPointF pos)
     ui->mini_light_curve_plot->replot();
 }
 
-// Remove all the markers added to the image
+// Remove all the lines corresponding to the markers added to the light curves
 void FITSExplorer::RemoveAllMarkers()
 {
     foreach(QCPItemStraightLine* line, m_lines_list)
@@ -802,6 +801,7 @@ void FITSExplorer::on_actionClose_File_triggered()
 
 void FITSExplorer::on_actionPreferences_triggered()
 {
+    Preferences *prefs = new Preferences();
     prefs->show();
 }
 
@@ -908,5 +908,11 @@ void FITSExplorer::INIT_Shortcuts()
 void FITSExplorer::on_actionMarker_Mode_triggered(bool state)
 {
     gv->setMarkerMode(state);
+}
+
+void FITSExplorer::on_actionImageStatisticsOverview_triggered()
+{
+    ImageStatisticsOverview *img_stat_overview = new ImageStatisticsOverview(nullptr, image_data);
+    img_stat_overview->show();
 }
 

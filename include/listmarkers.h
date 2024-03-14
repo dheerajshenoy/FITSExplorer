@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QVector>
 #include "marker.h"
+#include <QColorDialog>
 
 namespace Ui {
 class ListMarkers;
@@ -18,17 +19,19 @@ public:
     ~ListMarkers();
 
     void setMarkersList(QVector<Marker*>);
+    void refreshSelection(int index);
 
+    int currentMarker();
 signals:
     void markerRemoved(int);
 
 private slots:
     void on_ok_btn_clicked();
     void on_delete_marker_btn_clicked();
-
-    void on_cancel_btn_clicked();
-
     void on_markers_list_widget_currentTextChanged(const QString &currentText);
+
+    void on_color_btn_clicked();
+
 
 private:
     Ui::ListMarkers *ui;

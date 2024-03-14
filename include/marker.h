@@ -17,6 +17,10 @@ public:
                     QGraphicsTextItem* text = nullptr,
                     QString id = nullptr);
     inline QString getID() { return m_id; }
+    inline QString getPlainText() { return m_text->toPlainText(); }
+    inline QGraphicsEllipseItem* getEllipse() {
+        return m_ellipse;
+    }
 
     void setShapeColor(QColor color);
     void setShape(QGraphicsItem*);
