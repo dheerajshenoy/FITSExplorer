@@ -25,23 +25,29 @@ public:
 
     QSlider* GetSlider();
     QImage GetImage();
-    void setPixmap(QPixmap);
+    void setImage(QImage);
+    void scaleImage(float);
+    void adjustScrollBar(QScrollBar *scrollBar, double factor);
+    inline void SetData(float *data)
+    {
+        image_data = data;
+    }
 
-    inline void SetData(float* data) { image_data = data; }
-    inline void* GetData() { return image_data; }
-
-    MyGraphicsView* GetGraphicsView();
-
-private slots:
-    void on_reset_brightness_btn_clicked();
-
+    MyGraphicsView *GetGraphicsView();
+    void setPixmap(QPixmap pix);
 private:
     Ui::ImageWidget *ui;
 
+    QImage scaledImage;
+    QImage originalImage;
+
+    float *image_data;
+
     double scaleFactor = 1;
 
-    float *image_data = nullptr;
 
+private slots:
+    void on_reset_brightness_btn_clicked();
 };
 
 #endif // IMAGEWIDGET_H

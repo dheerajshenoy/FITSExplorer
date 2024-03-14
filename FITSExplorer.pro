@@ -12,8 +12,8 @@ INCLUDEPATH += include/
 VPATH += src/
 
 SOURCES += \
-    listmarkers.cpp \
-    marker.cpp \
+    src/listmarkers.cpp \
+    src/marker.cpp \
     preferences.cpp \
     src/mystatusbar.cpp \
     src/mygraphicsview.cpp \
@@ -37,9 +37,9 @@ HEADERS += \
     include/qcustomplot.h \
     include/toml.hpp \
     include/mystatusbar.h \
-    listmarkers.h \
-    marker.h \
-    preferences.h
+    include/listmarkers.h \
+    include/marker.h \
+    include/preferences.h
 
 LIBS += -lcfitsio
 

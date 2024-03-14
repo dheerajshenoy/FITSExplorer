@@ -3,9 +3,9 @@
 MyGraphicsView::MyGraphicsView(QWidget *parent) : QGraphicsView(parent)
 {
     this->setScene(m_scene);
-
     this->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
     this->setDragMode(QGraphicsView::ScrollHandDrag);
+    //this->setCursor(Qt::ArrowCursor);
 
     m_img = m_scene->addPixmap(m_pix);
 

@@ -24,6 +24,7 @@
 #include "colormap.h"
 #include <QShortcut>
 #include <QKeySequence>
+#include "qcustomplot.h"
 
 enum Colormap
 {
@@ -121,6 +122,7 @@ private slots:
     void on_actionTurbo_triggered();
     void on_actionWinter_triggered();
     void on_actionAutumn_triggered();
+    void on_actionMarker_Mode_triggered(bool);
 
 private:
     Ui::DFits *ui;

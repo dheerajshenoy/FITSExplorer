@@ -807,6 +807,7 @@ void FITSExplorer::on_actionPreferences_triggered()
 
 void FITSExplorer::on_actionMarkerMode_triggered(bool state)
 {
+    ui->actionMarker_Mode->setChecked(state); // Set the marker mode toggle on the menu
     gv->setMarkerMode(state);
 }
 
@@ -903,3 +904,9 @@ void FITSExplorer::INIT_Shortcuts()
         gv->ZoomOut();
     });
 }
+
+void FITSExplorer::on_actionMarker_Mode_triggered(bool state)
+{
+    gv->setMarkerMode(state);
+}
+

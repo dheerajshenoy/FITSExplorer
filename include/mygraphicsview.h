@@ -8,6 +8,7 @@
 #include <QWheelEvent>
 #include "marker.h"
 #include "listmarkers.h"
+#include <QCursor>
 
 class MyGraphicsView : public QGraphicsView
 {
