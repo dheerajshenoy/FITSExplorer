@@ -5,11 +5,11 @@ MyGraphicsView::MyGraphicsView(QWidget *parent) : QGraphicsView(parent)
     this->setScene(m_scene);
     this->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
     this->setDragMode(QGraphicsView::ScrollHandDrag);
-    //this->setCursor(Qt::ArrowCursor);
 
     m_img = m_scene->addPixmap(m_pix);
 
     connect(lm, SIGNAL(markerRemoved(int)), SLOT(removeMarkerAtPos(int)));
+    connect(lm, SIGNAL(markerColorChanged(int, QColor)), SLOT(__changeMarkerLineColor(int, QColor)));
 }
 
 void MyGraphicsView::setPixmap(QPixmap pix)
@@ -40,6 +40,33 @@ void MyGraphicsView::RemoveAllMarkers()
     emit markersRemoved();
 }
 
+void MyGraphicsView::HideAllMarkers()
+{
+    if(m_markerList.isEmpty())
+        return;
+
+    foreach(Marker* marker, m_markerList)
+    {
+        marker->hide();
+    }
+
+    emit markersHidden(true);
+}
+
+void MyGraphicsView::ShowAllMarkers()
+{
+    if(m_markerList.isEmpty())
+        return;
+
+    foreach(Marker* marker, m_markerList)
+    {
+        marker->show();
+    }
+
+    emit markersHidden(false);
+}
+
+
 void MyGraphicsView::fitToWidth(qreal width)
 {
     auto imgwidth = m_img->pixmap().width();
@@ -59,6 +86,7 @@ void MyGraphicsView::mouseMoveEvent(QMouseEvent *e)
         emit mouseOutsidePixmap();
     }
     QGraphicsView::mouseMoveEvent(e);
+    emit viewportChanged();
 }
 
 void MyGraphicsView::mouseDoubleClickEvent(QMouseEvent *e)
@@ -79,7 +107,7 @@ void MyGraphicsView::mouseDoubleClickEvent(QMouseEvent *e)
                 ellipse->setFlag(QGraphicsEllipseItem::ItemIgnoresTransformations);
                 ellipse->setPos(imagePos);
 
-                QGraphicsTextItem *text = new QGraphicsTextItem("Ellipse");
+                QGraphicsTextItem *text = new QGraphicsTextItem("Marker " + QString::number(m_markerList.count() + 1));
                 text->setDefaultTextColor(Qt::white);
                 text->setScale(1.5);
                 text->setFlag(QGraphicsTextItem::ItemIgnoresTransformations);
@@ -112,6 +140,8 @@ void MyGraphicsView::wheelEvent(QWheelEvent *e)
     {
         scale(1/scaleFactor, 1/scaleFactor);
     }
+
+    emit viewportChanged();
 }
 
 void MyGraphicsView::setMarkerMode(bool state)
@@ -121,7 +151,12 @@ void MyGraphicsView::setMarkerMode(bool state)
 
 void MyGraphicsView::listMarkers()
 {
+    if (lm->getMarkerCount() > 0)
+    {
+        lm->clearMarkerList();
+    }
     lm->setMarkersList(m_markerList);
+    lm->show();
 }
 
 void MyGraphicsView::removeMarkerAtPos(int index)
@@ -141,4 +176,9 @@ void MyGraphicsView::ZoomOut()
 {
     double scaleFactor = 1.5;
     scale(1/scaleFactor, 1/scaleFactor);
+}
+
+void MyGraphicsView::__changeMarkerLineColor(int index, QColor color)
+{
+    emit markerColorChanged(index, color);
 }

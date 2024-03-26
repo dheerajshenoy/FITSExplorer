@@ -6,6 +6,8 @@ ListMarkers::ListMarkers(QWidget *parent)
     , ui(new Ui::ListMarkers)
 {
     ui->setupUi(this);
+
+    connect(ui->text_field, SIGNAL(returnPressed()), this, SLOT(updateMarkerText()));
 }
 
 ListMarkers::~ListMarkers()
@@ -13,15 +15,24 @@ ListMarkers::~ListMarkers()
     delete ui;
 }
 
-void ListMarkers::setMarkersList(QVector<Marker *> markers)
+void ListMarkers::updateMarkerText()
+{
+    int cmi = currentMarker();
+    if (cmi == -1)
+        return;
+
+    Marker* cm = m_markers_list[cmi];
+    cm->setText(ui->text_field->text());
+}
+
+void ListMarkers::setMarkersList(const QVector<Marker *> &markers)
 {
     m_markers_list = markers;
 
-    foreach(Marker* marker, markers)
+    foreach(Marker* marker, m_markers_list)
     {
         ui->markers_list_widget->addItem(marker->getID());
     }
-    this->show();
 
     ui->delete_marker_btn->setEnabled(true);
     ui->text_field->setEnabled(true);
@@ -58,12 +69,28 @@ void ListMarkers::refreshSelection(int index)
 
 void ListMarkers::on_markers_list_widget_currentTextChanged(const QString &currentText)
 {
-    refreshSelection(currentMarker());
+    int cm = currentMarker();
+    if (cm > -1) {
+        refreshSelection(cm);
+    }
 }
 
 int ListMarkers::currentMarker()
 {
+    if (ui->markers_list_widget->count() == 0)
+        return -1;
     return ui->markers_list_widget->currentIndex().row();
+}
+
+int ListMarkers::getMarkerCount()
+{
+    return m_markers_list.count();
+}
+
+void ListMarkers::clearMarkerList()
+{
+    this->m_markers_list = {};
+    ui->markers_list_widget->clear();
 }
 
 void ListMarkers::on_color_btn_clicked()
@@ -78,6 +105,6 @@ void ListMarkers::on_color_btn_clicked()
 
     marker->setShapeColor(ui->color_btn->palette().color(QPalette::Button));
     marker->setText(ui->text_field->text());
-
+    emit markerColorChanged(currentMarker(), color);
 }
 

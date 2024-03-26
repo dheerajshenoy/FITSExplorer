@@ -22,24 +22,37 @@ public:
     QPointF GetCursorPositionInPixmap(QPoint pos);
 
     void RemoveAllMarkers();
+    void HideAllMarkers();
     void fitToWidth(qreal);
     void setMarkerMode(bool);
     void listMarkers();
     void removeMarkerAtPos(int);
     void ZoomIn();
     void ZoomOut();
+    void ShowAllMarkers();
 
 signals:
     void mouseMoved(QPointF);
     void mouseOutsidePixmap();
     void markerAdded(QPointF);
     void markersRemoved();
+    void viewportChanged();
+    void markerColorChanged(int, QColor);
+    void markersHidden(bool);
+
+private slots:
+    void __changeMarkerLineColor(int, QColor);
 
 protected:
     virtual void wheelEvent(QWheelEvent *e) override;
     virtual void mouseMoveEvent(QMouseEvent *e) override;
     virtual void mouseDoubleClickEvent(QMouseEvent *e) override;
     virtual void mousePressEvent(QMouseEvent *e) override;
+
+    void resizeEvent(QResizeEvent *event) override {
+        QGraphicsView::resizeEvent(event);
+        emit viewportChanged();
+    }
 
 private:
     QPixmap m_pix;

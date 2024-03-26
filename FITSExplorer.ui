@@ -94,9 +94,6 @@
           <column/>
          </widget>
         </item>
-        <item>
-         <widget class="QCustomPlot" name="mini_light_curve_plot" native="true"/>
-        </item>
        </layout>
       </widget>
       <widget class="QWidget" name="verticalLayoutWidget_2">
@@ -180,7 +177,7 @@
     </widget>
     <widget class="QMenu" name="menuStatistics">
      <property name="enabled">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
      <property name="title">
       <string>Statistics</string>
@@ -194,6 +191,7 @@
      </property>
      <addaction name="actionMarker_Mode"/>
      <addaction name="actionList_Markers"/>
+     <addaction name="actionHideAll_Markers"/>
      <addaction name="actionDelete_Markers"/>
     </widget>
     <addaction name="menuImage"/>
@@ -390,6 +388,9 @@
    </property>
   </action>
   <action name="actionDeleteAllMarkers">
+   <property name="icon">
+    <iconset theme="edit-delete"/>
+   </property>
    <property name="text">
     <string>DeleteAllMarkers</string>
    </property>
@@ -466,6 +467,9 @@
    </property>
   </action>
   <action name="actionDelete_Markers">
+   <property name="icon">
+    <iconset theme="edit-delete"/>
+   </property>
    <property name="text">
     <string>Delete All Markers</string>
    </property>
@@ -611,14 +615,16 @@
     <string>Overview</string>
    </property>
   </action>
+  <action name="actionHideAll_Markers">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Hide All Markers</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>QCustomPlot</class>
-   <extends>QWidget</extends>
-   <header location="global">qcustomplot.h</header>
-   <container>1</container>
-  </customwidget>
   <customwidget>
    <class>MyStatusBar</class>
    <extends>QWidget</extends>

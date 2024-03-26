@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>810</width>
-    <height>35</height>
+    <height>43</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -41,18 +41,18 @@
     </widget>
    </item>
    <item>
-    <widget class="QProgressBar" name="progressbar">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+    <widget class="QProgressBar" name="progressBar">
+     <property name="maximumSize">
+      <size>
+       <width>100</width>
+       <height>16777215</height>
+      </size>
      </property>
      <property name="value">
       <number>24</number>
      </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
+     <property name="textVisible">
+      <bool>false</bool>
      </property>
     </widget>
    </item>

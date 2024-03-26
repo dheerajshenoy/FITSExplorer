@@ -25,6 +25,7 @@ public:
     void setShapeColor(QColor color);
     void setShape(QGraphicsItem*);
     void setText(QString);
+    void setTextColor(QColor color);
     void setTextItem(QGraphicsTextItem*);
     void addVisualizer();
 

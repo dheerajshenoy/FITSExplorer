@@ -7,7 +7,8 @@ MyStatusBar::MyStatusBar(QWidget *parent)
 {
     ui->setupUi(this);
 
-    ui->progressbar->setVisible(false);
+    ui->progressBar->setHidden(true);
+    ui->progressBar->setRange(0, 100);
 }
 
 MyStatusBar::~MyStatusBar()
@@ -15,7 +16,7 @@ MyStatusBar::~MyStatusBar()
     delete ui;
 }
 
-void MyStatusBar::setMsg(QString msg, int time)
+void MyStatusBar::setMsg(const QString msg, const int time)
 {
     ui->label_msg->setText(msg);
     QTimer::singleShot(time, [&](){
@@ -23,7 +24,7 @@ void MyStatusBar::setMsg(QString msg, int time)
     });
 }
 
-QString HumanReadableSize(qint64 size)
+QString HumanReadableSize(const qint64 size)
 {
     static const char* suffixes[] = {"B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"};
     static const int numSuffixes = sizeof(suffixes) / sizeof(suffixes[0]);
@@ -38,15 +39,24 @@ QString HumanReadableSize(qint64 size)
     return QString("%1 %2").arg(fileSize, 0, 'f', 2).arg(suffixes[index]);
 }
 
-void MyStatusBar::setFile(QString filename)
+void MyStatusBar::setFile(const QString filename)
 {
     QFileInfo fileInfo(filename);
     ui->label_filename->setText(fileInfo.fileName());
     ui->label_filesize->setText(HumanReadableSize(fileInfo.size()));
-    ui->label_filedir->setText(fileInfo.absoluteFilePath());
+
+    // If file path is more than 20 characters, make it a tooltip text
+    if (fileInfo.absoluteFilePath().size() > 10)
+    {
+        ui->label_filedir->setToolTip(fileInfo.absoluteFilePath());
+        ui->label_filedir->setText("Hover for file Path");
+    }
+    else {
+        ui->label_filedir->setText(fileInfo.absoluteFilePath());
+    }
 }
 
-void MyStatusBar::setCoordinate(QPointF point)
+void MyStatusBar::setCoordinate(const QPointF point)
 {
     ui->label_coord->setText(QString("(%1, %2)").arg(point.x()).arg(point.y()));
 }
@@ -54,4 +64,15 @@ void MyStatusBar::setCoordinate(QPointF point)
 void MyStatusBar::clearCoordinate()
 {
     ui->label_coord->clear();
+}
+
+void MyStatusBar::setProgress(const int val)
+{
+    ui->progressBar->setValue(val);
+    ui->progressBar->update();
+}
+
+void MyStatusBar::hideProgressBar(bool status)
+{
+    ui->progressBar->setHidden(status);
 }

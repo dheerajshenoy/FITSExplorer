@@ -18,18 +18,22 @@ public:
     explicit ListMarkers(QWidget *parent = nullptr);
     ~ListMarkers();
 
-    void setMarkersList(QVector<Marker*>);
+    void setMarkersList(const QVector<Marker*>&);
     void refreshSelection(int index);
 
     int currentMarker();
+    int getMarkerCount();
+    void clearMarkerList();
 signals:
     void markerRemoved(int);
+    void markerColorChanged(int, QColor);
 
 private slots:
     void on_ok_btn_clicked();
     void on_delete_marker_btn_clicked();
     void on_markers_list_widget_currentTextChanged(const QString &currentText);
 
+    void updateMarkerText();
     void on_color_btn_clicked();
 
 

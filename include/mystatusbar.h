@@ -17,11 +17,13 @@ class MyStatusBar : public QWidget
 public:
     explicit MyStatusBar(QWidget *parent = nullptr);
     ~MyStatusBar();
-    void setMsg(QString msg, int time_in_ms = 1000);
-    void setFile(QString filename);
-    void setCoordinate(QPointF coordinate);
+    void setMsg(const QString msg, const int time_in_ms = 1000);
+    void setFile(const QString filename);
+    void setCoordinate(const QPointF coordinate);
     void clearCoordinate();
+    void setProgress(const int val);
 
+    void hideProgressBar(bool status);
 private:
     Ui::MyStatusBar *ui;
 };

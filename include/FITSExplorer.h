@@ -28,6 +28,7 @@
 #include <QKeySequence>
 #include "qcustomplot.h"
 #include "image_statistics_overview.h"
+#include "overviewgraphicsview.h"
 
 enum Colormap
 {
@@ -73,7 +74,6 @@ public:
     int ShowOverview(int HDU_index);
     void RemoveAllMarkers();
     void INIT_Connections();
-    void INIT_MiniLightCurve();
     void INIT_Configuration();
     inline void MSG(QString msg)
     {
@@ -126,8 +126,9 @@ private slots:
     void on_actionWinter_triggered();
     void on_actionAutumn_triggered();
     void on_actionMarker_Mode_triggered(bool);
-
     void on_actionImageStatisticsOverview_triggered();
+    void changeMarkerLineColor(int, QColor);
+    void on_actionHideAll_Markers_triggered(bool);
 
 private:
     Ui::DFits *ui;
@@ -142,9 +143,8 @@ private:
     MyGraphicsView *gv = img_widget->GetGraphicsView();
     Overview *overview = new Overview();
     LightCurve *lc = new LightCurve(img_widget);
-    QVector<QCPItemStraightLine*> m_lines_list;
-    QVector<QRgb> m_inferno;
     toml::value TOMLCFG;
     Colormap m_cur_colormap = Colormap::None;
+    QCustomPlot *lightCurvePlot;
 };
 #endif // DFITS_H

@@ -8,9 +8,13 @@ FITSExplorer::FITSExplorer(QStringList argv, QWidget *parent)
     ui->setupUi(this);
     INIT_Connections();
     INIT_Configuration();
-    INIT_MiniLightCurve();
     INIT_Shortcuts();
     ui->splitter->setStretchFactor(1, 1);
+
+    auto overview_image_widget = new OverviewGraphicsView(gv->scene(), gv);
+    ui->verticalLayout_2->addWidget(overview_image_widget);
+
+    lc = new LightCurve(img_widget);
 
     QActionGroup *colormapActionGroup = new QActionGroup(this);
 
@@ -37,28 +41,7 @@ FITSExplorer::FITSExplorer(QStringList argv, QWidget *parent)
         OpenFile(argv[1]);
     }
 
-    OpenFile("/home/neo/test.fits");
-}
-
-void FITSExplorer::INIT_MiniLightCurve()
-{
-    //ui->mini_light_curve_plot->setVisible(toml::find<bool>(TOMLCFG,
-    //                                                       "GUI.Mini_Light_Curve.shown"));
-    ui->mini_light_curve_plot->addGraph();
-    ui->mini_light_curve_plot->setInteractions(QCP::iRangeDrag |
-                                               QCP::iRangeZoom |
-                                               QCP::iSelectPlottables |
-                                               QCP::iSelectAxes);
-
-    ui->mini_light_curve_plot->graph(0)->setAntialiased(true);
-    ui->mini_light_curve_plot->xAxis->setLabel("Image Width");
-    ui->mini_light_curve_plot->yAxis->setLabel("Mean Intensity");
-    ui->mini_light_curve_plot->plotLayout()->insertRow(0);
-    ui->mini_light_curve_plot->plotLayout()->addElement(0,
-                                                        0,
-                                                        new QCPTextElement(ui->mini_light_curve_plot,
-                                                                           "Light Curve"));
-    ui->mini_light_curve_plot->setHidden(true);
+    //OpenFile("/home/neo/test.fits");
 }
 
 void FITSExplorer::INIT_Configuration()
@@ -101,7 +84,7 @@ void FITSExplorer::INIT_Configuration()
         }
     }
 */
-    ReadConfigFile("/home/neo/.config/FITSExplorer/config.toml");
+    //ReadConfigFile("/home/neo/.config/FITSExplorer/config.toml");
 }
 
 void FITSExplorer::ReadConfigFile(QString cfgfile)
@@ -228,6 +211,8 @@ void FITSExplorer::INIT_Connections()
     connect(ui->HDU_List, SIGNAL(cellDoubleClicked(int,int)), SLOT(HDU_Table_Double_Clicked(int, int)));
     connect(ui->tab_widget, SIGNAL(tabCloseRequested(int)), SLOT(CloseTab(int)));
 
+    connect(gv, SIGNAL(markerColorChanged(int, QColor)), SLOT(changeMarkerLineColor(int, QColor)));
+
 }
 
 void FITSExplorer::CloseTab(int index)
@@ -240,6 +225,7 @@ int FITSExplorer::HDU_Table_Double_Clicked(int row, int col)
 {
     //QTableWidgetItem *typeItem = ui->HDU_List->item(row, col);
     int type;
+    status = 0;
 
     if(row > m_nhdu)
         return 0;
@@ -309,13 +295,15 @@ int FITSExplorer::HandleBinaryTable()
             m += value;
         }
         m = m / height;
-        ui->mini_light_curve_plot->graph(0)->addData(x, m);
+        //ui->mini_light_curve_plot->graph(0)->addData(x, m);
     }
 
-    ui->mini_light_curve_plot->rescaleAxes(true);
-    ui->mini_light_curve_plot->replot();
+    //ui->mini_light_curve_plot->rescaleAxes(true);
+    //ui->mini_light_curve_plot->replot();
 
     img_widget->setPixmap(QPixmap::fromImage(image));
+
+
     ui->tab_widget->addTab(img_widget, "DD");
 
     delete[] data;
@@ -336,7 +324,9 @@ void FITSExplorer::OpenFile(QString filename)
             // Enable the widgets only on first run of this function
 
             ui->actionMarkerMode->setEnabled(true);
-            ui->mini_light_curve_plot->graph(0)->data()->clear();
+
+            ui->statusbar->hideProgressBar(true);
+            //ui->mini_light_curve_plot->graph(0)->data()->clear();
             img_widget->GetSlider()->setEnabled(true);
             ui->actionoverview->setEnabled(true);
             ui->actionoverview_raw->setEnabled(true);
@@ -345,6 +335,8 @@ void FITSExplorer::OpenFile(QString filename)
             ui->action_export_toolbar->setEnabled(true);
             ui->actionSave_toolbar->setEnabled(true);
             ui->actionxport->setEnabled(true);
+            ui->actionDeleteAllMarkers->setEnabled(false);
+            ui->actionDelete_Markers->setEnabled(false);
             filename = openFileDialog.selectedFiles()[0];
             // Till here
 
@@ -356,9 +348,10 @@ void FITSExplorer::OpenFile(QString filename)
     }
     else {
         ui->actionMarkerMode->setEnabled(true);
-        ui->mini_light_curve_plot->graph(0)->data()->clear();
+        //ui->mini_light_curve_plot->graph(0)->data()->clear();
         img_widget->GetSlider()->setEnabled(true);
         ui->actionoverview->setEnabled(true);
+        ui->statusbar->hideProgressBar(true);
         ui->actionoverview_raw->setEnabled(true);
         ui->menuImage->setEnabled(true);
         ui->menuStatistics->setEnabled(true);
@@ -366,6 +359,8 @@ void FITSExplorer::OpenFile(QString filename)
         ui->actionSave_toolbar->setEnabled(true);
         ui->actionxport->setEnabled(true);
         ui->statusbar->setMsg(QString("File {%1} Opened").arg(filename));
+        ui->actionDeleteAllMarkers->setEnabled(false);
+        ui->actionDelete_Markers->setEnabled(false);
         ui->statusbar->setFile(filename);
         HandleFile(filename);
         return;
@@ -521,15 +516,16 @@ int FITSExplorer::HandleImage()
     try {
         image_data = new float[width * height];
     }
-    catch(std::bad_array_new_length *e)
+    catch(const std::bad_array_new_length &e)
     {
-        qCritical() << "Caught std::bad_array_new_length: " << e->what();
-        QMessageBox::critical(this, "Error", e->what());
+        qCritical() << "Caught std::bad_array_new_length: " << e.what();
+        QMessageBox::critical(this, "Error", "Bad array length");
         return 1;
     }
 
     // This is just to copy the original data, if in case we want to retrieve it again.
     img_widget->SetData(image_data);
+
 
     if(fits_read_img(fptr, TFLOAT, fpixel, width * height,
                       NULL, image_data, NULL, &status))
@@ -538,28 +534,31 @@ int FITSExplorer::HandleImage()
         return status;
     }
 
+
+    ui->statusbar->hideProgressBar(false);
     QImage image(width, height, QImage::Format_Grayscale8);
 
-    for (int x = 0; x < width; ++x) {
-        double m = 0;
-        for (int y = 0; y < height; ++y) {
+    // Read the image data and put to QImage, pixel by pixel
+    for (uint x = 0; x < width; ++x) {
+        for (uint y = 0; y < height; ++y) {
             float value = image_data[y * width + x];
             image.setPixel(x, y, qRgb(value, value, value)); // Assuming grayscale image
-            m += value;
+            //ui->statusbar->setProgress( ((x + 1) * (y + 1))/(width * height)* 100);
         }
-        m = m / height;
-        ui->mini_light_curve_plot->graph(0)->addData(x, m);
+
+        ui->statusbar->setProgress((x + 1)/width  * 100);
     }
 
-    ui->mini_light_curve_plot->rescaleAxes(true);
-    ui->mini_light_curve_plot->replot();
-    ui->mini_light_curve_plot->setHidden(false);
+    ui->statusbar->hideProgressBar(true);
+    lc->setData(image_data, width, height);
 
     //image.convertTo(QImage::Format_Indexed8);
     //image.setColorTable(m_inferno);
 
+
     img_widget->setPixmap(QPixmap::fromImage(image));
-    ui->tab_widget->addTab(img_widget, "DD");
+
+    ui->tab_widget->addTab(img_widget, "Image");
     return 0;
 }
 
@@ -684,9 +683,7 @@ void FITSExplorer::on_actionoverview_raw_triggered()
 
 void FITSExplorer::on_actionLight_Curve_triggered()
 {
-    lc = new LightCurve(img_widget);
-    lc->setData(image_data, width, height);
-    lc->show();
+    lc->Show();
 }
 
 // Show the coordinates in the statusbar of the mouse position in the image
@@ -729,29 +726,39 @@ void FITSExplorer::ExportFile()
 
 void FITSExplorer::MarkerAdded(QPointF pos)
 {
-    m_line = new QCPItemStraightLine(ui->mini_light_curve_plot);
+    if (lc->numLines() >= 1)
+    {
+        ui->actionDeleteAllMarkers->setEnabled(true);
+        ui->actionDelete_Markers->setEnabled(true);
+    }
+
+    lightCurvePlot = lc->getPlot();
+    m_line = new QCPItemStraightLine(lightCurvePlot);
     m_line->setPen(QColor::fromRgb(255, 0, 0));
-    m_line->point1->setCoords(pos.x(), ui->mini_light_curve_plot->yAxis->range().lower);
-    m_line->point2->setCoords(pos.x(), ui->mini_light_curve_plot->yAxis->range().upper);
-    m_lines_list.append(m_line);
-    ui->mini_light_curve_plot->replot();
+    m_line->point1->setCoords(pos.x(), lightCurvePlot->yAxis->range().lower);
+    m_line->point2->setCoords(pos.x(), lightCurvePlot->yAxis->range().upper);
+    lc->addLineToList(m_line);
 }
 
 // Remove all the lines corresponding to the markers added to the light curves
 void FITSExplorer::RemoveAllMarkers()
 {
-    foreach(QCPItemStraightLine* line, m_lines_list)
-    {
-        ui->mini_light_curve_plot->removeItem(line);
-    }
-    ui->mini_light_curve_plot->replot();
+
+    if (lc->numLines() == 0)
+        return;
+
+    lc->clearLines();
+
+    ui->actionDeleteAllMarkers->setEnabled(false);
+    ui->actionDelete_Markers->setEnabled(false);
 }
 
 // Close the opened file
 void FITSExplorer::CloseFile()
 {
     ui->actionMarkerMode->setEnabled(false);
-    ui->mini_light_curve_plot->graph(0)->data()->clear();
+    //ui->mini_light_curve_plot->graph(0)->data()->clear();
+    lightCurvePlot->graph(0)->data()->clear();
     img_widget->GetSlider()->setEnabled(false);
     ui->actionoverview->setEnabled(false);
     ui->actionoverview_raw->setEnabled(false);
@@ -913,6 +920,21 @@ void FITSExplorer::on_actionMarker_Mode_triggered(bool state)
 void FITSExplorer::on_actionImageStatisticsOverview_triggered()
 {
     ImageStatisticsOverview *img_stat_overview = new ImageStatisticsOverview(nullptr, image_data);
-    img_stat_overview->show();
+}
+
+void FITSExplorer::changeMarkerLineColor(int index, QColor color)
+{
+    auto line = lc->getLineAt(index);
+    line->setPen(color);
+    lightCurvePlot->replot();
+}
+
+
+void FITSExplorer::on_actionHideAll_Markers_triggered(bool status)
+{
+    if (status)
+        gv->HideAllMarkers();
+    else
+        gv->ShowAllMarkers();
 }
 

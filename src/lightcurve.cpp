@@ -13,6 +13,33 @@ LightCurve::LightCurve(ImageWidget *img_widget)
 
 }
 
+QCustomPlot* LightCurve::getPlot()
+{
+    return ui->plot_widget;
+}
+
+void LightCurve::Show()
+{
+    this->show();
+}
+
+void LightCurve::addLineToList(QCPItemStraightLine *line)
+{
+    m_line_list.append(line);
+    ui->plot_widget->replot();
+}
+
+void LightCurve::clearLines()
+{
+
+    foreach(QCPItemStraightLine *line, m_line_list) {
+        ui->plot_widget->removeItem(line);
+    }
+    m_line_list.clear();
+
+    ui->plot_widget->replot();
+}
+
 void LightCurve::setImageWidget(ImageWidget *img_widget)
 {
     m_img_widget = img_widget;
@@ -22,10 +49,29 @@ void LightCurve::INIT_Graph()
 {
     ui->plot_widget->addGraph();
     ui->plot_widget->graph(0)->setLineStyle(QCPGraph::LineStyle::lsLine);
-    ui->plot_widget->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
+    ui->plot_widget->setInteractions(QCP::iRangeDrag |
+                      QCP::iRangeZoom |
+                      QCP::iSelectPlottables |
+                      QCP::iSelectAxes);
+
+    ui->plot_widget->graph(0)->setAntialiased(true);
+    ui->plot_widget->xAxis->setLabel("Image Width");
+    ui->plot_widget->yAxis->setLabel("Mean Intensity");
+    ui->plot_widget->plotLayout()->insertRow(0);
+    ui->plot_widget->plotLayout()->addElement(0,
+                                              0,
+                                              new QCPTextElement(ui->plot_widget,
+                                                                 "Light Curve"));
 }
 
-void LightCurve::setData(float *data, int width, int height)
+QCPItemStraightLine* LightCurve::getLineAt(int index)
+{
+    if (index > -1)
+        return m_line_list[index];
+    return nullptr;
+}
+
+void LightCurve::setData(const float *data, const int width, const int height)
 {
     ui->plot_widget->graph(0)->data()->clear();
     for(int i=0; i < width; i++)

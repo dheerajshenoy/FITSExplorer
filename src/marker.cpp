@@ -34,6 +34,11 @@ void Marker::setText(QString text)
     m_text->setPlainText(text);
 }
 
+void Marker::setTextColor(QColor color)
+{
+    m_text->setDefaultTextColor(color);
+}
+
 void Marker::setTextItem(QGraphicsTextItem *textItem)
 {
     m_text = textItem;

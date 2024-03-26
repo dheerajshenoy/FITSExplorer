@@ -12,23 +12,24 @@ INCLUDEPATH += include/
 VPATH += src/
 
 SOURCES += \
-    image_statistics_overview.cpp \
+    overviewgraphicsview.cpp \
+    src/image_statistics_overview.cpp \
     src/listmarkers.cpp \
     src/marker.cpp \
-    preferences.cpp \
+    src/preferences.cpp \
     src/mystatusbar.cpp \
     src/mygraphicsview.cpp \
     src/aboutdialog.cpp \
     src/imagewidget.cpp \
     src/lightcurve.cpp \
-    main.cpp \
+    src/main.cpp \
     src/FITSExplorer.cpp \
     src/qcustomplot.cpp \
     src/overview.cpp \
     src/colormap.cpp
 
 HEADERS += \
-    image_statistics_overview.h \
+    include/image_statistics_overview.h \
     include/aboutdialog.h \
     include/FITSExplorer.h \
     include/imagewidget.h \
@@ -41,9 +42,9 @@ HEADERS += \
     include/mystatusbar.h \
     include/listmarkers.h \
     include/marker.h \
-    include/preferences.h
-
-LIBS += -lcfitsio
+    include/preferences.h \
+    include/overviewgraphicsview.h \
+    overviewgraphicsview.h
 
 FORMS += \
     FITSExplorer.ui \
@@ -55,6 +56,8 @@ FORMS += \
     mystatusbar.ui \
     overview.ui \
     preferences.ui
+
+LIBS += -lcfitsio
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
