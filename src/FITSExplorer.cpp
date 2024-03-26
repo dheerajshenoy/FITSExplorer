@@ -7,9 +7,10 @@ FITSExplorer::FITSExplorer(QStringList argv, QWidget *parent)
 {
     ui->setupUi(this);
     INIT_Connections();
-    INIT_Configuration();
     INIT_Shortcuts();
     ui->splitter->setStretchFactor(1, 1);
+
+    ui->HDU_List->setHorizontalHeaderLabels({"HDU", "HDU Type"});
 
     auto overview_image_widget = new OverviewGraphicsView(gv->scene(), gv);
     ui->verticalLayout_2->addWidget(overview_image_widget);
@@ -34,6 +35,7 @@ FITSExplorer::FITSExplorer(QStringList argv, QWidget *parent)
     colormapActionGroup->addAction(ui->actionSpring);
     colormapActionGroup->addAction(ui->actionSummer);
 
+    INIT_Configuration();
     //colormapActionGroup->addAction(ui->actionColormap);
 
     if(argv.size() > 1)
@@ -46,17 +48,34 @@ FITSExplorer::FITSExplorer(QStringList argv, QWidget *parent)
 
 void FITSExplorer::INIT_Configuration()
 {
-    /*
     const QDir XDG_CONFIG_DIR = QDir(QStandardPaths::
                                      writableLocation(QStandardPaths::ConfigLocation));
 
     QDir configDir = XDG_CONFIG_DIR.filePath(APPNAME);
 
-    MSG(configDir.path());
-
     // Check if  file exists
     if (configDir.exists())
     {
+        m_recentFile.setFileName(configDir.path() + "/recentf");
+
+        QAction *recent_action = ui->actionOpen_Recent;
+        QMenu *menu = new QMenu();
+        recent_action->setMenu(menu);
+        if (m_recentFile.exists()) {
+            if (m_recentFile.open(QIODevice::ReadWrite)) {
+                QTextStream in(&m_recentFile);
+                while (!in.atEnd()) {
+                    QAction *action = new QAction(in.readLine());
+                    menu->addAction(action);
+                    connect(action, &QAction::triggered, this, &FITSExplorer::OpenRecent);
+                }
+            } else {
+                MSG("Couldn't open recent files!");
+            }
+        } else {
+
+        }
+
         /*
         QFile configFile(configDir.path() + "config.toml");
 
@@ -67,6 +86,7 @@ void FITSExplorer::INIT_Configuration()
         else
         {
         }
+*/
     }
     else {
         /*
@@ -82,8 +102,8 @@ void FITSExplorer::INIT_Configuration()
         {
             QDir(XDG_CONFIG_DIR).mkdir(APPNAME);
         }
-    }
 */
+    }
     //ReadConfigFile("/home/neo/.config/FITSExplorer/config.toml");
 }
 
@@ -339,7 +359,7 @@ void FITSExplorer::OpenFile(QString filename)
             ui->actionDelete_Markers->setEnabled(false);
             filename = openFileDialog.selectedFiles()[0];
             // Till here
-
+            AddRecentFile(filename);
             ui->statusbar->setMsg(QString("File {%1} Opened").arg(filename));
             ui->statusbar->setFile(filename);
             HandleFile(openFileDialog.selectedFiles().at(0));
@@ -361,6 +381,7 @@ void FITSExplorer::OpenFile(QString filename)
         ui->statusbar->setMsg(QString("File {%1} Opened").arg(filename));
         ui->actionDeleteAllMarkers->setEnabled(false);
         ui->actionDelete_Markers->setEnabled(false);
+        AddRecentFile(filename);
         ui->statusbar->setFile(filename);
         HandleFile(filename);
         return;
@@ -368,6 +389,30 @@ void FITSExplorer::OpenFile(QString filename)
     // If user cancels opening the file
     ui->statusbar->setMsg("File Open Cancelled");
     return;
+}
+
+void FITSExplorer::OpenRecent() {
+    if (sender() != nullptr) {
+        QString filename = qobject_cast<QAction *>(sender())->text();
+
+        ui->actionMarkerMode->setEnabled(true);
+        //ui->mini_light_curve_plot->graph(0)->data()->clear();
+        img_widget->GetSlider()->setEnabled(true);
+        ui->actionoverview->setEnabled(true);
+        ui->statusbar->hideProgressBar(true);
+        ui->actionoverview_raw->setEnabled(true);
+        ui->menuImage->setEnabled(true);
+        ui->menuStatistics->setEnabled(true);
+        ui->action_export_toolbar->setEnabled(true);
+        ui->actionSave_toolbar->setEnabled(true);
+        ui->actionxport->setEnabled(true);
+        ui->statusbar->setMsg(QString("File {%1} Opened").arg(filename));
+        ui->actionDeleteAllMarkers->setEnabled(false);
+        ui->actionDelete_Markers->setEnabled(false);
+        MSG(filename);
+        ui->statusbar->setFile(filename);
+        HandleFile(filename);
+    }
 }
 
 // Helper function for opening the file at path `filename`
@@ -428,15 +473,17 @@ int FITSExplorer::HandleFile(QString filename)
         }
 
         QTableWidgetItem *item1 = new QTableWidgetItem();
-        item1->setText("Unknown");
-        /*if (hdu_name == "")
-            item1->setText("Unknown");
-        else
-            item1->setText(hdu_name);
-*/
+
 
         QTableWidgetItem *item2 = new QTableWidgetItem();
         item2->setText(type_string);
+
+        if (i == 1) {
+            item1->setText("Primary");
+        }
+        else {
+            item1->setText("Ext " + QString::number(i - 1));
+        }
 
         ui->HDU_List->setItem(i-1, 0, item1);
         ui->HDU_List->setItem(i-1, 1, item2);
@@ -936,5 +983,28 @@ void FITSExplorer::on_actionHideAll_Markers_triggered(bool status)
         gv->HideAllMarkers();
     else
         gv->ShowAllMarkers();
+}
+
+void FITSExplorer::AddRecentFile(QString filename)
+{
+    /*
+    QTextStream in(&m_recentFile);
+
+    in.seek(0);
+    QStringList lines;
+
+    while (!in.atEnd()) {
+        if (in.readLine() != filename) {
+            lines << in.readLine();
+        }
+    }
+
+
+    foreach(const QString line, lines) {
+        in << line;
+    }
+
+    lines.insert(0, filename);
+*/
 }
 

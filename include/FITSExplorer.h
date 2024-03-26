@@ -51,7 +51,7 @@ enum Colormap
     Custom
 };
 
-const QString APPNAME = "DFits";
+const QString APPNAME = "FITSExplorer";
 const QString CONFIG_NAME = "config.toml";
 
 QT_BEGIN_NAMESPACE
@@ -89,6 +89,7 @@ public slots:
 
 private slots:
     void OpenFile(QString filename = nullptr);
+    void OpenRecent();
     int ChangeBrightness();
     int HDU_Table_Double_Clicked(int, int);
     void CloseTab(int);
@@ -146,5 +147,7 @@ private:
     toml::value TOMLCFG;
     Colormap m_cur_colormap = Colormap::None;
     QCustomPlot *lightCurvePlot;
+    QFile m_recentFile;
+    void AddRecentFile(QString);
 };
 #endif // DFITS_H
