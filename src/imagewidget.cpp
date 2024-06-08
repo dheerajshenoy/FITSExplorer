@@ -47,4 +47,3 @@ void ImageWidget::on_reset_brightness_btn_clicked()
     }
     ui->graphics_view->setPixmap(QPixmap::fromImage(image));
 }
-
