@@ -25,7 +25,6 @@ ImageStatisticsOverview::ImageStatisticsOverview(QWidget *parent, float* img_dat
     ui->gaussian_dist_plot->setInteractions(QCP::iSelectPlottables | QCP::iRangeDrag | QCP::iMultiSelect);
     Gaussian();
     this->show();
-    //QVector<float> minmax = GetMinMax();
 
     QTableWidgetItem *mean_item = new QTableWidgetItem(QString::number(Mean()));
     ui->table_widget->setItem(0, 1, mean_item);
@@ -36,13 +35,12 @@ ImageStatisticsOverview::ImageStatisticsOverview(QWidget *parent, float* img_dat
     QTableWidgetItem *sd_item = new QTableWidgetItem(QString::number(StandardDeviation()));
     ui->table_widget->setItem(2, 1, sd_item);
 
-    auto minmax = GetMinMax();
 
-    QTableWidgetItem *min_pix_item = new QTableWidgetItem(QString::number(minmax[0]));
-    ui->table_widget->setItem(3, 1, min_pix_item);
+    // QTableWidgetItem *min_pix_item = new QTableWidgetItem(QString::number(minmax[0]));
+    // ui->table_widget->setItem(3, 1, min_pix_item);
 
-    QTableWidgetItem *max_pix_item = new QTableWidgetItem(QString::number(minmax[1]));
-    ui->table_widget->setItem(4, 1, max_pix_item);
+    // QTableWidgetItem *max_pix_item = new QTableWidgetItem(QString::number(minmax[1]));
+    // ui->table_widget->setItem(4, 1, max_pix_item);
 }
 
 ImageStatisticsOverview::~ImageStatisticsOverview()
@@ -117,13 +115,6 @@ double ImageStatisticsOverview::StandardDeviation()
     SD /= m_n;
 
     return sqrtf(SD);
-}
-
-QVector<float> ImageStatisticsOverview::GetMinMax()
-{
-    auto sorted_arr = sort(image_data);
-    QVector<float> minmax = { sorted_arr[0], sorted_arr[m_n - 1] };
-    return minmax;
 }
 
 void ImageStatisticsOverview::Gaussian()

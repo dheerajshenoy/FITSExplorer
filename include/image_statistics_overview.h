@@ -27,7 +27,6 @@ public:
 
     QVector<double> arange(const float, const float, const float);
 
-    QVector<float> GetMinMax();
 private:
     Ui::ImageStatisticsOverview *ui;
 

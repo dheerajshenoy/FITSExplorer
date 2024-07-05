@@ -1,6 +1,6 @@
 #pragma once
 
-#include <qt/QtGui/QImage>
+#include <qt6/QtGui/QImage>
 
 class CM
 {

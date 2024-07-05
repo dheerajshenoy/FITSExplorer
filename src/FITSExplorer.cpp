@@ -12,8 +12,8 @@ FITSExplorer::FITSExplorer(QStringList argv, QWidget *parent)
 
     ui->HDU_List->setHorizontalHeaderLabels({"HDU", "HDU Type"});
 
-    auto overview_image_widget = new OverviewGraphicsView(gv->scene(), gv);
-    ui->verticalLayout_2->addWidget(overview_image_widget);
+    /*auto overview_image_widget = new OverviewGraphicsView(gv->scene(), gv);*/
+    /*ui->verticalLayout_2->addWidget(overview_image_widget);*/
 
     lc = new LightCurve(img_widget);
 

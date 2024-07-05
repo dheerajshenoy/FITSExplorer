@@ -2,33 +2,32 @@
 #define DFITS_H
 
 
-#include <QActionGroup>
-#include <QMainWindow>
-#include <QFileDialog>
-#include <QDialog>
+#include <qt6/QtGui/QActionGroup>
+#include <qt6/QtWidgets/QMainWindow>
+#include <qt6/QtWidgets/QFileDialog>
+#include <qt6/QtWidgets/QDialog>
 #include <fitsio2.h>
-#include <QMessageBox>
-#include <QDebug>
-#include <QTableWidget>
-#include <QTableWidgetItem>
+#include <qt6/QtWidgets/QMessageBox>
+#include <qt6/QtCore/QDebug>
+#include <qt6/QtWidgets/QTableWidget>
+#include <qt6/QtWidgets/QTableWidgetItem>
 #include "overview.h"
 #include "imagewidget.h"
-#include <QTextCursor>
-#include <QPlainTextEdit>
-#include <QWidget>
-#include <QVBoxLayout>
-#include <QSettings>
-#include <QStandardPaths>
+#include <qt6/QtGui/QTextCursor>
+#include <qt6/QtWidgets/QPlainTextEdit>
+#include <qt6/QtWidgets/QWidget>
+#include <qt6/QtWidgets/QVBoxLayout>
+#include <qt6/QtCore/QSettings>
+#include <qt6/QtCore/QStandardPaths>
 #include "aboutdialog.h"
 #include "lightcurve.h"
 #include "toml.hpp"
 #include "preferences.h"
 #include "colormap.h"
-#include <QShortcut>
-#include <QKeySequence>
+#include <qt6/QtGui/QShortcut>
+#include <qt6/QtGui/QKeySequence>
 #include "qcustomplot.h"
 #include "image_statistics_overview.h"
-#include "overviewgraphicsview.h"
 
 enum Colormap
 {
