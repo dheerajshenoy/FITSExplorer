@@ -44,8 +44,8 @@
 
 - [ ] Customization and Extensions: Provide options for customization and extension through plugins or scripting interfaces, allowing users to tailor the viewer to their specific needs.
 
-- [ ] Add default colormap option
+- [x] Add default colormap option
 
-- [ ] make table change when changing tabs
+- [x] make table change when changing tabs
 
-- [ ]
+- [x] SDO AIA colormaps
