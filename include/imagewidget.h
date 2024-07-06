@@ -9,13 +9,14 @@
 #include <QPixmap>
 #include <QScrollArea>
 #include <QScrollBar>
+#include <QStackedWidget>
 #include "mygraphicsview.h"
 
 namespace Ui {
 class ImageWidget;
 }
 
-class ImageWidget : public QWidget
+class ImageWidget : public QStackedWidget
 {
     Q_OBJECT
 

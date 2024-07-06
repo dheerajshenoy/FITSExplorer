@@ -50,9 +50,13 @@ public:
     int getImgType();
     bool checkIfValidDim();
     QList<int> getHDUTypes();
-    void changeBrightness(int val, QImage &image);
+    void changeBrightness();
     int moveAbsRow(const int &row, int &type);
     int initImgData();
+    int getCols();
+    int getRows();
+    ImageWidget* getImgWidget();
+    QImage ApplyColormap(QImage &img);
 
 private:
 
@@ -72,6 +76,7 @@ private:
     Colormap m_colormap = Colormap::None;
     QCustomPlot *lightCurvePlot;
     QImage m_orig_img;
+    ImageWidget *m_img_widget = new ImageWidget();
 
     bool m_should_copy_before_applying_colormap = true;
 

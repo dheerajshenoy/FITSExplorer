@@ -15,6 +15,7 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QScrollArea>
 #include <QtWidgets/QSlider>
+#include <QtWidgets/QStackedWidget>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 #include <mygraphicsview.h>
@@ -24,29 +25,38 @@ QT_BEGIN_NAMESPACE
 class Ui_ImageWidget
 {
 public:
+    QWidget *page;
     QVBoxLayout *verticalLayout;
+    QHBoxLayout *horizontalLayout;
     QScrollArea *scrollArea;
     QWidget *scrollAreaWidgetContents;
     QVBoxLayout *verticalLayout_2;
     MyGraphicsView *graphics_view;
-    QHBoxLayout *horizontalLayout;
     QSlider *slider;
     QPushButton *reset_brightness_btn;
 
-    void setupUi(QWidget *ImageWidget)
+    void setupUi(QStackedWidget *ImageWidget)
     {
         if (ImageWidget->objectName().isEmpty())
             ImageWidget->setObjectName("ImageWidget");
-        ImageWidget->resize(732, 489);
-        verticalLayout = new QVBoxLayout(ImageWidget);
+        ImageWidget->resize(736, 439);
+        page = new QWidget();
+        page->setObjectName("page");
+        verticalLayout = new QVBoxLayout(page);
         verticalLayout->setObjectName("verticalLayout");
-        scrollArea = new QScrollArea(ImageWidget);
+        horizontalLayout = new QHBoxLayout();
+        horizontalLayout->setSpacing(0);
+        horizontalLayout->setObjectName("horizontalLayout");
+
+        verticalLayout->addLayout(horizontalLayout);
+
+        scrollArea = new QScrollArea(page);
         scrollArea->setObjectName("scrollArea");
         scrollArea->setWidgetResizable(true);
-        scrollArea->setAlignment(Qt::AlignCenter);
+        scrollArea->setAlignment(Qt::AlignmentFlag::AlignCenter);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName("scrollAreaWidgetContents");
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 712, 415));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 716, 354));
         QSizePolicy sizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -65,24 +75,20 @@ public:
 
         verticalLayout->addWidget(scrollArea);
 
-        horizontalLayout = new QHBoxLayout();
-        horizontalLayout->setSpacing(0);
-        horizontalLayout->setObjectName("horizontalLayout");
-        slider = new QSlider(ImageWidget);
+        slider = new QSlider(page);
         slider->setObjectName("slider");
         slider->setMaximum(1000);
-        slider->setOrientation(Qt::Horizontal);
-        slider->setTickPosition(QSlider::NoTicks);
+        slider->setOrientation(Qt::Orientation::Horizontal);
+        slider->setTickPosition(QSlider::TickPosition::NoTicks);
 
-        horizontalLayout->addWidget(slider);
+        verticalLayout->addWidget(slider);
 
-
-        verticalLayout->addLayout(horizontalLayout);
-
-        reset_brightness_btn = new QPushButton(ImageWidget);
+        reset_brightness_btn = new QPushButton(page);
         reset_brightness_btn->setObjectName("reset_brightness_btn");
 
         verticalLayout->addWidget(reset_brightness_btn);
+
+        ImageWidget->addWidget(page);
 
 
         retranslateUi(ImageWidget);
@@ -90,9 +96,9 @@ public:
         QMetaObject::connectSlotsByName(ImageWidget);
     } // setupUi
 
-    void retranslateUi(QWidget *ImageWidget)
+    void retranslateUi(QStackedWidget *ImageWidget)
     {
-        ImageWidget->setWindowTitle(QCoreApplication::translate("ImageWidget", "Form", nullptr));
+        ImageWidget->setWindowTitle(QCoreApplication::translate("ImageWidget", "StackedWidget", nullptr));
         reset_brightness_btn->setText(QCoreApplication::translate("ImageWidget", "Reset", nullptr));
     } // retranslateUi
 

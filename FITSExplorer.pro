@@ -45,13 +45,14 @@ HEADERS += \
     include/mystatusbar.h \
     include/listmarkers.h \
     include/marker.h \
-    include/preferences.h \
+    include/preferences.h
 
 FORMS += \
     FITSExplorer.ui \
     aboutdialog.ui \
     image_statistics_overview.ui \
     imagewidget.ui \
+    imagewidget2.ui \
     lightcurve.ui \
     listmarkers.ui \
     mystatusbar.ui \

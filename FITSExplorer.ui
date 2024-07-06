@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>DFits</class>
- <widget class="QMainWindow" name="DFits">
+ <class>FITSExplorer</class>
+ <widget class="QMainWindow" name="FITSExplorer">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>DFits</string>
+   <string>FITSExplorer</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="sizePolicy">
@@ -660,7 +660,7 @@
   <connection>
    <sender>actionExit</sender>
    <signal>triggered()</signal>
-   <receiver>DFits</receiver>
+   <receiver>FITSExplorer</receiver>
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">

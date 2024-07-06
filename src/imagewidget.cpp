@@ -5,10 +5,11 @@
 #include "colormap.h"
 
 ImageWidget::ImageWidget(QWidget *parent)
-    : QWidget(parent)
+    : QStackedWidget(parent)
     , ui(new Ui::ImageWidget)
 {
     ui->setupUi(this);
+
 }
 
 QSlider* ImageWidget::GetSlider() { return ui->slider; }

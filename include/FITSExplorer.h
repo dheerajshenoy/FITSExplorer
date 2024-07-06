@@ -34,7 +34,7 @@ const QString CONFIG_NAME = "config.toml";
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
-class DFits;
+class FITSExplorer;
 }
 QT_END_NAMESPACE
 
@@ -66,6 +66,7 @@ public:
 
 public slots:
     void HandleColorMapSelect(Colormap);
+    void update_HDU_Table(int);
 
 private slots:
     void OpenFile(QString filename = nullptr);
@@ -118,7 +119,7 @@ private:
 
     int m_file_index = -1;
 
-    Ui::DFits *ui;
+    Ui::FITSExplorer *ui;
     ImageWidget *img_widget = new ImageWidget();
     fitsfile *fptr;
     int status = 0;

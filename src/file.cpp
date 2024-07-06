@@ -56,6 +56,11 @@ bool File::Open()
     return true;
 }
 
+ImageWidget* File::getImgWidget()
+{
+    return m_img_widget;
+}
+
 
 QList<int> File::getHDUTypes()
 {
@@ -178,16 +183,107 @@ int File::initImgData()
     return 0;
 }
 
-void File::changeBrightness(int val, QImage &image)
+void File::changeBrightness()
 {
+
+    QImage image = m_img_widget->GetImage();
+
     for (int y = 0; y < height; ++y)
     {
         for (int x = 0; x < width; ++x)
         {
             float value = m_image_data[y * width + x];
-            value = qBound(0, static_cast<int>(value * val/100), 255);
+            value = qBound(0, static_cast<int>(value * static_cast<int>(m_img_widget->GetSlider()->value())/100), 255);
             image.setPixel(x, y, qRgb(value, value, value));
         }
+    }
+
+    if (getColormap() != Colormap::None)
+    {
+        image.convertTo(QImage::Format_Indexed8);
+        image = ApplyColormap(image);
+    }
+
+    m_img_widget->setPixmap(QPixmap::fromImage(image));
+}
+
+
+QImage File::ApplyColormap(QImage &img)
+{
+    if (m_should_copy_before_applying_colormap)
+    {
+        m_orig_img = img.copy();
+        m_should_copy_before_applying_colormap = false;
+    }
+    switch(m_colormap)
+    {
+
+    case Colormap::None:
+        return m_orig_img;
+        break;
+
+    case Colormap::Autumn:
+        return CM::autumn(img);
+        break;
+
+    case Colormap::Bone:
+        return CM::bone(img);
+        break;
+
+    case Colormap::Cool:
+        return CM::cool(img);
+        break;
+
+    case Colormap::Grayscale:
+        return CM::grayscale(img);
+        break;
+
+    case Colormap::HSV:
+        return CM::hsv(img);
+        break;
+
+    case Colormap::Hot:
+        return CM::hot(img);
+        break;
+
+    case Colormap::Winter:
+        return CM::winter(img);
+        break;
+
+    case Colormap::Jet:
+        return CM::jet(img);
+        break;
+
+    case Colormap::Ocean:
+        return CM::ocean(img);
+        break;
+
+    case Colormap::Parula:
+        return CM::parula(img);
+        break;
+
+    case Colormap::Pink:
+        return CM::pink(img);
+        break;
+
+    case Colormap::Summer:
+        return CM::summer(img);
+        break;
+
+    case Colormap::Rainbow:
+        return CM::rainbow(img);
+        break;
+
+    case Colormap::Turbo:
+        return CM::turbo(img);
+        break;
+
+    case Colormap::Spring:
+        return CM::spring(img);
+        break;
+
+    case Colormap::Custom:
+        break;
     }
 }
 

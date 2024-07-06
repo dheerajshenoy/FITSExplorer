@@ -3,7 +3,7 @@
 
 FITSExplorer::FITSExplorer(QStringList argv, QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::DFits)
+    , ui(new Ui::FITSExplorer)
 {
     ui->setupUi(this);
     INIT_Connections();
@@ -44,7 +44,7 @@ FITSExplorer::FITSExplorer(QStringList argv, QWidget *parent)
         OpenFile(argv[1]);
     }
 
-    OpenFile("//home/neo/Gits/Solar-Project/Data/09-04-2013/DATA_DENOISED/94/aia.lev1_euv_12s.2013-04-09T124003Z.94.image_lev1.fits");
+    OpenFile("/home/neo/Gits/Solar-Project/Data/09-04-2013/DATA_DENOISED/94/aia.lev1_euv_12s.2013-04-09T124003Z.94.image_lev1.fits");
 }
 
 void FITSExplorer::INIT_Configuration()
@@ -199,6 +199,9 @@ QImage FITSExplorer::ApplyColormap(QImage img)
     case Colormap::Spring:
         return CM::spring(img);
         break;
+
+    case Colormap::Custom:
+        break;
     }
 }
 
@@ -247,6 +250,58 @@ void FITSExplorer::INIT_Connections()
 
 }
 
+void FITSExplorer::update_HDU_Table(int index)
+{
+
+    fprintf(stderr, "%d", index);
+    m_file_index = index;
+
+    File *file = getCurrentFile();
+
+    ui->HDU_List->clear();
+    ui->HDU_List->setRowCount(file->getNHDU());
+
+    QList<int> types = file->getHDUTypes();
+    int type;
+    QString type_string;
+
+    for(int i=0; i < types.size(); i++)
+    {
+        type = types[i];
+        switch(type)
+        {
+        case IMAGE_HDU:
+            type_string = "IMAGE";
+            break;
+
+        case ASCII_TBL:
+            type_string = "ASCII TBL";
+            break;
+
+        case BINARY_TBL:
+            type_string = "BINARY TBL";
+            break;
+
+
+        }
+
+        QTableWidgetItem *item1 = new QTableWidgetItem();
+        QTableWidgetItem *item2 = new QTableWidgetItem();
+
+        item2->setText(type_string);
+
+        if (i == 0) {
+            item1->setText("Primary");
+        }
+        else {
+            item1->setText("Ext " + QString::number(i));
+        }
+
+        ui->HDU_List->setItem(i, 0, item1);
+        ui->HDU_List->setItem(i, 1, item2);
+    }
+}
+
 void FITSExplorer::CloseTab(int index)
 {
     ui->tab_widget->removeTab(index);
@@ -255,10 +310,8 @@ void FITSExplorer::CloseTab(int index)
 
 int FITSExplorer::HDU_Table_Double_Clicked(int row, int col)
 {
-    //QTableWidgetItem *typeItem = ui->HDU_List->item(row, col);
     int type;
     status = 0;
-
 
     File *file = getCurrentFile();
 
@@ -273,18 +326,21 @@ int FITSExplorer::HDU_Table_Double_Clicked(int row, int col)
         return status;
     }
 
-    if(type == IMAGE_HDU)
+    switch(type)
     {
+    case IMAGE_HDU:
         return HandleImage();
-    }
-    else if(type == ASCII_TBL)
-    {
+        break;
+
+    case ASCII_TBL:
         return HandleAsciiTable();
+        break;
+
+    case BINARY_TBL:
+        break;
     }
-    else if(type == BINARY_TBL)
-    {
-        return HandleBinaryTable();
-    }
+        //return HandleBinaryTable();
+
 
     return 0;
 }
@@ -340,7 +396,7 @@ int FITSExplorer::HandleBinaryTable()
     img_widget->setPixmap(QPixmap::fromImage(image));
 
 
-    ui->tab_widget->addTab(img_widget, "DD");
+    // ui->tab_widget->addTab(img_widget, "DD");
 
     delete[] data;
 
@@ -373,11 +429,11 @@ void FITSExplorer::OpenFile(QString filename)
             ui->actionxport->setEnabled(true);
             ui->actionDeleteAllMarkers->setEnabled(false);
             ui->actionDelete_Markers->setEnabled(false);
-            filename = openFileDialog.selectedFiles()[0];
-            AddRecentFile(filename);
-            ui->statusbar->setMsg(QString("File {%1} Opened").arg(filename));
+            auto filenames = openFileDialog.selectedFiles();
+            AddRecentFile(filenames[0]);
+            ui->statusbar->setMsg(QString("File {%1} Opened").arg(filenames[0]));
             ui->statusbar->setFile(filename);
-            HandleFile(openFileDialog.selectedFiles().at(0));
+            HandleFile(filenames[0]);
             return;
         }
     }
@@ -403,7 +459,6 @@ void FITSExplorer::OpenFile(QString filename)
     }
     // If user cancels opening the file
     ui->statusbar->setMsg("File Open Cancelled");
-    return;
 }
 
 void FITSExplorer::OpenRecent() {
@@ -438,8 +493,11 @@ int FITSExplorer::nfiles()
 // Helper function for opening the file at path `filename`
 int FITSExplorer::HandleFile(QString filename)
 {
+    // ui->tab_widget->addTab(img_widget, QFileInfo(filename).baseName());
     File *file = new File(filename);
     m_files_list.push_back(file);
+
+    ui->tab_widget->addTab(file->getImgWidget(), QFileInfo(filename).baseName());
 
     bool status;
     status = file->Open();
@@ -499,19 +557,24 @@ int FITSExplorer::HandleFile(QString filename)
 
 int FITSExplorer::ChangeBrightness()
 {
-    QImage image = img_widget->GetImage();
+    // QImage image = img_widget->GetImage();
 
     File *file = getCurrentFile();
+    file->changeBrightness();
 
-    file->changeBrightness(img_widget->GetSlider()->value(), image);
+    // QImage image = file->getImgWidget()->GetImage();
 
-    if (isColormapSelected())
-    {
-        image.convertTo(QImage::Format_Indexed8);
-        image = ApplyColormap(image);
-    }
+    // file->changeBrightness(img_widget->GetSlider()->value(), image);
 
-    img_widget->setPixmap(QPixmap::fromImage(image));
+    // if (isColormapSelected())
+    // {
+        // image.convertTo(QImage::Format_Indexed8);
+        // image = ApplyColormap(image);
+    // }
+
+    // img_widget->setPixmap(QPixmap::fromImage(image));
+
+
     return 0;
 }
 
@@ -583,8 +646,8 @@ int FITSExplorer::HandleImage()
 
     ui->statusbar->hideProgressBar(true);
     lc->setData(image_data, width, height);
-    img_widget->setPixmap(QPixmap::fromImage(image));
-    ui->tab_widget->addTab(img_widget, "Image");
+    file->getImgWidget()->setPixmap(QPixmap::fromImage(image));
+    // ui->tab_widget->addTab(img_widget, "Image");
     return 0;
 }
 

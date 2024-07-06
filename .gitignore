@@ -31,7 +31,16 @@
 *.out
 *.app
 
-
 # Added by cargo
 
 /target
+
+
+
+moc/
+obj/
+.qtc_clangd/
+
+Makefile
+FITSExplorer
+.qmake.stash
