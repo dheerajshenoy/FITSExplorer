@@ -36,7 +36,7 @@
     <item>
      <widget class="QSplitter" name="splitter">
       <property name="orientation">
-       <enum>Qt::Horizontal</enum>
+       <enum>Qt::Orientation::Horizontal</enum>
       </property>
       <widget class="QWidget" name="verticalLayoutWidget">
        <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -64,19 +64,19 @@
            <bool>false</bool>
           </property>
           <property name="editTriggers">
-           <set>QAbstractItemView::NoEditTriggers</set>
+           <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
           </property>
           <property name="alternatingRowColors">
            <bool>true</bool>
           </property>
           <property name="selectionMode">
-           <enum>QAbstractItemView::SingleSelection</enum>
+           <enum>QAbstractItemView::SelectionMode::SingleSelection</enum>
           </property>
           <property name="selectionBehavior">
-           <enum>QAbstractItemView::SelectRows</enum>
+           <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
           </property>
           <property name="gridStyle">
-           <enum>Qt::DashLine</enum>
+           <enum>Qt::PenStyle::DashLine</enum>
           </property>
           <property name="sortingEnabled">
            <bool>false</bool>
@@ -104,7 +104,7 @@
            <bool>true</bool>
           </property>
           <property name="tabShape">
-           <enum>QTabWidget::Triangular</enum>
+           <enum>QTabWidget::TabShape::Triangular</enum>
           </property>
           <property name="currentIndex">
            <number>-1</number>
@@ -135,7 +135,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>22</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -146,7 +146,8 @@
     <addaction name="actionOpen_Recent"/>
     <addaction name="actionClose_File"/>
     <addaction name="actionxport"/>
-    <addaction name="separator"/>
+    <addaction name="actionSave_As"/>
+    <addaction name="actionExport"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
@@ -186,6 +187,9 @@
      <addaction name="actionLight_Curve"/>
     </widget>
     <widget class="QMenu" name="menuMarker">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="title">
       <string>Marker</string>
      </property>
@@ -214,6 +218,7 @@
     <property name="title">
      <string>Colormap</string>
     </property>
+    <addaction name="actionNoColormap"/>
     <addaction name="actionGrayscale"/>
     <addaction name="actionBone"/>
     <addaction name="actionCool"/>
@@ -244,7 +249,7 @@
     <string>toolBar</string>
    </property>
    <property name="allowedAreas">
-    <set>Qt::TopToolBarArea</set>
+    <set>Qt::ToolBarArea::TopToolBarArea</set>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -309,7 +314,7 @@
     <string>Overview</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::NoRole</enum>
+    <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
   <action name="actionopen_toolbar">
@@ -324,7 +329,7 @@
     <string>Open File</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::NoRole</enum>
+    <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
   <action name="actionoverview_raw">
@@ -338,7 +343,7 @@
     <string>Raw Overview</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::NoRole</enum>
+    <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
   <action name="actionLight_Curve">
@@ -354,7 +359,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Export As</string>
+    <string>Save</string>
    </property>
   </action>
   <action name="actionSave_toolbar">
@@ -369,7 +374,7 @@
     <string>Save</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::NoRole</enum>
+    <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
   <action name="action_export_toolbar">
@@ -384,7 +389,7 @@
     <string>export</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::NoRole</enum>
+    <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
   <action name="actionDeleteAllMarkers">
@@ -395,7 +400,7 @@
     <string>DeleteAllMarkers</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::NoRole</enum>
+    <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
   <action name="actionFit_to_Width">
@@ -435,7 +440,7 @@
   </action>
   <action name="actionClose_File">
    <property name="text">
-    <string>Close File</string>
+    <string>Close Session</string>
    </property>
   </action>
   <action name="actionMarkerMode">
@@ -458,7 +463,7 @@
     <string>M</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::NoRole</enum>
+    <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
   <action name="actionList_Markers">
@@ -596,7 +601,7 @@
   </action>
   <action name="actionCustom">
    <property name="checkable">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="text">
     <string>Custom</string>
@@ -621,6 +626,24 @@
    </property>
    <property name="text">
     <string>Hide All Markers</string>
+   </property>
+  </action>
+  <action name="actionSave_As">
+   <property name="text">
+    <string>Save As</string>
+   </property>
+  </action>
+  <action name="actionExport">
+   <property name="text">
+    <string>Export</string>
+   </property>
+  </action>
+  <action name="actionNoColormap">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>No Colormap</string>
    </property>
   </action>
  </widget>

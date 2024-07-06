@@ -23,32 +23,11 @@
 #include "lightcurve.h"
 #include "toml.hpp"
 #include "preferences.h"
-#include "colormap.h"
 #include <qt6/QtGui/QShortcut>
 #include <qt6/QtGui/QKeySequence>
 #include "qcustomplot.h"
 #include "image_statistics_overview.h"
-
-enum Colormap
-{
-    None,
-    Grayscale,
-    Winter,
-    Autumn,
-    Bone,
-    Cool,
-    Hot,
-    HSV,
-    Jet,
-    Ocean,
-    Parula,
-    Pink,
-    Rainbow,
-    Spring,
-    Summer,
-    Turbo,
-    Custom
-};
+#include "file.h"
 
 const QString APPNAME = "FITSExplorer";
 const QString CONFIG_NAME = "config.toml";
@@ -82,6 +61,8 @@ public:
     bool isColormapSelected();
     QImage ApplyColormap(QImage);
     void INIT_Shortcuts();
+    File* getCurrentFile();
+    int nfiles();
 
 public slots:
     void HandleColorMapSelect(Colormap);
@@ -129,8 +110,14 @@ private slots:
     void on_actionImageStatisticsOverview_triggered();
     void changeMarkerLineColor(int, QColor);
     void on_actionHideAll_Markers_triggered(bool);
+    void on_actionNoColormap_triggered();
 
 private:
+
+    QVector<File *> m_files_list = {};
+
+    int m_file_index = -1;
+
     Ui::DFits *ui;
     ImageWidget *img_widget = new ImageWidget();
     fitsfile *fptr;
@@ -148,5 +135,10 @@ private:
     QCustomPlot *lightCurvePlot;
     QFile m_recentFile;
     void AddRecentFile(QString);
+    QImage m_orig_img;
+
+    bool m_should_copy_before_applying_colormap = true;
+
+    friend class File;
 };
 #endif // DFITS_H

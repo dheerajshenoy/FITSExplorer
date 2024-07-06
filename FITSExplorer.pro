@@ -14,6 +14,7 @@ INCLUDEPATH += include/
 VPATH += src/
 
 SOURCES += \
+    src/file.cpp \
     src/image_statistics_overview.cpp \
     src/listmarkers.cpp \
     src/marker.cpp \
@@ -30,6 +31,7 @@ SOURCES += \
     src/colormap.cpp
 
 HEADERS += \
+    include/file.h \
     include/image_statistics_overview.h \
     include/aboutdialog.h \
     include/FITSExplorer.h \

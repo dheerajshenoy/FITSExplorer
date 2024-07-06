@@ -73,6 +73,9 @@ public:
     QAction *actionMarker_Mode;
     QAction *actionImageStatisticsOverview;
     QAction *actionHideAll_Markers;
+    QAction *actionSave_As;
+    QAction *actionExport;
+    QAction *actionNoColormap;
     QWidget *centralwidget;
     QVBoxLayout *verticalLayout_3;
     QSplitter *splitter;
@@ -124,19 +127,19 @@ public:
         QIcon icon;
         icon.addFile(QString::fromUtf8("../../Downloads/file-color-icon.svg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
         actionoverview->setIcon(icon);
-        actionoverview->setMenuRole(QAction::NoRole);
+        actionoverview->setMenuRole(QAction::MenuRole::NoRole);
         actionopen_toolbar = new QAction(DFits);
         actionopen_toolbar->setObjectName("actionopen_toolbar");
         QIcon icon1;
         icon1.addFile(QString::fromUtf8("../../Downloads/file-manager-icon.svg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
         actionopen_toolbar->setIcon(icon1);
-        actionopen_toolbar->setMenuRole(QAction::NoRole);
+        actionopen_toolbar->setMenuRole(QAction::MenuRole::NoRole);
         actionoverview_raw = new QAction(DFits);
         actionoverview_raw->setObjectName("actionoverview_raw");
         actionoverview_raw->setEnabled(false);
         QIcon icon2(QIcon::fromTheme(QString::fromUtf8("applications-development")));
         actionoverview_raw->setIcon(icon2);
-        actionoverview_raw->setMenuRole(QAction::NoRole);
+        actionoverview_raw->setMenuRole(QAction::MenuRole::NoRole);
         actionLight_Curve = new QAction(DFits);
         actionLight_Curve->setObjectName("actionLight_Curve");
         actionLight_Curve->setEnabled(true);
@@ -149,19 +152,19 @@ public:
         QIcon icon3;
         icon3.addFile(QString::fromUtf8("../../Downloads/diskette-save-svgrepo-com.svg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
         actionSave_toolbar->setIcon(icon3);
-        actionSave_toolbar->setMenuRole(QAction::NoRole);
+        actionSave_toolbar->setMenuRole(QAction::MenuRole::NoRole);
         action_export_toolbar = new QAction(DFits);
         action_export_toolbar->setObjectName("action_export_toolbar");
         action_export_toolbar->setEnabled(false);
         QIcon icon4;
         icon4.addFile(QString::fromUtf8("../../Downloads/export-svgrepo-com.svg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
         action_export_toolbar->setIcon(icon4);
-        action_export_toolbar->setMenuRole(QAction::NoRole);
+        action_export_toolbar->setMenuRole(QAction::MenuRole::NoRole);
         actionDeleteAllMarkers = new QAction(DFits);
         actionDeleteAllMarkers->setObjectName("actionDeleteAllMarkers");
         QIcon icon5(QIcon::fromTheme(QString::fromUtf8("edit-delete")));
         actionDeleteAllMarkers->setIcon(icon5);
-        actionDeleteAllMarkers->setMenuRole(QAction::NoRole);
+        actionDeleteAllMarkers->setMenuRole(QAction::MenuRole::NoRole);
         actionFit_to_Width = new QAction(DFits);
         actionFit_to_Width->setObjectName("actionFit_to_Width");
         actionFit_to_Height = new QAction(DFits);
@@ -185,7 +188,7 @@ public:
         actionMarkerMode->setEnabled(false);
         QIcon icon6(QIcon::fromTheme(QString::fromUtf8("applications-graphics")));
         actionMarkerMode->setIcon(icon6);
-        actionMarkerMode->setMenuRole(QAction::NoRole);
+        actionMarkerMode->setMenuRole(QAction::MenuRole::NoRole);
         actionList_Markers = new QAction(DFits);
         actionList_Markers->setObjectName("actionList_Markers");
         actionDelete_Markers = new QAction(DFits);
@@ -238,7 +241,7 @@ public:
         actionGrayscale->setCheckable(true);
         actionCustom = new QAction(DFits);
         actionCustom->setObjectName("actionCustom");
-        actionCustom->setCheckable(true);
+        actionCustom->setCheckable(false);
         actionMarker_Mode = new QAction(DFits);
         actionMarker_Mode->setObjectName("actionMarker_Mode");
         actionMarker_Mode->setCheckable(true);
@@ -247,6 +250,13 @@ public:
         actionHideAll_Markers = new QAction(DFits);
         actionHideAll_Markers->setObjectName("actionHideAll_Markers");
         actionHideAll_Markers->setCheckable(true);
+        actionSave_As = new QAction(DFits);
+        actionSave_As->setObjectName("actionSave_As");
+        actionExport = new QAction(DFits);
+        actionExport->setObjectName("actionExport");
+        actionNoColormap = new QAction(DFits);
+        actionNoColormap->setObjectName("actionNoColormap");
+        actionNoColormap->setCheckable(true);
         centralwidget = new QWidget(DFits);
         centralwidget->setObjectName("centralwidget");
         QSizePolicy sizePolicy1(QSizePolicy::Policy::Maximum, QSizePolicy::Policy::Minimum);
@@ -258,7 +268,7 @@ public:
         verticalLayout_3->setObjectName("verticalLayout_3");
         splitter = new QSplitter(centralwidget);
         splitter->setObjectName("splitter");
-        splitter->setOrientation(Qt::Horizontal);
+        splitter->setOrientation(Qt::Orientation::Horizontal);
         verticalLayoutWidget = new QWidget(splitter);
         verticalLayoutWidget->setObjectName("verticalLayoutWidget");
         verticalLayout_2 = new QVBoxLayout(verticalLayoutWidget);
@@ -276,11 +286,11 @@ public:
         HDU_List->setMinimumSize(QSize(220, 0));
         HDU_List->setBaseSize(QSize(0, 0));
         HDU_List->setTabletTracking(false);
-        HDU_List->setEditTriggers(QAbstractItemView::NoEditTriggers);
+        HDU_List->setEditTriggers(QAbstractItemView::EditTrigger::NoEditTriggers);
         HDU_List->setAlternatingRowColors(true);
-        HDU_List->setSelectionMode(QAbstractItemView::SingleSelection);
-        HDU_List->setSelectionBehavior(QAbstractItemView::SelectRows);
-        HDU_List->setGridStyle(Qt::DashLine);
+        HDU_List->setSelectionMode(QAbstractItemView::SelectionMode::SingleSelection);
+        HDU_List->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
+        HDU_List->setGridStyle(Qt::PenStyle::DashLine);
         HDU_List->setSortingEnabled(false);
         HDU_List->setColumnCount(2);
         HDU_List->horizontalHeader()->setStretchLastSection(true);
@@ -297,7 +307,7 @@ public:
         tab_widget = new QTabWidget(verticalLayoutWidget_2);
         tab_widget->setObjectName("tab_widget");
         tab_widget->setEnabled(true);
-        tab_widget->setTabShape(QTabWidget::Triangular);
+        tab_widget->setTabShape(QTabWidget::TabShape::Triangular);
         tab_widget->setTabsClosable(true);
         tab_widget->setMovable(true);
         tab_widget->setTabBarAutoHide(false);
@@ -316,7 +326,7 @@ public:
         DFits->setCentralWidget(centralwidget);
         menubar = new QMenuBar(DFits);
         menubar->setObjectName("menubar");
-        menubar->setGeometry(QRect(0, 0, 800, 22));
+        menubar->setGeometry(QRect(0, 0, 800, 27));
         menuFile = new QMenu(menubar);
         menuFile->setObjectName("menuFile");
         menuEdit = new QMenu(menubar);
@@ -333,6 +343,7 @@ public:
         menuStatistics->setEnabled(false);
         menuMarker = new QMenu(menuTools);
         menuMarker->setObjectName("menuMarker");
+        menuMarker->setEnabled(false);
         menuZoom = new QMenu(menubar);
         menuZoom->setObjectName("menuZoom");
         menuColormap = new QMenu(menubar);
@@ -340,7 +351,7 @@ public:
         DFits->setMenuBar(menubar);
         toolbar = new QToolBar(DFits);
         toolbar->setObjectName("toolbar");
-        toolbar->setAllowedAreas(Qt::TopToolBarArea);
+        toolbar->setAllowedAreas(Qt::ToolBarArea::TopToolBarArea);
         DFits->addToolBar(Qt::ToolBarArea::TopToolBarArea, toolbar);
 
         menubar->addAction(menuFile->menuAction());
@@ -353,7 +364,8 @@ public:
         menuFile->addAction(actionOpen_Recent);
         menuFile->addAction(actionClose_File);
         menuFile->addAction(actionxport);
-        menuFile->addSeparator();
+        menuFile->addAction(actionSave_As);
+        menuFile->addAction(actionExport);
         menuFile->addAction(actionExit);
         menuEdit->addAction(actionPreferences);
         menuHelp->addSeparator();
@@ -375,6 +387,7 @@ public:
         menuZoom->addAction(actionZoom50);
         menuZoom->addAction(actionZoom75);
         menuZoom->addAction(actionZoom100);
+        menuColormap->addAction(actionNoColormap);
         menuColormap->addAction(actionGrayscale);
         menuColormap->addAction(actionBone);
         menuColormap->addAction(actionCool);
@@ -432,7 +445,7 @@ public:
 #endif // QT_CONFIG(tooltip)
         actionoverview_raw->setText(QCoreApplication::translate("DFits", "Raw Overview", nullptr));
         actionLight_Curve->setText(QCoreApplication::translate("DFits", "Light Curve", nullptr));
-        actionxport->setText(QCoreApplication::translate("DFits", "Export As", nullptr));
+        actionxport->setText(QCoreApplication::translate("DFits", "Save", nullptr));
         actionSave_toolbar->setText(QCoreApplication::translate("DFits", "Save", nullptr));
         action_export_toolbar->setText(QCoreApplication::translate("DFits", "export", nullptr));
         actionDeleteAllMarkers->setText(QCoreApplication::translate("DFits", "DeleteAllMarkers", nullptr));
@@ -443,7 +456,7 @@ public:
         actionZoom50->setText(QCoreApplication::translate("DFits", "50%", nullptr));
         actionZoom75->setText(QCoreApplication::translate("DFits", "75%", nullptr));
         actionZoom100->setText(QCoreApplication::translate("DFits", "100%", nullptr));
-        actionClose_File->setText(QCoreApplication::translate("DFits", "Close File", nullptr));
+        actionClose_File->setText(QCoreApplication::translate("DFits", "Close Session", nullptr));
         actionMarkerMode->setText(QCoreApplication::translate("DFits", "MarkerMode", nullptr));
 #if QT_CONFIG(shortcut)
         actionMarkerMode->setShortcut(QCoreApplication::translate("DFits", "M", nullptr));
@@ -469,6 +482,9 @@ public:
         actionMarker_Mode->setText(QCoreApplication::translate("DFits", "Marker Mode", nullptr));
         actionImageStatisticsOverview->setText(QCoreApplication::translate("DFits", "Overview", nullptr));
         actionHideAll_Markers->setText(QCoreApplication::translate("DFits", "Hide All Markers", nullptr));
+        actionSave_As->setText(QCoreApplication::translate("DFits", "Save As", nullptr));
+        actionExport->setText(QCoreApplication::translate("DFits", "Export", nullptr));
+        actionNoColormap->setText(QCoreApplication::translate("DFits", "No Colormap", nullptr));
         menuFile->setTitle(QCoreApplication::translate("DFits", "File", nullptr));
         menuEdit->setTitle(QCoreApplication::translate("DFits", "Edit", nullptr));
         menuHelp->setTitle(QCoreApplication::translate("DFits", "Help", nullptr));

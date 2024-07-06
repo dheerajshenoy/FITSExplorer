@@ -19,6 +19,7 @@ FITSExplorer::FITSExplorer(QStringList argv, QWidget *parent)
 
     QActionGroup *colormapActionGroup = new QActionGroup(this);
 
+    colormapActionGroup->addAction(ui->actionNoColormap);
     colormapActionGroup->addAction(ui->actionAutumn);
     colormapActionGroup->addAction(ui->actionWinter);
     colormapActionGroup->addAction(ui->actionBone);
@@ -43,7 +44,7 @@ FITSExplorer::FITSExplorer(QStringList argv, QWidget *parent)
         OpenFile(argv[1]);
     }
 
-    //OpenFile("/home/neo/test.fits");
+    OpenFile("//home/neo/Gits/Solar-Project/Data/09-04-2013/DATA_DENOISED/94/aia.lev1_euv_12s.2013-04-09T124003Z.94.image_lev1.fits");
 }
 
 void FITSExplorer::INIT_Configuration()
@@ -127,8 +128,18 @@ bool FITSExplorer::isColormapSelected()
 
 QImage FITSExplorer::ApplyColormap(QImage img)
 {
+    if (m_should_copy_before_applying_colormap)
+    {
+        m_orig_img = img.copy();
+        m_should_copy_before_applying_colormap = false;
+    }
     switch(m_cur_colormap)
     {
+
+    case Colormap::None:
+        return m_orig_img;
+        break;
+
     case Colormap::Autumn:
         return CM::autumn(img);
         break;
@@ -230,6 +241,7 @@ void FITSExplorer::INIT_Connections()
     connect(ui->actionOpen, SIGNAL(triggered()), SLOT(OpenFile()));
     connect(ui->HDU_List, SIGNAL(cellDoubleClicked(int,int)), SLOT(HDU_Table_Double_Clicked(int, int)));
     connect(ui->tab_widget, SIGNAL(tabCloseRequested(int)), SLOT(CloseTab(int)));
+    connect(ui->tab_widget, SIGNAL(tabBarClicked(int)), SLOT(update_HDU_Table(int)));
 
     connect(gv, SIGNAL(markerColorChanged(int, QColor)), SLOT(changeMarkerLineColor(int, QColor)));
 
@@ -247,12 +259,16 @@ int FITSExplorer::HDU_Table_Double_Clicked(int row, int col)
     int type;
     status = 0;
 
-    if(row > m_nhdu)
+
+    File *file = getCurrentFile();
+
+    if(row > file->getNHDU())
         return 0;
 
-    if(fits_movabs_hdu(fptr, row + 1, &type, &status))
+    status = file->moveAbsRow(row + 1, type);
+
+    if (status)
     {
-        fits_report_error(stderr, status);
         QMessageBox::critical(this, "Error", "Unable to move to the HDU");
         return status;
     }
@@ -358,7 +374,6 @@ void FITSExplorer::OpenFile(QString filename)
             ui->actionDeleteAllMarkers->setEnabled(false);
             ui->actionDelete_Markers->setEnabled(false);
             filename = openFileDialog.selectedFiles()[0];
-            // Till here
             AddRecentFile(filename);
             ui->statusbar->setMsg(QString("File {%1} Opened").arg(filename));
             ui->statusbar->setFile(filename);
@@ -415,48 +430,36 @@ void FITSExplorer::OpenRecent() {
     }
 }
 
+int FITSExplorer::nfiles()
+{
+    return m_files_list.size();
+}
+
 // Helper function for opening the file at path `filename`
 int FITSExplorer::HandleFile(QString filename)
 {
-    // set status before opening the file according to then norms of cfitsio
-    status = 0;
-    if(fits_open_file(&fptr, filename.toStdString().c_str(), READONLY, &status))
+    File *file = new File(filename);
+    m_files_list.push_back(file);
+
+    bool status;
+    status = file->Open();
+    if(!status)
     {
-        fits_report_error(stderr, status);
         QMessageBox::critical(this, "Error", "Cannot Open File!");
         return status;
     }
 
-    if(fits_get_num_hdus(fptr, &m_nhdu, &status))
+    m_file_index = nfiles() - 1;
+
+    ui->HDU_List->setRowCount(file->getNHDU());
+
+    QList<int> types = file->getHDUTypes();
+    int type;
+    QString type_string;
+
+    for(int i=0; i < types.size(); i++)
     {
-        fits_report_error(stderr, status);
-        QMessageBox::critical(this, "Error", "Cannot get the number of HDUs!");
-        return status;
-    }
-
-    if (m_nhdu < 1)
-        return 0;
-
-    ui->HDU_List->setRowCount(m_nhdu);
-
-    for(int i=1; i <= m_nhdu; i++)
-    {
-        if(fits_movabs_hdu(fptr, i, nullptr, &status))
-        {
-            fits_report_error(stderr, status);
-            return status;
-        }
-
-        int type;
-
-        if(fits_get_hdu_type(fptr, &type, &status))
-        {
-            fits_report_error(stderr, status);
-            return status;
-        }
-
-        QString type_string;
-
+        type = types[i];
         switch(type)
         {
         case IMAGE_HDU:
@@ -470,24 +473,26 @@ int FITSExplorer::HandleFile(QString filename)
         case BINARY_TBL:
             type_string = "BINARY TBL";
             break;
+
+
         }
 
         QTableWidgetItem *item1 = new QTableWidgetItem();
-
-
         QTableWidgetItem *item2 = new QTableWidgetItem();
+
         item2->setText(type_string);
 
-        if (i == 1) {
+        if (i == 0) {
             item1->setText("Primary");
         }
         else {
-            item1->setText("Ext " + QString::number(i - 1));
+            item1->setText("Ext " + QString::number(i));
         }
 
-        ui->HDU_List->setItem(i-1, 0, item1);
-        ui->HDU_List->setItem(i-1, 1, item2);
+        ui->HDU_List->setItem(i, 0, item1);
+        ui->HDU_List->setItem(i, 1, item2);
     }
+
 
     return 0;
 }
@@ -495,16 +500,10 @@ int FITSExplorer::HandleFile(QString filename)
 int FITSExplorer::ChangeBrightness()
 {
     QImage image = img_widget->GetImage();
-    //QImage image = pixmap.toImage();
-    for (int y = 0; y < height; ++y)
-    {
-        for (int x = 0; x < width; ++x)
-        {
-            float value = image_data[y * width + x];
-            value = qBound(0, static_cast<int>(value * img_widget->GetSlider()->value()/100), 255);
-            image.setPixel(x, y, qRgb(value, value, value));
-        }
-    }
+
+    File *file = getCurrentFile();
+
+    file->changeBrightness(img_widget->GetSlider()->value(), image);
 
     if (isColormapSelected())
     {
@@ -516,73 +515,59 @@ int FITSExplorer::ChangeBrightness()
     return 0;
 }
 
+File* FITSExplorer::getCurrentFile()
+{
+    if (!m_files_list.empty() && m_file_index >= 0)
+    {
+        return m_files_list[m_file_index];
+    }
+
+    return nullptr;
+}
+
 int FITSExplorer::HandleImage()
 {
-    int naxis;
-    if(fits_get_img_dim(fptr, &naxis, &status))
+    // int naxis;
+
+    File *file = getCurrentFile();
+    if (!file)
     {
-        fits_report_error(stderr, status);
-        return status;
+        QMessageBox::critical(this, "Error", "Cannot open the image");
+        return -1;
     }
+
+    int naxis = file->getImgDim();
 
     long naxes[naxis];
+    file->getImgSize(naxes);
 
-    if(fits_get_img_size(fptr, naxis, naxes, &status))
+    if (!naxes)
     {
         QMessageBox::critical(this, "Error", "Cannot get the image dimension");
-        fits_report_error(stderr, status);
-        return status;
+        return -1;
     }
 
-    int bitpix;
-
-    if(fits_get_img_type(fptr, &bitpix, &status))
+    if(file->getImgType() == -1)
     {
-        QMessageBox::critical(this, "Error", "Cannot get the image datatype");
-        fits_report_error(stderr, status);
-        return status;
+        QMessageBox::critical(this, "Error", "Cannot get the image type");
+        return -1;
     }
 
-    width = naxes[0];
-    height = naxes[1];
-
-    long fpixel = 1; // Starting pixel
-
-    if(width == 0 || height == 0)
+    if(!file->checkIfValidDim())
     {
         QMessageBox::critical(this, "Error", "Undefined height and width for Image");
         return -1;
     }
 
-    if(width < 0 || height < 0)
-    {
-        QMessageBox::critical(this, "Error", "Undefined height and width for Image");
-        return -1;
-    }
+    file->initImgData();
 
-    try {
-        image_data = new float[width * height];
-    }
-    catch(const std::bad_array_new_length &e)
-    {
-        qCritical() << "Caught std::bad_array_new_length: " << e.what();
-        QMessageBox::critical(this, "Error", "Bad array length");
-        return 1;
-    }
+    auto width = naxes[0];
+    auto height = naxes[1];
 
-    // This is just to copy the original data, if in case we want to retrieve it again.
-    img_widget->SetData(image_data);
-
-
-    if(fits_read_img(fptr, TFLOAT, fpixel, width * height,
-                      NULL, image_data, NULL, &status))
-    {
-        fits_report_error(stderr, status);
-        return status;
-    }
-
+    auto image_data = file->getImgData();
 
     ui->statusbar->hideProgressBar(false);
+
     QImage image(width, height, QImage::Format_Grayscale8);
 
     // Read the image data and put to QImage, pixel by pixel
@@ -598,13 +583,7 @@ int FITSExplorer::HandleImage()
 
     ui->statusbar->hideProgressBar(true);
     lc->setData(image_data, width, height);
-
-    //image.convertTo(QImage::Format_Indexed8);
-    //image.setColorTable(m_inferno);
-
-
     img_widget->setPixmap(QPixmap::fromImage(image));
-
     ui->tab_widget->addTab(img_widget, "Image");
     return 0;
 }
@@ -744,10 +723,10 @@ void FITSExplorer::ExportFile()
 {
     QFileDialog fd;
     QString filename = fd.getSaveFileName(this, "Export As",
-                                          "",
+                                          nullptr,
                                           "Images (*.png *.jpeg);;PDF (*.pdf);;All Files (*)");
 
-    if (fd.result() != QDialog::Rejected)
+    if (!filename.isEmpty())
     {
         QImage img = img_widget->GetImage();
         if(filename.endsWith(".pdf"))
@@ -885,6 +864,12 @@ void FITSExplorer::on_actionCool_triggered()
     HandleColorMapSelect(Colormap::Cool);
 }
 
+
+void FITSExplorer::on_actionNoColormap_triggered()
+{
+    HandleColorMapSelect(Colormap::None);
+}
+
 void FITSExplorer::on_actionHot_triggered()
 {
     HandleColorMapSelect(Colormap::Hot);
@@ -987,7 +972,6 @@ void FITSExplorer::on_actionHideAll_Markers_triggered(bool status)
 
 void FITSExplorer::AddRecentFile(QString filename)
 {
-    /*
     QTextStream in(&m_recentFile);
 
     in.seek(0);
@@ -1005,6 +989,5 @@ void FITSExplorer::AddRecentFile(QString filename)
     }
 
     lines.insert(0, filename);
-*/
 }
 
