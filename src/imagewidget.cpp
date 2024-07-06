@@ -2,6 +2,7 @@
 #include "ui_imagewidget.h"
 #include <QMessageBox>
 #include <QString>
+#include <QSlider>
 #include "colormap.h"
 
 ImageWidget::ImageWidget(QWidget *parent)
@@ -10,6 +11,8 @@ ImageWidget::ImageWidget(QWidget *parent)
 {
     ui->setupUi(this);
 
+    connect(ui->slider, &QSlider::sliderReleased,
+            [&]() { emit changeBrightness(); });
 }
 
 QSlider* ImageWidget::GetSlider() { return ui->slider; }

@@ -1,8 +1,14 @@
 #include "file.h"
 
-File::File(QString &filename)
-    : m_filename(filename)
-{}
+File::File(QString &filename, QObject *parent)
+    : QObject(parent), m_filename(filename)
+{
+
+    // Change brightness when slider is moved and released
+    connect(m_img_widget, &ImageWidget::changeBrightness, this, [&]() {
+        changeBrightness();
+    });
+}
 
 int File::getNHDU()
 {
@@ -136,11 +142,6 @@ int File::getImgType()
     }
 
     return m_bitpix;
-}
-
-bool File::Close()
-{
-    return true;
 }
 
 bool File::checkIfValidDim()
@@ -284,10 +285,68 @@ QImage File::ApplyColormap(QImage &img)
 
     case Colormap::Custom:
         break;
+
+    case Colormap::SDO_AIA_94:
+        return CM::SDO_AIA_94(img);
+        break;
+
+    case Colormap::SDO_AIA_131:
+        return CM::SDO_AIA_131(img);
+        break;
+
+    case Colormap::SDO_AIA_171:
+        return CM::SDO_AIA_171(img);
+        break;
+
+    case Colormap::SDO_AIA_193:
+        return CM::SDO_AIA_193(img);
+        break;
+
+    case Colormap::SDO_AIA_211:
+        return CM::SDO_AIA_211(img);
+        break;
     }
 }
 
 File::~File()
 {
 
+    // fprintf(stderr, "DD");
+    if(fits_close_file(m_fptr, &m_status))
+        fits_report_error(stderr, m_status);
+
+    if (overview != nullptr)
+    {
+        delete overview;
+        overview = nullptr;
+    }
+
+    if (m_img_widget != nullptr)
+    {
+        delete m_img_widget;
+        m_img_widget = nullptr;
+    }
+
+    // if (m_naxes != nullptr)
+    // {
+        // delete [] m_naxes;
+        // m_naxes = nullptr;
+    // }
+
+    if (m_image_data != nullptr)
+    {
+        delete [] m_image_data;
+        m_image_data = nullptr;
+    }
+
+}
+
+void File::setColormap(const Colormap &cmap)
+{
+    m_colormap = cmap;
+
+    MyGraphicsView *gv = m_img_widget->GetGraphicsView();
+    QImage img = gv->GetPixmap().toImage();
+    img.convertTo(QImage::Format_Indexed8);
+    gv->setPixmap(QPixmap::fromImage(ApplyColormap(img)));
 }

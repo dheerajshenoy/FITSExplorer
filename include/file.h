@@ -8,6 +8,7 @@
 #include "lightcurve.h"
 #include "colormap.h"
 #include <QMessageBox>
+#include <QObject>
 
 enum Colormap
 {
@@ -27,18 +28,27 @@ enum Colormap
     Spring,
     Summer,
     Turbo,
-    Custom
+    Custom,
+    SDO_AIA_94,
+    SDO_AIA_131,
+    SDO_AIA_171,
+    SDO_AIA_193,
+    SDO_AIA_211,
+    SDO_AIA_304,
+    SDO_AIA_1600,
+    SDO_AIA_4500,
+    SDO_AIA_1700,
 };
 
 
-class File
+class File : public QObject
 {
+    Q_OBJECT
 public:
-    File(QString &filename);
+    File(QString &filename, QObject *obj = nullptr);
     ~File();
 
     bool Open();
-    bool Close();
     int getNHDU();
     fitsfile* getFPTR();
     Colormap getColormap();
@@ -57,6 +67,7 @@ public:
     int getRows();
     ImageWidget* getImgWidget();
     QImage ApplyColormap(QImage &img);
+    void setColormap(const Colormap &cmap);
 
 private:
 
@@ -64,17 +75,17 @@ private:
     QString m_filename;
 
     int m_status = 0;
-    float *m_image_data;
+    float *m_image_data = nullptr;
     int width, height;
     int m_bitpix;
     int m_nhdu;
     int m_nkeys;
     int m_naxis;
-    long *m_naxes;
-    QCPItemStraightLine *m_line;
-    Overview *overview = new Overview();
+    long *m_naxes = nullptr;
+    QCPItemStraightLine *m_line = nullptr;
+    Overview *overview = nullptr;
     Colormap m_colormap = Colormap::None;
-    QCustomPlot *lightCurvePlot;
+    QCustomPlot *lightCurvePlot = nullptr;
     QImage m_orig_img;
     ImageWidget *m_img_widget = new ImageWidget();
 

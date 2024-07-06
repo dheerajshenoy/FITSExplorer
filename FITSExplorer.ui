@@ -218,6 +218,20 @@
     <property name="title">
      <string>Colormap</string>
     </property>
+    <widget class="QMenu" name="menuSDO_AIA">
+     <property name="title">
+      <string>SDO AIA</string>
+     </property>
+     <addaction name="action94"/>
+     <addaction name="action131"/>
+     <addaction name="action171"/>
+     <addaction name="action193"/>
+     <addaction name="action211"/>
+     <addaction name="action304"/>
+     <addaction name="action1600"/>
+     <addaction name="action1700"/>
+     <addaction name="action4500"/>
+    </widget>
     <addaction name="actionNoColormap"/>
     <addaction name="actionGrayscale"/>
     <addaction name="actionBone"/>
@@ -235,7 +249,8 @@
     <addaction name="actionWinter"/>
     <addaction name="actionAutumn"/>
     <addaction name="separator"/>
-    <addaction name="actionCustom"/>
+    <addaction name="separator"/>
+    <addaction name="menuSDO_AIA"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -243,28 +258,6 @@
    <addaction name="menuColormap"/>
    <addaction name="menuZoom"/>
    <addaction name="menuHelp"/>
-  </widget>
-  <widget class="QToolBar" name="toolbar">
-   <property name="windowTitle">
-    <string>toolBar</string>
-   </property>
-   <property name="allowedAreas">
-    <set>Qt::ToolBarArea::TopToolBarArea</set>
-   </property>
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-   <addaction name="actionopen_toolbar"/>
-   <addaction name="separator"/>
-   <addaction name="actionoverview"/>
-   <addaction name="actionoverview_raw"/>
-   <addaction name="actionSave_toolbar"/>
-   <addaction name="action_export_toolbar"/>
-   <addaction name="actionDeleteAllMarkers"/>
-   <addaction name="actionMarkerMode"/>
   </widget>
   <action name="actionOpen">
    <property name="text">
@@ -599,14 +592,6 @@
     <string>Grayscale</string>
    </property>
   </action>
-  <action name="actionCustom">
-   <property name="checkable">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Custom</string>
-   </property>
-  </action>
   <action name="actionMarker_Mode">
    <property name="checkable">
     <bool>true</bool>
@@ -644,6 +629,51 @@
    </property>
    <property name="text">
     <string>No Colormap</string>
+   </property>
+  </action>
+  <action name="action94">
+   <property name="text">
+    <string>94</string>
+   </property>
+  </action>
+  <action name="action131">
+   <property name="text">
+    <string>131</string>
+   </property>
+  </action>
+  <action name="action171">
+   <property name="text">
+    <string>171</string>
+   </property>
+  </action>
+  <action name="action193">
+   <property name="text">
+    <string>193</string>
+   </property>
+  </action>
+  <action name="action211">
+   <property name="text">
+    <string>211</string>
+   </property>
+  </action>
+  <action name="action304">
+   <property name="text">
+    <string>304</string>
+   </property>
+  </action>
+  <action name="action1600">
+   <property name="text">
+    <string>1600</string>
+   </property>
+  </action>
+  <action name="action4500">
+   <property name="text">
+    <string>4500</string>
+   </property>
+  </action>
+  <action name="action1700">
+   <property name="text">
+    <string>1700</string>
    </property>
   </action>
  </widget>

@@ -19,7 +19,6 @@
 #include <QtWidgets/QSplitter>
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QTableWidget>
-#include <QtWidgets/QToolBar>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 #include <mystatusbar.h>
@@ -69,13 +68,21 @@ public:
     QAction *actionWinter;
     QAction *actionAutumn;
     QAction *actionGrayscale;
-    QAction *actionCustom;
     QAction *actionMarker_Mode;
     QAction *actionImageStatisticsOverview;
     QAction *actionHideAll_Markers;
     QAction *actionSave_As;
     QAction *actionExport;
     QAction *actionNoColormap;
+    QAction *action94;
+    QAction *action131;
+    QAction *action171;
+    QAction *action193;
+    QAction *action211;
+    QAction *action304;
+    QAction *action1600;
+    QAction *action4500;
+    QAction *action1700;
     QWidget *centralwidget;
     QVBoxLayout *verticalLayout_3;
     QSplitter *splitter;
@@ -96,7 +103,7 @@ public:
     QMenu *menuMarker;
     QMenu *menuZoom;
     QMenu *menuColormap;
-    QToolBar *toolbar;
+    QMenu *menuSDO_AIA;
 
     void setupUi(QMainWindow *FITSExplorer)
     {
@@ -239,9 +246,6 @@ public:
         actionGrayscale = new QAction(FITSExplorer);
         actionGrayscale->setObjectName("actionGrayscale");
         actionGrayscale->setCheckable(true);
-        actionCustom = new QAction(FITSExplorer);
-        actionCustom->setObjectName("actionCustom");
-        actionCustom->setCheckable(false);
         actionMarker_Mode = new QAction(FITSExplorer);
         actionMarker_Mode->setObjectName("actionMarker_Mode");
         actionMarker_Mode->setCheckable(true);
@@ -257,6 +261,24 @@ public:
         actionNoColormap = new QAction(FITSExplorer);
         actionNoColormap->setObjectName("actionNoColormap");
         actionNoColormap->setCheckable(true);
+        action94 = new QAction(FITSExplorer);
+        action94->setObjectName("action94");
+        action131 = new QAction(FITSExplorer);
+        action131->setObjectName("action131");
+        action171 = new QAction(FITSExplorer);
+        action171->setObjectName("action171");
+        action193 = new QAction(FITSExplorer);
+        action193->setObjectName("action193");
+        action211 = new QAction(FITSExplorer);
+        action211->setObjectName("action211");
+        action304 = new QAction(FITSExplorer);
+        action304->setObjectName("action304");
+        action1600 = new QAction(FITSExplorer);
+        action1600->setObjectName("action1600");
+        action4500 = new QAction(FITSExplorer);
+        action4500->setObjectName("action4500");
+        action1700 = new QAction(FITSExplorer);
+        action1700->setObjectName("action1700");
         centralwidget = new QWidget(FITSExplorer);
         centralwidget->setObjectName("centralwidget");
         QSizePolicy sizePolicy1(QSizePolicy::Policy::Maximum, QSizePolicy::Policy::Minimum);
@@ -348,11 +370,9 @@ public:
         menuZoom->setObjectName("menuZoom");
         menuColormap = new QMenu(menubar);
         menuColormap->setObjectName("menuColormap");
+        menuSDO_AIA = new QMenu(menuColormap);
+        menuSDO_AIA->setObjectName("menuSDO_AIA");
         FITSExplorer->setMenuBar(menubar);
-        toolbar = new QToolBar(FITSExplorer);
-        toolbar->setObjectName("toolbar");
-        toolbar->setAllowedAreas(Qt::ToolBarArea::TopToolBarArea);
-        FITSExplorer->addToolBar(Qt::ToolBarArea::TopToolBarArea, toolbar);
 
         menubar->addAction(menuFile->menuAction());
         menubar->addAction(menuEdit->menuAction());
@@ -404,15 +424,17 @@ public:
         menuColormap->addAction(actionWinter);
         menuColormap->addAction(actionAutumn);
         menuColormap->addSeparator();
-        menuColormap->addAction(actionCustom);
-        toolbar->addAction(actionopen_toolbar);
-        toolbar->addSeparator();
-        toolbar->addAction(actionoverview);
-        toolbar->addAction(actionoverview_raw);
-        toolbar->addAction(actionSave_toolbar);
-        toolbar->addAction(action_export_toolbar);
-        toolbar->addAction(actionDeleteAllMarkers);
-        toolbar->addAction(actionMarkerMode);
+        menuColormap->addSeparator();
+        menuColormap->addAction(menuSDO_AIA->menuAction());
+        menuSDO_AIA->addAction(action94);
+        menuSDO_AIA->addAction(action131);
+        menuSDO_AIA->addAction(action171);
+        menuSDO_AIA->addAction(action193);
+        menuSDO_AIA->addAction(action211);
+        menuSDO_AIA->addAction(action304);
+        menuSDO_AIA->addAction(action1600);
+        menuSDO_AIA->addAction(action1700);
+        menuSDO_AIA->addAction(action4500);
 
         retranslateUi(FITSExplorer);
         QObject::connect(actionExit, &QAction::triggered, FITSExplorer, qOverload<>(&QMainWindow::close));
@@ -478,13 +500,21 @@ public:
         actionWinter->setText(QCoreApplication::translate("FITSExplorer", "Winter", nullptr));
         actionAutumn->setText(QCoreApplication::translate("FITSExplorer", "Autumn", nullptr));
         actionGrayscale->setText(QCoreApplication::translate("FITSExplorer", "Grayscale", nullptr));
-        actionCustom->setText(QCoreApplication::translate("FITSExplorer", "Custom", nullptr));
         actionMarker_Mode->setText(QCoreApplication::translate("FITSExplorer", "Marker Mode", nullptr));
         actionImageStatisticsOverview->setText(QCoreApplication::translate("FITSExplorer", "Overview", nullptr));
         actionHideAll_Markers->setText(QCoreApplication::translate("FITSExplorer", "Hide All Markers", nullptr));
         actionSave_As->setText(QCoreApplication::translate("FITSExplorer", "Save As", nullptr));
         actionExport->setText(QCoreApplication::translate("FITSExplorer", "Export", nullptr));
         actionNoColormap->setText(QCoreApplication::translate("FITSExplorer", "No Colormap", nullptr));
+        action94->setText(QCoreApplication::translate("FITSExplorer", "94", nullptr));
+        action131->setText(QCoreApplication::translate("FITSExplorer", "131", nullptr));
+        action171->setText(QCoreApplication::translate("FITSExplorer", "171", nullptr));
+        action193->setText(QCoreApplication::translate("FITSExplorer", "193", nullptr));
+        action211->setText(QCoreApplication::translate("FITSExplorer", "211", nullptr));
+        action304->setText(QCoreApplication::translate("FITSExplorer", "304", nullptr));
+        action1600->setText(QCoreApplication::translate("FITSExplorer", "1600", nullptr));
+        action4500->setText(QCoreApplication::translate("FITSExplorer", "4500", nullptr));
+        action1700->setText(QCoreApplication::translate("FITSExplorer", "1700", nullptr));
         menuFile->setTitle(QCoreApplication::translate("FITSExplorer", "File", nullptr));
         menuEdit->setTitle(QCoreApplication::translate("FITSExplorer", "Edit", nullptr));
         menuHelp->setTitle(QCoreApplication::translate("FITSExplorer", "Help", nullptr));
@@ -494,7 +524,7 @@ public:
         menuMarker->setTitle(QCoreApplication::translate("FITSExplorer", "Marker", nullptr));
         menuZoom->setTitle(QCoreApplication::translate("FITSExplorer", "Zoom", nullptr));
         menuColormap->setTitle(QCoreApplication::translate("FITSExplorer", "Colormap", nullptr));
-        toolbar->setWindowTitle(QCoreApplication::translate("FITSExplorer", "toolBar", nullptr));
+        menuSDO_AIA->setTitle(QCoreApplication::translate("FITSExplorer", "SDO AIA", nullptr));
     } // retranslateUi
 
 };

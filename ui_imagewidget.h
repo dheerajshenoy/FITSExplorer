@@ -90,7 +90,6 @@ public:
 
         ImageWidget->addWidget(page);
 
-
         retranslateUi(ImageWidget);
 
         QMetaObject::connectSlotsByName(ImageWidget);

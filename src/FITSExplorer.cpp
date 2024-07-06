@@ -126,99 +126,15 @@ bool FITSExplorer::isColormapSelected()
     return true;
 }
 
-QImage FITSExplorer::ApplyColormap(QImage img)
-{
-    if (m_should_copy_before_applying_colormap)
-    {
-        m_orig_img = img.copy();
-        m_should_copy_before_applying_colormap = false;
-    }
-    switch(m_cur_colormap)
-    {
-
-    case Colormap::None:
-        return m_orig_img;
-        break;
-
-    case Colormap::Autumn:
-        return CM::autumn(img);
-        break;
-
-    case Colormap::Bone:
-        return CM::bone(img);
-        break;
-
-    case Colormap::Cool:
-        return CM::cool(img);
-        break;
-
-    case Colormap::Grayscale:
-        return CM::grayscale(img);
-        break;
-
-    case Colormap::HSV:
-        return CM::hsv(img);
-        break;
-
-    case Colormap::Hot:
-        return CM::hot(img);
-        break;
-
-    case Colormap::Winter:
-        return CM::winter(img);
-        break;
-
-    case Colormap::Jet:
-        return CM::jet(img);
-        break;
-
-    case Colormap::Ocean:
-        return CM::ocean(img);
-        break;
-
-    case Colormap::Parula:
-        return CM::parula(img);
-        break;
-
-    case Colormap::Pink:
-        return CM::pink(img);
-        break;
-
-    case Colormap::Summer:
-        return CM::summer(img);
-        break;
-
-    case Colormap::Rainbow:
-        return CM::rainbow(img);
-        break;
-
-    case Colormap::Turbo:
-        return CM::turbo(img);
-        break;
-
-    case Colormap::Spring:
-        return CM::spring(img);
-        break;
-
-    case Colormap::Custom:
-        break;
-    }
-}
 
 void FITSExplorer::HandleColorMapSelect(Colormap colormap)
 {
-    m_cur_colormap = colormap;
-    QImage image = gv->GetPixmap().toImage();
-    image.convertTo(QImage::Format_Indexed8);
-    gv->setPixmap(QPixmap::fromImage(ApplyColormap(image)));
+    File *file = getCurrentFile();
+    file->setColormap(colormap);
 }
 
 void FITSExplorer::INIT_Connections()
 {
-    // Change brightness when slider is moved and released
-    connect(img_widget->GetSlider(), SIGNAL(sliderReleased()),
-            SLOT(ChangeBrightness()));
-
     // Get signal when moves is moved inside the pixmap
     connect(gv,
             SIGNAL(mouseMoved(QPointF)),
@@ -253,7 +169,6 @@ void FITSExplorer::INIT_Connections()
 void FITSExplorer::update_HDU_Table(int index)
 {
 
-    fprintf(stderr, "%d", index);
     m_file_index = index;
 
     File *file = getCurrentFile();
@@ -282,7 +197,6 @@ void FITSExplorer::update_HDU_Table(int index)
             type_string = "BINARY TBL";
             break;
 
-
         }
 
         QTableWidgetItem *item1 = new QTableWidgetItem();
@@ -304,8 +218,15 @@ void FITSExplorer::update_HDU_Table(int index)
 
 void FITSExplorer::CloseTab(int index)
 {
+    File *file = m_files_list[index];
+    m_files_list.removeAt(index);
+
+    ui->HDU_List->clear();
+    ui->HDU_List->setRowCount(0);
+    ui->HDU_List->setColumnCount(0);
     ui->tab_widget->removeTab(index);
-    //ui->mini_light_curve_plot->removeGraph(index);
+
+    delete file;
 }
 
 int FITSExplorer::HDU_Table_Double_Clicked(int row, int col)
@@ -550,29 +471,6 @@ int FITSExplorer::HandleFile(QString filename)
         ui->HDU_List->setItem(i, 0, item1);
         ui->HDU_List->setItem(i, 1, item2);
     }
-
-
-    return 0;
-}
-
-int FITSExplorer::ChangeBrightness()
-{
-    // QImage image = img_widget->GetImage();
-
-    File *file = getCurrentFile();
-    file->changeBrightness();
-
-    // QImage image = file->getImgWidget()->GetImage();
-
-    // file->changeBrightness(img_widget->GetSlider()->value(), image);
-
-    // if (isColormapSelected())
-    // {
-        // image.convertTo(QImage::Format_Indexed8);
-        // image = ApplyColormap(image);
-    // }
-
-    // img_widget->setPixmap(QPixmap::fromImage(image));
 
 
     return 0;
@@ -993,6 +891,36 @@ void FITSExplorer::on_actionAutumn_triggered()
     HandleColorMapSelect(Colormap::Autumn);
 }
 
+void FITSExplorer::on_action94_triggered()
+{
+    HandleColorMapSelect(Colormap::SDO_AIA_94);
+}
+
+
+void FITSExplorer::on_action131_triggered()
+{
+    HandleColorMapSelect(Colormap::SDO_AIA_131);
+}
+
+void FITSExplorer::on_action171_triggered()
+{
+    HandleColorMapSelect(Colormap::SDO_AIA_171);
+}
+
+void FITSExplorer::on_action193_triggered()
+{
+    HandleColorMapSelect(Colormap::SDO_AIA_193);
+}
+
+
+void FITSExplorer::on_action211_triggered()
+{
+    HandleColorMapSelect(Colormap::SDO_AIA_211);
+}
+
+
+
+
 void FITSExplorer::INIT_Shortcuts()
 {
     QShortcut *shortcut_zoom_in = new QShortcut(QKeySequence("="), this);
@@ -1053,4 +981,5 @@ void FITSExplorer::AddRecentFile(QString filename)
 
     lines.insert(0, filename);
 }
+
 

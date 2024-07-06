@@ -29,13 +29,13 @@ public:
     void setImage(QImage);
     void scaleImage(float);
     void adjustScrollBar(QScrollBar *scrollBar, double factor);
-    inline void SetData(float *data)
-    {
-        image_data = data;
-    }
-
     MyGraphicsView *GetGraphicsView();
     void setPixmap(QPixmap pix);
+
+signals:
+    void changeBrightness();
+
+
 private:
     Ui::ImageWidget *ui;
 

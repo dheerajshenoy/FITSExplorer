@@ -20,4 +20,10 @@ public:
     static QImage summer(const QImage &img);
     static QImage turbo(const QImage &img);
     static QImage grayscale(const QImage &img);
+
+    static QImage SDO_AIA_94(const QImage &img);
+    static QImage SDO_AIA_131(const QImage &img);
+    static QImage SDO_AIA_171(const QImage &img);
+    static QImage SDO_AIA_193(const QImage &img);
+    static QImage SDO_AIA_211(const QImage &img);
 };

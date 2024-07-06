@@ -71,7 +71,6 @@ public slots:
 private slots:
     void OpenFile(QString filename = nullptr);
     void OpenRecent();
-    int ChangeBrightness();
     int HDU_Table_Double_Clicked(int, int);
     void CloseTab(int);
     void ShowCoordinates(QPointF);
@@ -112,6 +111,16 @@ private slots:
     void changeMarkerLineColor(int, QColor);
     void on_actionHideAll_Markers_triggered(bool);
     void on_actionNoColormap_triggered();
+
+    void on_action94_triggered();
+
+    void on_action171_triggered();
+
+    void on_action131_triggered();
+
+    void on_action193_triggered();
+
+    void on_action211_triggered();
 
 private:
 
