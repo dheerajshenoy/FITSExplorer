@@ -23,6 +23,7 @@ class Ui_MyStatusBar
 {
 public:
     QHBoxLayout *horizontalLayout;
+    QLabel *label_mode;
     QLabel *label_msg;
     QLabel *label_coord;
     QProgressBar *progressBar;
@@ -35,7 +36,7 @@ public:
     {
         if (MyStatusBar->objectName().isEmpty())
             MyStatusBar->setObjectName("MyStatusBar");
-        MyStatusBar->resize(810, 43);
+        MyStatusBar->resize(810, 48);
         QSizePolicy sizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Maximum);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -44,6 +45,11 @@ public:
         MyStatusBar->setBaseSize(QSize(0, 35));
         horizontalLayout = new QHBoxLayout(MyStatusBar);
         horizontalLayout->setObjectName("horizontalLayout");
+        label_mode = new QLabel(MyStatusBar);
+        label_mode->setObjectName("label_mode");
+
+        horizontalLayout->addWidget(label_mode);
+
         label_msg = new QLabel(MyStatusBar);
         label_msg->setObjectName("label_msg");
 
@@ -80,7 +86,7 @@ public:
 
         label_filename = new QLabel(MyStatusBar);
         label_filename->setObjectName("label_filename");
-        label_filename->setTextFormat(Qt::RichText);
+        label_filename->setTextFormat(Qt::TextFormat::RichText);
 
         horizontalLayout->addWidget(label_filename);
 
@@ -98,6 +104,7 @@ public:
     void retranslateUi(QWidget *MyStatusBar)
     {
         MyStatusBar->setWindowTitle(QCoreApplication::translate("MyStatusBar", "Form", nullptr));
+        label_mode->setText(QCoreApplication::translate("MyStatusBar", "MODE", nullptr));
         label_msg->setText(QCoreApplication::translate("MyStatusBar", "MSG", nullptr));
         label_coord->setText(QCoreApplication::translate("MyStatusBar", "COORD", nullptr));
         label_filedir->setText(QCoreApplication::translate("MyStatusBar", "FILE DIR", nullptr));

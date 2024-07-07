@@ -373,5 +373,18 @@ void File::fitToWidth(int width)
 void File::setSelectMode(bool state)
 {
     m_select_mode = state;
+    setMode(Mode::SELECT_MODE);
     m_img_widget->GetGraphicsView()->setSelectMode(state);
+}
+
+void File::setMode(Mode mode)
+{
+    m_mode = mode;
+
+    emit modeChanged(mode);
+}
+
+Mode File::getMode()
+{
+    return m_mode;
 }

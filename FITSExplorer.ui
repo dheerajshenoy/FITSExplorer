@@ -95,6 +95,9 @@
          </widget>
         </item>
         <item>
+         <widget class="ROITableWidget" name="roi_table" native="true"/>
+        </item>
+        <item>
          <widget class="QPushButton" name="reset_brightness_btn">
           <property name="text">
            <string>Reset Image</string>
@@ -635,6 +638,12 @@
    <class>MyStatusBar</class>
    <extends>QWidget</extends>
    <header location="global">mystatusbar.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ROITableWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">roitablewidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

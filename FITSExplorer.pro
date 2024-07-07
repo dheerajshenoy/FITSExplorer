@@ -14,6 +14,7 @@ INCLUDEPATH += include/
 VPATH += src/
 
 SOURCES += \
+    src/roitablewidget.cpp \
     src/file.cpp \
     src/image_statistics_overview.cpp \
     src/listmarkers.cpp \
@@ -28,7 +29,8 @@ SOURCES += \
     src/FITSExplorer.cpp \
     src/qcustomplot.cpp \
     src/overview.cpp \
-    src/colormap.cpp
+    src/colormap.cpp \
+    src/roirect.cpp
 
 HEADERS += \
     include/file.h \
@@ -37,6 +39,7 @@ HEADERS += \
     include/FITSExplorer.h \
     include/imagewidget.h \
     include/lightcurve.h \
+    include/mode.h \
     include/mygraphicsview.h \
     include/overview.h \
     include/colormap.h \
@@ -45,7 +48,9 @@ HEADERS += \
     include/mystatusbar.h \
     include/listmarkers.h \
     include/marker.h \
-    include/preferences.h
+    include/preferences.h \
+    include/roirect.h \
+    include/roitablewidget.h
 
 FORMS += \
     FITSExplorer.ui \
@@ -56,7 +61,8 @@ FORMS += \
     listmarkers.ui \
     mystatusbar.ui \
     overview.ui \
-    preferences.ui
+    preferences.ui \
+    roitablewidget.ui
 
 LIBS += -lcfitsio
 

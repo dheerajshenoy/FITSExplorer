@@ -19,6 +19,8 @@
 #include <qt6/QtCore/QStandardPaths>
 #include <qt6/QtGui/QShortcut>
 #include <qt6/QtGui/QKeySequence>
+#include <QShortcut>
+#include <QKeySequence>
 
 #include "overview.h"
 #include "imagewidget.h"
@@ -29,6 +31,7 @@
 #include "qcustomplot.h"
 #include "image_statistics_overview.h"
 #include "file.h"
+#include "mode.h"
 
 const QString APPNAME = "FITSExplorer";
 const QString CONFIG_NAME = "config.toml";
@@ -38,6 +41,9 @@ namespace Ui {
 class FITSExplorer;
 }
 QT_END_NAMESPACE
+
+
+
 
 class FITSExplorer : public QMainWindow
 {
@@ -64,10 +70,14 @@ public:
     void INIT_Shortcuts();
     File* getCurrentFile();
     int nfiles();
+    void setMode(Mode mode);
+    Mode getMode();
 
 public slots:
     void HandleColorMapSelect(Colormap);
     void update_HDU_Table(int);
+    void newROIRect(QUuid, QRectF);
+    void removeUUIDFromTable(QUuid);
 
 private slots:
     void OpenFile(QString filename = nullptr);
@@ -122,11 +132,11 @@ private slots:
 
 private:
 
+    void modeChangeUpdateStatusbar(Mode mode);
     QVector<File *> m_files_list = {};
 
+    File *m_cur_file_ptr = nullptr;
     int m_file_index = -1;
-
-
     Ui::FITSExplorer *ui;
     ImageWidget *img_widget = new ImageWidget();
     fitsfile *fptr;
@@ -146,6 +156,7 @@ private:
     void AddRecentFile(QString);
     QImage m_orig_img;
 
+    ImageWidget *m_img_widget = new ImageWidget();
     bool m_should_copy_before_applying_colormap = true;
 
     friend class File;

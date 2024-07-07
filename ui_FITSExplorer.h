@@ -23,6 +23,7 @@
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 #include <mystatusbar.h>
+#include <roitablewidget.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -86,6 +87,7 @@ public:
     QWidget *verticalLayoutWidget;
     QVBoxLayout *verticalLayout_2;
     QTableWidget *HDU_List;
+    ROITableWidget *roi_table;
     QPushButton *reset_brightness_btn;
     QWidget *verticalLayoutWidget_2;
     QVBoxLayout *verticalLayout;
@@ -296,6 +298,11 @@ public:
         HDU_List->verticalHeader()->setStretchLastSection(false);
 
         verticalLayout_2->addWidget(HDU_List);
+
+        roi_table = new ROITableWidget(verticalLayoutWidget);
+        roi_table->setObjectName("roi_table");
+
+        verticalLayout_2->addWidget(roi_table);
 
         reset_brightness_btn = new QPushButton(verticalLayoutWidget);
         reset_brightness_btn->setObjectName("reset_brightness_btn");

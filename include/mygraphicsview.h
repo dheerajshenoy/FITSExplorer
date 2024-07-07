@@ -11,6 +11,15 @@
 #include <QMouseEvent>
 #include "marker.h"
 #include "listmarkers.h"
+#include <QColor>
+#include <QBrush>
+#include <QPen>
+#include <QRgb>
+#include <QShortcut>
+#include <QKeySequence>
+#include "roirect.h"
+#include <QUuid>
+#include <QMap>
 
 class MyGraphicsView : public QGraphicsView
 {
@@ -33,6 +42,14 @@ public:
     void ZoomOut();
     void ShowAllMarkers();
     void setSelectMode(bool);
+    void ZoomIntoROI(QUuid uid);
+    void ZoomIntoLastROI();
+    void AddROIRect(ROIRect*);
+    void DeleteROIRect(QUuid uid);
+    void DeleteROIRect__for_table(QUuid uid);
+    void HideROIRect(QUuid uid);
+    int GetROIIndex();
+    ROIRect* GetROIRect(QUuid uid);
 
 signals:
     void mouseMoved(QPointF);
@@ -42,6 +59,8 @@ signals:
     void viewportChanged();
     void markerColorChanged(int, QColor);
     void markersHidden(bool);
+    void newROIRect(QUuid, QRectF);
+    void signalROITable(QUuid);
 
 private slots:
     void __changeMarkerLineColor(int, QColor);
@@ -59,6 +78,12 @@ protected:
     }
 
 private:
+
+    QShortcut *kb_zoom_in, *kb_zoom_out, *kb_roi_zoom;
+    void initShortcuts();
+
+    int m_roi_index = -1;
+
     QPixmap m_pix;
     QGraphicsScene *m_scene = new QGraphicsScene();
     QGraphicsPixmapItem *m_img;
@@ -70,6 +95,8 @@ private:
 
     QPoint m_roi_start_pos, m_roi_end_pos;
     bool m_select_mode = false;
+
+    QMap<QUuid , ROIRect*> m_roi_map;
 };
 
 #endif

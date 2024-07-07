@@ -164,6 +164,10 @@ void FITSExplorer::INIT_Connections()
 
     connect(gv, SIGNAL(markerColorChanged(int, QColor)), SLOT(changeMarkerLineColor(int, QColor)));
 
+    connect(ui->roi_table, &ROITableWidget::deleteROI, this, [&](QUuid uid) {
+        getCurrentFile()->getImgWidget()->GetGraphicsView()->DeleteROIRect__for_table(uid);
+    });
+
 }
 
 void FITSExplorer::update_HDU_Table(int index)
@@ -226,6 +230,9 @@ void FITSExplorer::CloseTab(int index)
     ui->HDU_List->setColumnCount(0);
     ui->tab_widget->removeTab(index);
 
+    disconnect(file->getImgWidget()->GetGraphicsView(),
+            SIGNAL(mouseMoved(QPointF)), this,
+            SLOT(ShowCoordinates(QPointF)));
     delete file;
 }
 
@@ -403,6 +410,36 @@ int FITSExplorer::HandleFile(QString filename)
 {
     // ui->tab_widget->addTab(img_widget, QFileInfo(filename).baseName());
     File *file = new File(filename);
+
+    MyGraphicsView *gv = file->getImgWidget()->GetGraphicsView();
+
+    connect(gv,
+            SIGNAL(mouseMoved(QPointF)),
+            this,
+            SLOT(ShowCoordinates(QPointF)));
+
+    connect(gv,
+            SIGNAL(signalROITable(QUuid)),
+            this,
+            SLOT(removeUUIDFromTable(QUuid)));
+
+    connect(gv,
+            SIGNAL(newROIRect(QUuid,QRectF)),
+            this,
+            SLOT(newROIRect(QUuid, QRectF)));
+
+    modeChangeUpdateStatusbar(file->getMode());
+
+    if (m_cur_file_ptr)
+    {
+        disconnect(m_cur_file_ptr, &File::modeChanged, this, &FITSExplorer::modeChangeUpdateStatusbar);
+    }
+    else
+    {
+        m_cur_file_ptr = file;
+        connect(m_cur_file_ptr, &File::modeChanged, this, &FITSExplorer::modeChangeUpdateStatusbar);
+    }
+
     m_files_list.push_back(file);
 
     ui->tab_widget->addTab(file->getImgWidget(), QFileInfo(filename).baseName());
@@ -907,16 +944,6 @@ void FITSExplorer::on_action211_triggered()
 
 void FITSExplorer::INIT_Shortcuts()
 {
-    QShortcut *shortcut_zoom_in = new QShortcut(QKeySequence("="), this);
-    QShortcut *shortcut_zoom_out = new QShortcut(QKeySequence("-"), this);
-
-    connect(shortcut_zoom_in, &QShortcut::activated, this, [&](){
-        gv->ZoomIn();
-    });
-
-    connect(shortcut_zoom_out, &QShortcut::activated, this, [&](){
-        gv->ZoomOut();
-    });
 }
 
 void FITSExplorer::on_actionMarker_Mode_triggered(bool state)
@@ -974,5 +1001,55 @@ void FITSExplorer::on_reset_brightness_btn_clicked()
 
 void FITSExplorer::on_actionSelect_triggered()
 {
-    getCurrentFile()->setSelectMode(ui->actionSelect->isChecked());
+    bool state = ui->actionSelect->isChecked();
+    getCurrentFile()->setSelectMode(state);
+    if (!state)
+    {
+        setMode(Mode::NORMAL_MODE);
+    }
+}
+
+Mode FITSExplorer::getMode()
+{
+    return getCurrentFile()->getMode();
+}
+
+void FITSExplorer::setMode(Mode mode)
+{
+    getCurrentFile()->setMode(mode);
+    modeChangeUpdateStatusbar(mode);
+}
+
+
+void FITSExplorer::modeChangeUpdateStatusbar(Mode mode)
+{
+
+    QString modestr;
+    switch(mode)
+    {
+    case Mode::NORMAL_MODE:
+        modestr = "NORMAL MODE";
+        break;
+
+    case Mode::PIXEL_ANALYSE_MODE:
+        modestr = "PIXEL ANALYSE MODE";
+        break;
+
+    case Mode::SELECT_MODE:
+        modestr = "SELECT MODE";
+        break;
+    }
+
+    ui->statusbar->setMode(modestr);
+}
+
+
+void FITSExplorer::newROIRect(QUuid uid, QRectF rect)
+{
+    ui->roi_table->addItem(uid, rect);
+}
+
+void FITSExplorer::removeUUIDFromTable(QUuid uid)
+{
+    ui->roi_table->removeItem(uid);
 }

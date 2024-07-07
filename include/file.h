@@ -9,6 +9,7 @@
 #include "colormap.h"
 #include <QMessageBox>
 #include <QObject>
+#include "mode.h"
 
 enum Colormap
 {
@@ -39,7 +40,6 @@ enum Colormap
     SDO_AIA_4500,
     SDO_AIA_1700,
 };
-
 
 class File : public QObject
 {
@@ -72,6 +72,11 @@ public:
     int getCurrentHDU();
     void fitToWidth(int);
     void setSelectMode(bool);
+    void setMode(Mode mode);
+    Mode getMode();
+
+signals:
+    void modeChanged(Mode);
 
 private:
 
@@ -93,10 +98,9 @@ private:
     QCustomPlot *lightCurvePlot = nullptr;
     QImage m_orig_img;
     ImageWidget *m_img_widget = new ImageWidget();
-
     bool m_should_copy_before_applying_colormap = true;
-
     bool m_select_mode = false;
+    Mode m_mode  = Mode::NORMAL_MODE;
 };
 
 #endif // FILE_H

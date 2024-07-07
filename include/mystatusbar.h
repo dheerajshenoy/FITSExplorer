@@ -22,6 +22,7 @@ public:
     void setCoordinate(const QPointF coordinate);
     void clearCoordinate();
     void setProgress(const int val);
+    void setMode(QString modestring);
 
     void hideProgressBar(bool status);
 private:

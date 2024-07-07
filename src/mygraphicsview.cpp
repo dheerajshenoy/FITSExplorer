@@ -11,6 +11,8 @@ MyGraphicsView::MyGraphicsView(QWidget *parent) : QGraphicsView(parent)
 
     connect(lm, SIGNAL(markerRemoved(int)), SLOT(removeMarkerAtPos(int)));
     connect(lm, SIGNAL(markerColorChanged(int, QColor)), SLOT(__changeMarkerLineColor(int, QColor)));
+
+    initShortcuts();
 }
 
 void MyGraphicsView::setPixmap(QPixmap pix)
@@ -106,13 +108,73 @@ void MyGraphicsView::mouseReleaseEvent(QMouseEvent *e)
         m_rubberband->hide();
 
         QRectF boundingrect = mapToScene(m_rubberband->geometry()).boundingRect();
+        ROIRect* m_roi_rect = new ROIRect(boundingrect);
+        AddROIRect(m_roi_rect);
 
-        this->fitInView(boundingrect, Qt::KeepAspectRatio);
-
-        centerOn(boundingrect.center());
     }
 
     QGraphicsView::mouseReleaseEvent(e);
+}
+
+void MyGraphicsView::AddROIRect(ROIRect* rect)
+{
+    m_roi_map[rect->uid()] = rect;
+
+    emit newROIRect(rect->uid(), rect->boundingRect());
+
+    connect(rect, &ROIRect::deleteItem, this, &MyGraphicsView::DeleteROIRect);
+    connect(rect, &ROIRect::hideItem, this, &MyGraphicsView::HideROIRect);
+    connect(rect, &ROIRect::zoomItem, this, &MyGraphicsView::ZoomIntoROI);
+    scene()->addItem(rect);
+}
+
+void MyGraphicsView::DeleteROIRect__for_table(QUuid uid)
+{
+    ROIRect* rect = m_roi_map[uid];
+    scene()->removeItem(rect);
+    m_roi_map.remove(uid);
+}
+
+void MyGraphicsView::DeleteROIRect(QUuid uid)
+{
+    ROIRect* rect = m_roi_map[uid];
+    scene()->removeItem(rect);
+    m_roi_map.remove(uid);
+    emit signalROITable(uid);
+}
+
+int MyGraphicsView::GetROIIndex()
+{
+    return m_roi_index;
+}
+
+ROIRect* MyGraphicsView::GetROIRect(QUuid uid)
+{
+    return m_roi_map[uid];
+}
+
+void MyGraphicsView::HideROIRect(QUuid uid)
+{
+    m_roi_map[uid]->setVisible(false);
+}
+
+void MyGraphicsView::ZoomIntoLastROI()
+{
+    if (m_roi_map.empty()) return;
+
+    ZoomIntoROI(m_roi_map.lastKey());
+}
+
+void MyGraphicsView::ZoomIntoROI(QUuid uid)
+{
+
+    ROIRect* rect = m_roi_map[uid];
+    if (rect)
+    {
+        QRectF boundingrect = rect->boundingRect();
+        this->fitInView(boundingrect, Qt::KeepAspectRatio);
+        centerOn(boundingrect.center());
+    }
 }
 
 void MyGraphicsView::mouseDoubleClickEvent(QMouseEvent *e)
@@ -152,8 +214,16 @@ void MyGraphicsView::mouseDoubleClickEvent(QMouseEvent *e)
 void MyGraphicsView::mousePressEvent(QMouseEvent *e)
 {
 
+    if (e->button() == Qt::RightButton) return;
+
+
     if (m_select_mode)
     {
+        if (e->button() == Qt::MiddleButton)
+        {
+            // TODO: Handle moving when in select mode
+            return;
+        }
         this->setDragMode(QGraphicsView::NoDrag);
         if (!m_rubberband)
             m_rubberband = new QRubberBand(QRubberBand::Rectangle, this);
@@ -228,4 +298,26 @@ void MyGraphicsView::setSelectMode(bool state)
     {
         this->setDragMode(QGraphicsView::ScrollHandDrag);
     }
+}
+
+void MyGraphicsView::initShortcuts()
+{
+
+    kb_zoom_in = new QShortcut(QKeySequence("="), this);
+    kb_zoom_out = new QShortcut(QKeySequence("-"), this);
+    kb_roi_zoom = new QShortcut(QKeySequence("z"), this);
+
+
+    connect(kb_zoom_in, &QShortcut::activated, this, [&]() {
+        ZoomIn();
+    });
+
+    connect(kb_zoom_out, &QShortcut::activated, this, [&]() {
+
+        ZoomOut();
+    });
+
+    connect(kb_roi_zoom, &QShortcut::activated, this, [&]() {
+        ZoomIntoLastROI();
+    });
 }

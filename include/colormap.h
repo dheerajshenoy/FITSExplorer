@@ -21,6 +21,7 @@ public:
     static QImage turbo(const QImage &img);
     static QImage grayscale(const QImage &img);
 
+    // SDO AIA
     static QImage SDO_AIA_94(const QImage &img);
     static QImage SDO_AIA_131(const QImage &img);
     static QImage SDO_AIA_171(const QImage &img);

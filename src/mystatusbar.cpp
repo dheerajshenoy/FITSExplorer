@@ -76,3 +76,9 @@ void MyStatusBar::hideProgressBar(bool status)
 {
     ui->progressBar->setHidden(status);
 }
+
+
+void MyStatusBar::setMode(QString mode)
+{
+    ui->label_mode->setText(mode);
+}
