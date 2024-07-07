@@ -9,6 +9,7 @@ ROITableWidget::ROITableWidget(QWidget *parent)
     ui->table->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
     connect(ui->table, &QTableWidget::customContextMenuRequested, this, &ROITableWidget::showContextMenu);
 
+    ui->table->setHorizontalHeaderLabels({ "ROI ID", "Name"});
 
     m_menu->addAction(m_delete_action);
     m_menu->addAction(m_hide_action);

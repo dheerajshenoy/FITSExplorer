@@ -588,46 +588,73 @@
    </property>
   </action>
   <action name="action94">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>94</string>
    </property>
   </action>
   <action name="action131">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>131</string>
    </property>
   </action>
   <action name="action171">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>171</string>
    </property>
   </action>
   <action name="action193">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>193</string>
    </property>
   </action>
   <action name="action211">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>211</string>
    </property>
   </action>
   <action name="action304">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>304</string>
    </property>
   </action>
   <action name="action1600">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>1600</string>
    </property>
   </action>
   <action name="action4500">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>4500</string>
    </property>
   </action>
   <action name="action1700">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>1700</string>
    </property>

@@ -35,6 +35,15 @@ FITSExplorer::FITSExplorer(QStringList argv, QWidget *parent)
     colormapActionGroup->addAction(ui->actionTurbo);
     colormapActionGroup->addAction(ui->actionSpring);
     colormapActionGroup->addAction(ui->actionSummer);
+    colormapActionGroup->addAction(ui->action94);
+    colormapActionGroup->addAction(ui->action131);
+    colormapActionGroup->addAction(ui->action171);
+    colormapActionGroup->addAction(ui->action193);
+    colormapActionGroup->addAction(ui->action211);
+    colormapActionGroup->addAction(ui->action304);
+    colormapActionGroup->addAction(ui->action4500);
+    colormapActionGroup->addAction(ui->action1600);
+    colormapActionGroup->addAction(ui->action1700);
 
     INIT_Configuration();
     //colormapActionGroup->addAction(ui->actionColormap);
@@ -44,7 +53,7 @@ FITSExplorer::FITSExplorer(QStringList argv, QWidget *parent)
         OpenFile(argv[1]);
     }
 
-    OpenFile("/home/neo/Gits/Solar-Project/Data/09-04-2013/DATA_UNCALIBRATED/94/aia.lev1_euv_12s.2013-04-09T124003Z.94.image_lev1.fits");
+    // OpenFile("/home/neo/Gits/Solar-Project/Data/09-04-2013/DATA_UNCALIBRATED/94/aia.lev1_euv_12s.2013-04-09T124003Z.94.image_lev1.fits");
 }
 
 void FITSExplorer::INIT_Configuration()
@@ -411,6 +420,7 @@ int FITSExplorer::HandleFile(QString filename)
     // ui->tab_widget->addTab(img_widget, QFileInfo(filename).baseName());
     File *file = new File(filename);
 
+    ui->statusbar->setFile(filename);
     MyGraphicsView *gv = file->getImgWidget()->GetGraphicsView();
 
     connect(gv,

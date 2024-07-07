@@ -6,6 +6,7 @@
 #include <QHBoxLayout>
 #include <QTimer>
 #include <QFileInfo>
+#include <QLocale>
 
 namespace Ui {
 class MyStatusBar;
@@ -27,6 +28,8 @@ public:
     void hideProgressBar(bool status);
 private:
     Ui::MyStatusBar *ui;
+
+    QLocale m_locale;
 };
 
 #endif // STATUSBAR_H

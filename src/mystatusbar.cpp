@@ -9,6 +9,8 @@ MyStatusBar::MyStatusBar(QWidget *parent)
 
     ui->progressBar->setHidden(true);
     ui->progressBar->setRange(0, 100);
+
+    m_locale = this->locale();
 }
 
 MyStatusBar::~MyStatusBar()
@@ -26,24 +28,26 @@ void MyStatusBar::setMsg(const QString msg, const int time)
 
 QString HumanReadableSize(const qint64 size)
 {
-    static const char* suffixes[] = {"B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"};
-    static const int numSuffixes = sizeof(suffixes) / sizeof(suffixes[0]);
-    int index = 0;
-    double fileSize = size;
+    // static const char* suffixes[] = {"B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"};
+    // static const int numSuffixes = sizeof(suffixes) / sizeof(suffixes[0]);
+    // int index = 0;
+    // double fileSize = size;
 
-    while (fileSize >= 1024 && index < numSuffixes - 1) {
-        fileSize /= 1024;
-        index++;
-    }
+    // while (fileSize >= 1024 && index < numSuffixes - 1) {
+        // fileSize /= 1024;
+        // index++;
+    // }
 
-    return QString("%1 %2").arg(fileSize, 0, 'f', 2).arg(suffixes[index]);
+    // return QString("%1 %2").arg(fileSize, 0, 'f', 2).arg(suffixes[index]);
+
 }
 
 void MyStatusBar::setFile(const QString filename)
 {
     QFileInfo fileInfo(filename);
     ui->label_filename->setText(fileInfo.fileName());
-    ui->label_filesize->setText(HumanReadableSize(fileInfo.size()));
+    fprintf(stderr, "%d", fileInfo.size());
+    ui->label_filesize->setText(m_locale.formattedDataSize(fileInfo.size()));
 
     // If file path is more than 20 characters, make it a tooltip text
     if (fileInfo.absoluteFilePath().size() > 10)
