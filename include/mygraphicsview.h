@@ -6,9 +6,11 @@
 #include <QGraphicsPixmapItem>
 #include <QObject>
 #include <QWheelEvent>
+#include <QCursor>
+#include <QRubberBand>
+#include <QMouseEvent>
 #include "marker.h"
 #include "listmarkers.h"
-#include <QCursor>
 
 class MyGraphicsView : public QGraphicsView
 {
@@ -30,6 +32,7 @@ public:
     void ZoomIn();
     void ZoomOut();
     void ShowAllMarkers();
+    void setSelectMode(bool);
 
 signals:
     void mouseMoved(QPointF);
@@ -48,6 +51,7 @@ protected:
     virtual void mouseMoveEvent(QMouseEvent *e) override;
     virtual void mouseDoubleClickEvent(QMouseEvent *e) override;
     virtual void mousePressEvent(QMouseEvent *e) override;
+    virtual void mouseReleaseEvent(QMouseEvent *e) override;
 
     void resizeEvent(QResizeEvent *event) override {
         QGraphicsView::resizeEvent(event);
@@ -61,6 +65,11 @@ private:
     bool m_markerMode = false;
     ListMarkers* lm = new ListMarkers();
     QVector<Marker*> m_markerList;
+
+    QRubberBand *m_rubberband = nullptr;
+
+    QPoint m_roi_start_pos, m_roi_end_pos;
+    bool m_select_mode = false;
 };
 
 #endif

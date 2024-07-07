@@ -26,6 +26,11 @@ void ImageWidget::setPixmap(QPixmap pix)
     ui->graphics_view->setPixmap(pix);
 }
 
+void ImageWidget::setImage(QImage img)
+{
+    ui->graphics_view->setPixmap(QPixmap::fromImage(img));
+}
+
 MyGraphicsView* ImageWidget::GetGraphicsView()
 {
     return ui->graphics_view;
@@ -34,20 +39,4 @@ MyGraphicsView* ImageWidget::GetGraphicsView()
 ImageWidget::~ImageWidget()
 {
     delete ui;
-}
-
-void ImageWidget::on_reset_brightness_btn_clicked()
-{
-    QPixmap p = ui->graphics_view->GetPixmap();
-    QImage image(p.width(), p.height(), QImage::Format_Grayscale8);
-    for (int x = 0; x < p.width(); ++x) {
-        double m = 0;
-        for (int y = 0; y < p.height(); ++y) {
-            float value = image_data[y * p.width() + x];
-            image.setPixel(x, y, qRgb(value, value, value)); // Assuming grayscale image
-            m += value;
-        }
-        m = m / p.height();
-    }
-    ui->graphics_view->setPixmap(QPixmap::fromImage(image));
 }

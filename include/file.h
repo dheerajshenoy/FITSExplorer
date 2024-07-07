@@ -61,6 +61,7 @@ public:
     bool checkIfValidDim();
     QList<int> getHDUTypes();
     void changeBrightness();
+    void resetBrightness();
     int moveAbsRow(const int &row, int &type);
     int initImgData();
     int getCols();
@@ -68,12 +69,16 @@ public:
     ImageWidget* getImgWidget();
     QImage ApplyColormap(QImage &img);
     void setColormap(const Colormap &cmap);
+    int getCurrentHDU();
+    void fitToWidth(int);
+    void setSelectMode(bool);
 
 private:
 
     fitsfile *m_fptr;
     QString m_filename;
 
+    int m_row = -1;
     int m_status = 0;
     float *m_image_data = nullptr;
     int width, height;
@@ -91,6 +96,7 @@ private:
 
     bool m_should_copy_before_applying_colormap = true;
 
+    bool m_select_mode = false;
 };
 
 #endif // FILE_H

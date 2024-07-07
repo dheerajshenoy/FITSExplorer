@@ -26,7 +26,11 @@
 
 - [x] Colormap Selection: Users should be able to select different color maps (e.g., grayscale, inverted grayscale, heatmaps) to visualize the image data with various color representations.
 
-- [ ] Region of Interest (ROI): Allow users to define regions of interest (ROIs) within the image for analysis, such as measuring intensity profiles or extracting statistics.
+- [ ] Region of Interest (ROI)
+
+    - [ ] Allow users to define regions of interest (ROIs) within the image for analysis, such as measuring intensity profiles or extracting statistics.
+
+    - [x] Zoom into region of Interest (ROI)
 
 - [x] Overlay and Annotation: Enable overlaying additional graphics, markers, or annotations on the image for visual analysis and interpretation.
 

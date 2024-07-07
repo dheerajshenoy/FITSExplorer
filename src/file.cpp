@@ -106,6 +106,8 @@ int File::moveAbsRow(const int &row, int &type)
         return m_status;
     }
 
+    m_row = row;
+
     return m_status;
 }
 
@@ -349,4 +351,27 @@ void File::setColormap(const Colormap &cmap)
     QImage img = gv->GetPixmap().toImage();
     img.convertTo(QImage::Format_Indexed8);
     gv->setPixmap(QPixmap::fromImage(ApplyColormap(img)));
+}
+
+void File::resetBrightness()
+{
+    m_img_widget->setImage(m_orig_img);
+}
+
+int File::getCurrentHDU()
+{
+    return m_row;
+}
+
+void File::fitToWidth(int width)
+{
+    auto gv = m_img_widget->GetGraphicsView();
+    gv->fitToWidth(width);
+
+}
+
+void File::setSelectMode(bool state)
+{
+    m_select_mode = state;
+    m_img_widget->GetGraphicsView()->setSelectMode(state);
 }

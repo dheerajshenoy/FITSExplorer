@@ -11,20 +11,21 @@
 #include <qt6/QtCore/QDebug>
 #include <qt6/QtWidgets/QTableWidget>
 #include <qt6/QtWidgets/QTableWidgetItem>
-#include "overview.h"
-#include "imagewidget.h"
 #include <qt6/QtGui/QTextCursor>
 #include <qt6/QtWidgets/QPlainTextEdit>
 #include <qt6/QtWidgets/QWidget>
 #include <qt6/QtWidgets/QVBoxLayout>
 #include <qt6/QtCore/QSettings>
 #include <qt6/QtCore/QStandardPaths>
+#include <qt6/QtGui/QShortcut>
+#include <qt6/QtGui/QKeySequence>
+
+#include "overview.h"
+#include "imagewidget.h"
 #include "aboutdialog.h"
 #include "lightcurve.h"
 #include "toml.hpp"
 #include "preferences.h"
-#include <qt6/QtGui/QShortcut>
-#include <qt6/QtGui/QKeySequence>
 #include "qcustomplot.h"
 #include "image_statistics_overview.h"
 #include "file.h"
@@ -49,7 +50,7 @@ public:
     int HandleImage();
     int HandleAsciiTable();
     int HandleBinaryTable();
-    int ShowOverview(int HDU_index);
+    int ShowOverview();
     void RemoveAllMarkers();
     void INIT_Connections();
     void INIT_Configuration();
@@ -111,22 +112,20 @@ private slots:
     void changeMarkerLineColor(int, QColor);
     void on_actionHideAll_Markers_triggered(bool);
     void on_actionNoColormap_triggered();
-
     void on_action94_triggered();
-
     void on_action171_triggered();
-
     void on_action131_triggered();
-
     void on_action193_triggered();
-
     void on_action211_triggered();
+    void on_reset_brightness_btn_clicked();
+    void on_actionSelect_triggered();
 
 private:
 
     QVector<File *> m_files_list = {};
 
     int m_file_index = -1;
+
 
     Ui::FITSExplorer *ui;
     ImageWidget *img_widget = new ImageWidget();

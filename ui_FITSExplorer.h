@@ -16,6 +16,7 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
+#include <QtWidgets/QPushButton>
 #include <QtWidgets/QSplitter>
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QTableWidget>
@@ -32,16 +33,14 @@ public:
     QAction *actionExit;
     QAction *actionPreferences;
     QAction *actionAbout;
-    QAction *actionColormap;
+    QAction *actionSelect;
     QAction *actionOpen_Recent;
     QAction *actionoverview;
     QAction *actionopen_toolbar;
-    QAction *actionoverview_raw;
     QAction *actionLight_Curve;
     QAction *actionxport;
     QAction *actionSave_toolbar;
     QAction *action_export_toolbar;
-    QAction *actionDeleteAllMarkers;
     QAction *actionFit_to_Width;
     QAction *actionFit_to_Height;
     QAction *actionZoom0;
@@ -50,9 +49,7 @@ public:
     QAction *actionZoom75;
     QAction *actionZoom100;
     QAction *actionClose_File;
-    QAction *actionMarkerMode;
     QAction *actionList_Markers;
-    QAction *actionDelete_Markers;
     QAction *actionBone;
     QAction *actionCool;
     QAction *actionHot;
@@ -89,6 +86,7 @@ public:
     QWidget *verticalLayoutWidget;
     QVBoxLayout *verticalLayout_2;
     QTableWidget *HDU_List;
+    QPushButton *reset_brightness_btn;
     QWidget *verticalLayoutWidget_2;
     QVBoxLayout *verticalLayout;
     QTabWidget *tab_widget;
@@ -124,8 +122,9 @@ public:
         actionPreferences->setObjectName("actionPreferences");
         actionAbout = new QAction(FITSExplorer);
         actionAbout->setObjectName("actionAbout");
-        actionColormap = new QAction(FITSExplorer);
-        actionColormap->setObjectName("actionColormap");
+        actionSelect = new QAction(FITSExplorer);
+        actionSelect->setObjectName("actionSelect");
+        actionSelect->setCheckable(true);
         actionOpen_Recent = new QAction(FITSExplorer);
         actionOpen_Recent->setObjectName("actionOpen_Recent");
         actionoverview = new QAction(FITSExplorer);
@@ -141,12 +140,6 @@ public:
         icon1.addFile(QString::fromUtf8("../../Downloads/file-manager-icon.svg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
         actionopen_toolbar->setIcon(icon1);
         actionopen_toolbar->setMenuRole(QAction::MenuRole::NoRole);
-        actionoverview_raw = new QAction(FITSExplorer);
-        actionoverview_raw->setObjectName("actionoverview_raw");
-        actionoverview_raw->setEnabled(false);
-        QIcon icon2(QIcon::fromTheme(QString::fromUtf8("applications-development")));
-        actionoverview_raw->setIcon(icon2);
-        actionoverview_raw->setMenuRole(QAction::MenuRole::NoRole);
         actionLight_Curve = new QAction(FITSExplorer);
         actionLight_Curve->setObjectName("actionLight_Curve");
         actionLight_Curve->setEnabled(true);
@@ -156,22 +149,17 @@ public:
         actionSave_toolbar = new QAction(FITSExplorer);
         actionSave_toolbar->setObjectName("actionSave_toolbar");
         actionSave_toolbar->setEnabled(false);
-        QIcon icon3;
-        icon3.addFile(QString::fromUtf8("../../Downloads/diskette-save-svgrepo-com.svg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        actionSave_toolbar->setIcon(icon3);
+        QIcon icon2;
+        icon2.addFile(QString::fromUtf8("../../Downloads/diskette-save-svgrepo-com.svg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        actionSave_toolbar->setIcon(icon2);
         actionSave_toolbar->setMenuRole(QAction::MenuRole::NoRole);
         action_export_toolbar = new QAction(FITSExplorer);
         action_export_toolbar->setObjectName("action_export_toolbar");
         action_export_toolbar->setEnabled(false);
-        QIcon icon4;
-        icon4.addFile(QString::fromUtf8("../../Downloads/export-svgrepo-com.svg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        action_export_toolbar->setIcon(icon4);
+        QIcon icon3;
+        icon3.addFile(QString::fromUtf8("../../Downloads/export-svgrepo-com.svg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        action_export_toolbar->setIcon(icon3);
         action_export_toolbar->setMenuRole(QAction::MenuRole::NoRole);
-        actionDeleteAllMarkers = new QAction(FITSExplorer);
-        actionDeleteAllMarkers->setObjectName("actionDeleteAllMarkers");
-        QIcon icon5(QIcon::fromTheme(QString::fromUtf8("edit-delete")));
-        actionDeleteAllMarkers->setIcon(icon5);
-        actionDeleteAllMarkers->setMenuRole(QAction::MenuRole::NoRole);
         actionFit_to_Width = new QAction(FITSExplorer);
         actionFit_to_Width->setObjectName("actionFit_to_Width");
         actionFit_to_Height = new QAction(FITSExplorer);
@@ -188,19 +176,8 @@ public:
         actionZoom100->setObjectName("actionZoom100");
         actionClose_File = new QAction(FITSExplorer);
         actionClose_File->setObjectName("actionClose_File");
-        actionMarkerMode = new QAction(FITSExplorer);
-        actionMarkerMode->setObjectName("actionMarkerMode");
-        actionMarkerMode->setCheckable(true);
-        actionMarkerMode->setChecked(false);
-        actionMarkerMode->setEnabled(false);
-        QIcon icon6(QIcon::fromTheme(QString::fromUtf8("applications-graphics")));
-        actionMarkerMode->setIcon(icon6);
-        actionMarkerMode->setMenuRole(QAction::MenuRole::NoRole);
         actionList_Markers = new QAction(FITSExplorer);
         actionList_Markers->setObjectName("actionList_Markers");
-        actionDelete_Markers = new QAction(FITSExplorer);
-        actionDelete_Markers->setObjectName("actionDelete_Markers");
-        actionDelete_Markers->setIcon(icon5);
         actionBone = new QAction(FITSExplorer);
         actionBone->setObjectName("actionBone");
         actionBone->setCheckable(true);
@@ -320,6 +297,11 @@ public:
 
         verticalLayout_2->addWidget(HDU_List);
 
+        reset_brightness_btn = new QPushButton(verticalLayoutWidget);
+        reset_brightness_btn->setObjectName("reset_brightness_btn");
+
+        verticalLayout_2->addWidget(reset_brightness_btn);
+
         splitter->addWidget(verticalLayoutWidget);
         verticalLayoutWidget_2 = new QWidget(splitter);
         verticalLayoutWidget_2->setObjectName("verticalLayoutWidget_2");
@@ -359,7 +341,7 @@ public:
         menuTools->setObjectName("menuTools");
         menuImage = new QMenu(menuTools);
         menuImage->setObjectName("menuImage");
-        menuImage->setEnabled(false);
+        menuImage->setEnabled(true);
         menuStatistics = new QMenu(menuTools);
         menuStatistics->setObjectName("menuStatistics");
         menuStatistics->setEnabled(false);
@@ -393,13 +375,12 @@ public:
         menuTools->addAction(menuImage->menuAction());
         menuTools->addAction(menuStatistics->menuAction());
         menuTools->addAction(menuMarker->menuAction());
-        menuImage->addAction(actionColormap);
+        menuImage->addAction(actionSelect);
         menuStatistics->addAction(actionImageStatisticsOverview);
         menuStatistics->addAction(actionLight_Curve);
         menuMarker->addAction(actionMarker_Mode);
         menuMarker->addAction(actionList_Markers);
         menuMarker->addAction(actionHideAll_Markers);
-        menuMarker->addAction(actionDelete_Markers);
         menuZoom->addAction(actionFit_to_Width);
         menuZoom->addAction(actionFit_to_Height);
         menuZoom->addAction(actionZoom0);
@@ -455,7 +436,7 @@ public:
         actionExit->setText(QCoreApplication::translate("FITSExplorer", "Exit", nullptr));
         actionPreferences->setText(QCoreApplication::translate("FITSExplorer", "Preferences", nullptr));
         actionAbout->setText(QCoreApplication::translate("FITSExplorer", "About", nullptr));
-        actionColormap->setText(QCoreApplication::translate("FITSExplorer", "Colormap", nullptr));
+        actionSelect->setText(QCoreApplication::translate("FITSExplorer", "Select", nullptr));
         actionOpen_Recent->setText(QCoreApplication::translate("FITSExplorer", "Open Recent", nullptr));
         actionoverview->setText(QCoreApplication::translate("FITSExplorer", "overview", nullptr));
 #if QT_CONFIG(tooltip)
@@ -465,12 +446,10 @@ public:
 #if QT_CONFIG(tooltip)
         actionopen_toolbar->setToolTip(QCoreApplication::translate("FITSExplorer", "Open File", nullptr));
 #endif // QT_CONFIG(tooltip)
-        actionoverview_raw->setText(QCoreApplication::translate("FITSExplorer", "Raw Overview", nullptr));
         actionLight_Curve->setText(QCoreApplication::translate("FITSExplorer", "Light Curve", nullptr));
         actionxport->setText(QCoreApplication::translate("FITSExplorer", "Save", nullptr));
         actionSave_toolbar->setText(QCoreApplication::translate("FITSExplorer", "Save", nullptr));
         action_export_toolbar->setText(QCoreApplication::translate("FITSExplorer", "export", nullptr));
-        actionDeleteAllMarkers->setText(QCoreApplication::translate("FITSExplorer", "DeleteAllMarkers", nullptr));
         actionFit_to_Width->setText(QCoreApplication::translate("FITSExplorer", "Fit to Width", nullptr));
         actionFit_to_Height->setText(QCoreApplication::translate("FITSExplorer", "Fit to Height", nullptr));
         actionZoom0->setText(QCoreApplication::translate("FITSExplorer", "0%", nullptr));
@@ -479,12 +458,7 @@ public:
         actionZoom75->setText(QCoreApplication::translate("FITSExplorer", "75%", nullptr));
         actionZoom100->setText(QCoreApplication::translate("FITSExplorer", "100%", nullptr));
         actionClose_File->setText(QCoreApplication::translate("FITSExplorer", "Close Session", nullptr));
-        actionMarkerMode->setText(QCoreApplication::translate("FITSExplorer", "MarkerMode", nullptr));
-#if QT_CONFIG(shortcut)
-        actionMarkerMode->setShortcut(QCoreApplication::translate("FITSExplorer", "M", nullptr));
-#endif // QT_CONFIG(shortcut)
         actionList_Markers->setText(QCoreApplication::translate("FITSExplorer", "List Markers", nullptr));
-        actionDelete_Markers->setText(QCoreApplication::translate("FITSExplorer", "Delete All Markers", nullptr));
         actionBone->setText(QCoreApplication::translate("FITSExplorer", "Bone", nullptr));
         actionCool->setText(QCoreApplication::translate("FITSExplorer", "Cool", nullptr));
         actionHot->setText(QCoreApplication::translate("FITSExplorer", "Hot", nullptr));
@@ -515,6 +489,7 @@ public:
         action1600->setText(QCoreApplication::translate("FITSExplorer", "1600", nullptr));
         action4500->setText(QCoreApplication::translate("FITSExplorer", "4500", nullptr));
         action1700->setText(QCoreApplication::translate("FITSExplorer", "1700", nullptr));
+        reset_brightness_btn->setText(QCoreApplication::translate("FITSExplorer", "Reset Image", nullptr));
         menuFile->setTitle(QCoreApplication::translate("FITSExplorer", "File", nullptr));
         menuEdit->setTitle(QCoreApplication::translate("FITSExplorer", "Edit", nullptr));
         menuHelp->setTitle(QCoreApplication::translate("FITSExplorer", "Help", nullptr));

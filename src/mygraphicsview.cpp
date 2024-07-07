@@ -5,6 +5,7 @@ MyGraphicsView::MyGraphicsView(QWidget *parent) : QGraphicsView(parent)
     this->setScene(m_scene);
     this->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
     this->setDragMode(QGraphicsView::ScrollHandDrag);
+    // this->setDragMode(QGraphicsView::RubberBandDrag);
 
     m_img = m_scene->addPixmap(m_pix);
 
@@ -75,6 +76,13 @@ void MyGraphicsView::fitToWidth(qreal width)
 
 void MyGraphicsView::mouseMoveEvent(QMouseEvent *e)
 {
+
+    if (m_select_mode && m_rubberband)
+    {
+        m_rubberband->setGeometry(QRect(m_roi_start_pos, e->pos()).normalized());
+
+    }
+
     QPointF imagePos = GetCursorPositionInPixmap(e->pos());
 
     // Get the coordinates only when the cursor is within the pixmap
@@ -87,6 +95,24 @@ void MyGraphicsView::mouseMoveEvent(QMouseEvent *e)
     }
     QGraphicsView::mouseMoveEvent(e);
     emit viewportChanged();
+}
+
+void MyGraphicsView::mouseReleaseEvent(QMouseEvent *e)
+{
+    if (m_select_mode && m_rubberband)
+    {
+
+        m_roi_end_pos = e->pos();
+        m_rubberband->hide();
+
+        QRectF boundingrect = mapToScene(m_rubberband->geometry()).boundingRect();
+
+        this->fitInView(boundingrect, Qt::KeepAspectRatio);
+
+        centerOn(boundingrect.center());
+    }
+
+    QGraphicsView::mouseReleaseEvent(e);
 }
 
 void MyGraphicsView::mouseDoubleClickEvent(QMouseEvent *e)
@@ -125,6 +151,17 @@ void MyGraphicsView::mouseDoubleClickEvent(QMouseEvent *e)
 
 void MyGraphicsView::mousePressEvent(QMouseEvent *e)
 {
+
+    if (m_select_mode)
+    {
+        this->setDragMode(QGraphicsView::NoDrag);
+        if (!m_rubberband)
+            m_rubberband = new QRubberBand(QRubberBand::Rectangle, this);
+
+        m_rubberband->show();
+        m_rubberband->setGeometry(QRect(e->pos(), QSize()).normalized());
+        m_roi_start_pos = e->pos();
+    }
     QGraphicsView::mousePressEvent(e);
 }
 
@@ -181,4 +218,14 @@ void MyGraphicsView::ZoomOut()
 void MyGraphicsView::__changeMarkerLineColor(int index, QColor color)
 {
     emit markerColorChanged(index, color);
+}
+
+void MyGraphicsView::setSelectMode(bool state)
+{
+    m_select_mode = state;
+
+    if (!state)
+    {
+        this->setDragMode(QGraphicsView::ScrollHandDrag);
+    }
 }

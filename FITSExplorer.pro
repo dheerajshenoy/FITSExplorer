@@ -52,7 +52,6 @@ FORMS += \
     aboutdialog.ui \
     image_statistics_overview.ui \
     imagewidget.ui \
-    imagewidget2.ui \
     lightcurve.ui \
     listmarkers.ui \
     mystatusbar.ui \

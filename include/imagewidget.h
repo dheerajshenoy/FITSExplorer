@@ -10,6 +10,8 @@
 #include <QScrollArea>
 #include <QScrollBar>
 #include <QStackedWidget>
+#include <QRubberBand>
+#include <QMouseEvent>
 #include "mygraphicsview.h"
 
 namespace Ui {
@@ -46,9 +48,6 @@ private:
 
     double scaleFactor = 1;
 
-
-private slots:
-    void on_reset_brightness_btn_clicked();
 };
 
 #endif // IMAGEWIDGET_H

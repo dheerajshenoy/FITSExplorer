@@ -12,7 +12,6 @@
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QPushButton>
 #include <QtWidgets/QScrollArea>
 #include <QtWidgets/QSlider>
 #include <QtWidgets/QStackedWidget>
@@ -33,7 +32,6 @@ public:
     QVBoxLayout *verticalLayout_2;
     MyGraphicsView *graphics_view;
     QSlider *slider;
-    QPushButton *reset_brightness_btn;
 
     void setupUi(QStackedWidget *ImageWidget)
     {
@@ -56,7 +54,7 @@ public:
         scrollArea->setAlignment(Qt::AlignmentFlag::AlignCenter);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName("scrollAreaWidgetContents");
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 716, 354));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 716, 390));
         QSizePolicy sizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -83,11 +81,6 @@ public:
 
         verticalLayout->addWidget(slider);
 
-        reset_brightness_btn = new QPushButton(page);
-        reset_brightness_btn->setObjectName("reset_brightness_btn");
-
-        verticalLayout->addWidget(reset_brightness_btn);
-
         ImageWidget->addWidget(page);
 
         retranslateUi(ImageWidget);
@@ -98,7 +91,6 @@ public:
     void retranslateUi(QStackedWidget *ImageWidget)
     {
         ImageWidget->setWindowTitle(QCoreApplication::translate("ImageWidget", "StackedWidget", nullptr));
-        reset_brightness_btn->setText(QCoreApplication::translate("ImageWidget", "Reset", nullptr));
     } // retranslateUi
 
 };

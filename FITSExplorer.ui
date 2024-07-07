@@ -94,6 +94,13 @@
           <column/>
          </widget>
         </item>
+        <item>
+         <widget class="QPushButton" name="reset_brightness_btn">
+          <property name="text">
+           <string>Reset Image</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
       <widget class="QWidget" name="verticalLayoutWidget_2">
@@ -169,12 +176,12 @@
     </property>
     <widget class="QMenu" name="menuImage">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="title">
       <string>Image</string>
      </property>
-     <addaction name="actionColormap"/>
+     <addaction name="actionSelect"/>
     </widget>
     <widget class="QMenu" name="menuStatistics">
      <property name="enabled">
@@ -196,7 +203,6 @@
      <addaction name="actionMarker_Mode"/>
      <addaction name="actionList_Markers"/>
      <addaction name="actionHideAll_Markers"/>
-     <addaction name="actionDelete_Markers"/>
     </widget>
     <addaction name="menuImage"/>
     <addaction name="menuStatistics"/>
@@ -282,9 +288,12 @@
     <string>About</string>
    </property>
   </action>
-  <action name="actionColormap">
+  <action name="actionSelect">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
-    <string>Colormap</string>
+    <string>Select</string>
    </property>
   </action>
   <action name="actionOpen_Recent">
@@ -320,20 +329,6 @@
    </property>
    <property name="toolTip">
     <string>Open File</string>
-   </property>
-   <property name="menuRole">
-    <enum>QAction::MenuRole::NoRole</enum>
-   </property>
-  </action>
-  <action name="actionoverview_raw">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="icon">
-    <iconset theme="applications-development"/>
-   </property>
-   <property name="text">
-    <string>Raw Overview</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>
@@ -385,17 +380,6 @@
     <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
-  <action name="actionDeleteAllMarkers">
-   <property name="icon">
-    <iconset theme="edit-delete"/>
-   </property>
-   <property name="text">
-    <string>DeleteAllMarkers</string>
-   </property>
-   <property name="menuRole">
-    <enum>QAction::MenuRole::NoRole</enum>
-   </property>
-  </action>
   <action name="actionFit_to_Width">
    <property name="text">
     <string>Fit to Width</string>
@@ -436,40 +420,9 @@
     <string>Close Session</string>
    </property>
   </action>
-  <action name="actionMarkerMode">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>false</bool>
-   </property>
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="icon">
-    <iconset theme="applications-graphics"/>
-   </property>
-   <property name="text">
-    <string>MarkerMode</string>
-   </property>
-   <property name="shortcut">
-    <string>M</string>
-   </property>
-   <property name="menuRole">
-    <enum>QAction::MenuRole::NoRole</enum>
-   </property>
-  </action>
   <action name="actionList_Markers">
    <property name="text">
     <string>List Markers</string>
-   </property>
-  </action>
-  <action name="actionDelete_Markers">
-   <property name="icon">
-    <iconset theme="edit-delete"/>
-   </property>
-   <property name="text">
-    <string>Delete All Markers</string>
    </property>
   </action>
   <action name="actionBone">

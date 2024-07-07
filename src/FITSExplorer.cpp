@@ -44,7 +44,7 @@ FITSExplorer::FITSExplorer(QStringList argv, QWidget *parent)
         OpenFile(argv[1]);
     }
 
-    OpenFile("/home/neo/Gits/Solar-Project/Data/09-04-2013/DATA_DENOISED/94/aia.lev1_euv_12s.2013-04-09T124003Z.94.image_lev1.fits");
+    OpenFile("/home/neo/Gits/Solar-Project/Data/09-04-2013/DATA_UNCALIBRATED/94/aia.lev1_euv_12s.2013-04-09T124003Z.94.image_lev1.fits");
 }
 
 void FITSExplorer::INIT_Configuration()
@@ -336,20 +336,15 @@ void FITSExplorer::OpenFile(QString filename)
         {
             // Enable the widgets only on first run of this function
 
-            ui->actionMarkerMode->setEnabled(true);
-
             ui->statusbar->hideProgressBar(true);
             //ui->mini_light_curve_plot->graph(0)->data()->clear();
             img_widget->GetSlider()->setEnabled(true);
             ui->actionoverview->setEnabled(true);
-            ui->actionoverview_raw->setEnabled(true);
             ui->menuImage->setEnabled(true);
             ui->menuStatistics->setEnabled(true);
             ui->action_export_toolbar->setEnabled(true);
             ui->actionSave_toolbar->setEnabled(true);
             ui->actionxport->setEnabled(true);
-            ui->actionDeleteAllMarkers->setEnabled(false);
-            ui->actionDelete_Markers->setEnabled(false);
             auto filenames = openFileDialog.selectedFiles();
             AddRecentFile(filenames[0]);
             ui->statusbar->setMsg(QString("File {%1} Opened").arg(filenames[0]));
@@ -359,20 +354,16 @@ void FITSExplorer::OpenFile(QString filename)
         }
     }
     else {
-        ui->actionMarkerMode->setEnabled(true);
         //ui->mini_light_curve_plot->graph(0)->data()->clear();
         img_widget->GetSlider()->setEnabled(true);
         ui->actionoverview->setEnabled(true);
         ui->statusbar->hideProgressBar(true);
-        ui->actionoverview_raw->setEnabled(true);
         ui->menuImage->setEnabled(true);
         ui->menuStatistics->setEnabled(true);
         ui->action_export_toolbar->setEnabled(true);
         ui->actionSave_toolbar->setEnabled(true);
         ui->actionxport->setEnabled(true);
         ui->statusbar->setMsg(QString("File {%1} Opened").arg(filename));
-        ui->actionDeleteAllMarkers->setEnabled(false);
-        ui->actionDelete_Markers->setEnabled(false);
         AddRecentFile(filename);
         ui->statusbar->setFile(filename);
         HandleFile(filename);
@@ -386,20 +377,16 @@ void FITSExplorer::OpenRecent() {
     if (sender() != nullptr) {
         QString filename = qobject_cast<QAction *>(sender())->text();
 
-        ui->actionMarkerMode->setEnabled(true);
         //ui->mini_light_curve_plot->graph(0)->data()->clear();
         img_widget->GetSlider()->setEnabled(true);
         ui->actionoverview->setEnabled(true);
         ui->statusbar->hideProgressBar(true);
-        ui->actionoverview_raw->setEnabled(true);
         ui->menuImage->setEnabled(true);
         ui->menuStatistics->setEnabled(true);
         ui->action_export_toolbar->setEnabled(true);
         ui->actionSave_toolbar->setEnabled(true);
         ui->actionxport->setEnabled(true);
         ui->statusbar->setMsg(QString("File {%1} Opened").arg(filename));
-        ui->actionDeleteAllMarkers->setEnabled(false);
-        ui->actionDelete_Markers->setEnabled(false);
         MSG(filename);
         ui->statusbar->setFile(filename);
         HandleFile(filename);
@@ -560,10 +547,12 @@ void FITSExplorer::on_actionopen_toolbar_triggered()
     OpenFile();
 }
 
-int FITSExplorer::ShowOverview(int index)
+int FITSExplorer::ShowOverview()
 {
     // Overview for all the HDUs present
-    if(index == 0)
+    File *file = getCurrentFile();
+    fprintf(stderr, "%d", file->getCurrentHDU());
+    if(file->getCurrentHDU() == 0)
     {
         if(fits_movabs_hdu(fptr, 1, NULL, &status))
         {
@@ -607,7 +596,8 @@ int FITSExplorer::ShowOverview(int index)
         }
 
         overview->SetRecords(keyvals);
-        ui->tab_widget->addTab(overview, "*Overview*");
+        // ui->tab_widget->addTab(overview, "*Overview*");
+        getCurrentFile()->getImgWidget()->setCurrentWidget(overview);
     }
     else {
 
@@ -618,7 +608,7 @@ int FITSExplorer::ShowOverview(int index)
 
 void FITSExplorer::on_actionoverview_triggered()
 {
-    ShowOverview(0);
+    ShowOverview();
 }
 
 void FITSExplorer::on_actionAbout_triggered()
@@ -715,8 +705,6 @@ void FITSExplorer::MarkerAdded(QPointF pos)
 {
     if (lc->numLines() >= 1)
     {
-        ui->actionDeleteAllMarkers->setEnabled(true);
-        ui->actionDelete_Markers->setEnabled(true);
     }
 
     lightCurvePlot = lc->getPlot();
@@ -736,19 +724,15 @@ void FITSExplorer::RemoveAllMarkers()
 
     lc->clearLines();
 
-    ui->actionDeleteAllMarkers->setEnabled(false);
-    ui->actionDelete_Markers->setEnabled(false);
 }
 
 // Close the opened file
 void FITSExplorer::CloseFile()
 {
-    ui->actionMarkerMode->setEnabled(false);
     //ui->mini_light_curve_plot->graph(0)->data()->clear();
     lightCurvePlot->graph(0)->data()->clear();
     img_widget->GetSlider()->setEnabled(false);
     ui->actionoverview->setEnabled(false);
-    ui->actionoverview_raw->setEnabled(false);
     ui->menuImage->setEnabled(false);
     ui->menuStatistics->setEnabled(false);
     ui->action_export_toolbar->setEnabled(false);
@@ -785,7 +769,7 @@ void FITSExplorer::on_actionDeleteAllMarkers_triggered()
 
 void FITSExplorer::on_actionFit_to_Width_triggered()
 {
-    gv->fitToWidth(ui->tab_widget->width());
+    getCurrentFile()->fitToWidth(ui->tab_widget->width());
 }
 
 void FITSExplorer::on_actionClose_File_triggered()
@@ -982,4 +966,13 @@ void FITSExplorer::AddRecentFile(QString filename)
     lines.insert(0, filename);
 }
 
+void FITSExplorer::on_reset_brightness_btn_clicked()
+{
+    getCurrentFile()->resetBrightness();
+}
 
+
+void FITSExplorer::on_actionSelect_triggered()
+{
+    getCurrentFile()->setSelectMode(ui->actionSelect->isChecked());
+}
