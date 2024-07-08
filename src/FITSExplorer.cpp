@@ -15,7 +15,7 @@ FITSExplorer::FITSExplorer(QStringList argv, QWidget *parent)
     /*auto overview_image_widget = new OverviewGraphicsView(gv->scene(), gv);*/
     /*ui->verticalLayout_2->addWidget(overview_image_widget);*/
 
-    lc = new LightCurve(img_widget);
+    // lc = new LightCurve(img_widget);
 
     QActionGroup *colormapActionGroup = new QActionGroup(this);
 
@@ -53,7 +53,7 @@ FITSExplorer::FITSExplorer(QStringList argv, QWidget *parent)
         OpenFile(argv[1]);
     }
 
-    // OpenFile("/home/neo/Gits/Solar-Project/Data/09-04-2013/DATA_UNCALIBRATED/94/aia.lev1_euv_12s.2013-04-09T124003Z.94.image_lev1.fits");
+    OpenFile("/home/neo/Gits/Solar-Project/Data/09-04-2013/DATA_UNCALIBRATED/94/aia.lev1_euv_12s.2013-04-09T124003Z.94.image_lev1.fits");
 }
 
 void FITSExplorer::INIT_Configuration()
@@ -145,37 +145,42 @@ void FITSExplorer::HandleColorMapSelect(Colormap colormap)
 void FITSExplorer::INIT_Connections()
 {
     // Get signal when moves is moved inside the pixmap
-    connect(gv,
-            SIGNAL(mouseMoved(QPointF)),
-            SLOT(ShowCoordinates(QPointF)));
+    // connect(gv,
+            // SIGNAL(mouseMoved(QPointF)),
+            // SLOT(ShowCoordinates(QPointF)));
 
-    connect(gv,
-            SIGNAL(markerAdded(QPointF)),
-            SLOT(MarkerAdded(QPointF)));
+    // connect(gv,
+            // SIGNAL(markerAdded(QPointF)),
+            // SLOT(MarkerAdded(QPointF)));
 
-    connect(gv,
-            &MyGraphicsView::markersRemoved,
-            this,
-            [&](){ this->RemoveAllMarkers(); });
+    // connect(gv,
+            // &MyGraphicsView::markersRemoved,
+            // this,
+            // [&](){ this->RemoveAllMarkers(); });
 
     // Get signal when cursor moves outside the pixmap within the GraphicsView
-    connect(gv,
-            &MyGraphicsView::mouseOutsidePixmap,
-            this,
-            [&]() {
-                ui->statusbar->clearCoordinate();
-            });
+    // connect(gv,
+            // &MyGraphicsView::mouseOutsidePixmap,
+            // this,
+            // [&]() {
+                // ui->statusbar->clearCoordinate();
+            // });
 
     connect(ui->actionOpen, SIGNAL(triggered()), SLOT(OpenFile()));
     connect(ui->HDU_List, SIGNAL(cellDoubleClicked(int,int)), SLOT(HDU_Table_Double_Clicked(int, int)));
     connect(ui->tab_widget, SIGNAL(tabCloseRequested(int)), SLOT(CloseTab(int)));
     connect(ui->tab_widget, SIGNAL(tabBarClicked(int)), SLOT(update_HDU_Table(int)));
 
-    connect(gv, SIGNAL(markerColorChanged(int, QColor)), SLOT(changeMarkerLineColor(int, QColor)));
+    // connect(gv, SIGNAL(markerColorChanged(int, QColor)), SLOT(changeMarkerLineColor(int, QColor)));
 
     connect(ui->roi_table, &ROITableWidget::deleteROI, this, [&](QUuid uid) {
         getCurrentFile()->getImgWidget()->GetGraphicsView()->DeleteROIRect__for_table(uid);
     });
+
+    connect(ui->roi_table, &ROITableWidget::hideROI, this, [&](QUuid uid) {
+        getCurrentFile()->getImgWidget()->GetGraphicsView()->HideROIRect__for_table(uid);
+    });
+
 
 }
 
@@ -330,7 +335,7 @@ int FITSExplorer::HandleBinaryTable()
     //ui->mini_light_curve_plot->rescaleAxes(true);
     //ui->mini_light_curve_plot->replot();
 
-    img_widget->setPixmap(QPixmap::fromImage(image));
+    // img_widget->setPixmap(QPixmap::fromImage(image));
 
 
     // ui->tab_widget->addTab(img_widget, "DD");
@@ -354,7 +359,7 @@ void FITSExplorer::OpenFile(QString filename)
 
             ui->statusbar->hideProgressBar(true);
             //ui->mini_light_curve_plot->graph(0)->data()->clear();
-            img_widget->GetSlider()->setEnabled(true);
+            // img_widget->GetSlider()->setEnabled(true);
             ui->actionoverview->setEnabled(true);
             ui->menuImage->setEnabled(true);
             ui->menuStatistics->setEnabled(true);
@@ -371,7 +376,7 @@ void FITSExplorer::OpenFile(QString filename)
     }
     else {
         //ui->mini_light_curve_plot->graph(0)->data()->clear();
-        img_widget->GetSlider()->setEnabled(true);
+        // img_widget->GetSlider()->setEnabled(true);
         ui->actionoverview->setEnabled(true);
         ui->statusbar->hideProgressBar(true);
         ui->menuImage->setEnabled(true);
@@ -394,7 +399,7 @@ void FITSExplorer::OpenRecent() {
         QString filename = qobject_cast<QAction *>(sender())->text();
 
         //ui->mini_light_curve_plot->graph(0)->data()->clear();
-        img_widget->GetSlider()->setEnabled(true);
+        // img_widget->GetSlider()->setEnabled(true);
         ui->actionoverview->setEnabled(true);
         ui->statusbar->hideProgressBar(true);
         ui->menuImage->setEnabled(true);
@@ -577,7 +582,7 @@ int FITSExplorer::HandleImage()
     }
 
     ui->statusbar->hideProgressBar(true);
-    lc->setData(image_data, width, height);
+    // lc->setData(image_data, width, height);
     file->getImgWidget()->setPixmap(QPixmap::fromImage(image));
     // ui->tab_widget->addTab(img_widget, "Image");
     return 0;
@@ -707,7 +712,7 @@ void FITSExplorer::on_actionoverview_raw_triggered()
 
 void FITSExplorer::on_actionLight_Curve_triggered()
 {
-    lc->Show();
+    // lc->Show();
 }
 
 // Show the coordinates in the statusbar of the mouse position in the image
@@ -726,7 +731,7 @@ void FITSExplorer::ExportFile()
 
     if (!filename.isEmpty())
     {
-        QImage img = img_widget->GetImage();
+        QImage img = getCurrentFile()->getImgWidget()->GetImage();
         if(filename.endsWith(".pdf"))
         {
             QString fileName = "/home/neo/output.pdf";
@@ -750,26 +755,26 @@ void FITSExplorer::ExportFile()
 
 void FITSExplorer::MarkerAdded(QPointF pos)
 {
-    if (lc->numLines() >= 1)
-    {
-    }
+    // if (lc->numLines() >= 1)
+    // {
+    // }
 
-    lightCurvePlot = lc->getPlot();
-    m_line = new QCPItemStraightLine(lightCurvePlot);
-    m_line->setPen(QColor::fromRgb(255, 0, 0));
-    m_line->point1->setCoords(pos.x(), lightCurvePlot->yAxis->range().lower);
-    m_line->point2->setCoords(pos.x(), lightCurvePlot->yAxis->range().upper);
-    lc->addLineToList(m_line);
+    // lightCurvePlot = lc->getPlot();
+    // m_line = new QCPItemStraightLine(lightCurvePlot);
+    // m_line->setPen(QColor::fromRgb(255, 0, 0));
+    // m_line->point1->setCoords(pos.x(), lightCurvePlot->yAxis->range().lower);
+    // m_line->point2->setCoords(pos.x(), lightCurvePlot->yAxis->range().upper);
+    // lc->addLineToList(m_line);
 }
 
 // Remove all the lines corresponding to the markers added to the light curves
 void FITSExplorer::RemoveAllMarkers()
 {
 
-    if (lc->numLines() == 0)
-        return;
+    // if (lc->numLines() == 0)
+        // return;
 
-    lc->clearLines();
+    // lc->clearLines();
 
 }
 
@@ -778,7 +783,7 @@ void FITSExplorer::CloseFile()
 {
     //ui->mini_light_curve_plot->graph(0)->data()->clear();
     lightCurvePlot->graph(0)->data()->clear();
-    img_widget->GetSlider()->setEnabled(false);
+    getCurrentFile()->getImgWidget()->GetSlider()->setEnabled(false);
     ui->actionoverview->setEnabled(false);
     ui->menuImage->setEnabled(false);
     ui->menuStatistics->setEnabled(false);
@@ -811,7 +816,7 @@ void FITSExplorer::on_action_export_toolbar_triggered()
 
 void FITSExplorer::on_actionDeleteAllMarkers_triggered()
 {
-    gv->RemoveAllMarkers();
+    getCurrentFile()->getImgWidget()->GetGraphicsView()->RemoveAllMarkers();
 }
 
 void FITSExplorer::on_actionFit_to_Width_triggered()
@@ -833,12 +838,12 @@ void FITSExplorer::on_actionPreferences_triggered()
 void FITSExplorer::on_actionMarkerMode_triggered(bool state)
 {
     ui->actionMarker_Mode->setChecked(state); // Set the marker mode toggle on the menu
-    gv->setMarkerMode(state);
+    getCurrentFile()->getImgWidget()->GetGraphicsView()->setMarkerMode(state);
 }
 
 void FITSExplorer::on_actionList_Markers_triggered()
 {
-    gv->listMarkers();
+    getCurrentFile()->getImgWidget()->GetGraphicsView()->listMarkers();
 }
 
 void FITSExplorer::on_actionGrayscale_triggered()
@@ -958,7 +963,7 @@ void FITSExplorer::INIT_Shortcuts()
 
 void FITSExplorer::on_actionMarker_Mode_triggered(bool state)
 {
-    gv->setMarkerMode(state);
+    getCurrentFile()->getImgWidget()->GetGraphicsView()->setMarkerMode(state);
 }
 
 void FITSExplorer::on_actionImageStatisticsOverview_triggered()
@@ -968,18 +973,18 @@ void FITSExplorer::on_actionImageStatisticsOverview_triggered()
 
 void FITSExplorer::changeMarkerLineColor(int index, QColor color)
 {
-    auto line = lc->getLineAt(index);
-    line->setPen(color);
-    lightCurvePlot->replot();
+    // auto line = lc->getLineAt(index);
+    // line->setPen(color);
+    // lightCurvePlot->replot();
 }
 
 
 void FITSExplorer::on_actionHideAll_Markers_triggered(bool status)
 {
     if (status)
-        gv->HideAllMarkers();
+        getCurrentFile()->getImgWidget()->GetGraphicsView()->HideAllMarkers();
     else
-        gv->ShowAllMarkers();
+        getCurrentFile()->getImgWidget()->GetGraphicsView()->ShowAllMarkers();
 }
 
 void FITSExplorer::AddRecentFile(QString filename)
@@ -1012,12 +1017,29 @@ void FITSExplorer::on_reset_brightness_btn_clicked()
 void FITSExplorer::on_actionSelect_triggered()
 {
     bool state = ui->actionSelect->isChecked();
+    if (state)
+    {
+        setMode(Mode::SELECT_MODE);
+    }
+    else
+        setMode(Mode::NORMAL_MODE);
     getCurrentFile()->setSelectMode(state);
-    if (!state)
+}
+
+void FITSExplorer::on_actionPixel_Analysis_triggered()
+{
+    bool state = ui->actionPixel_Analysis->isChecked();
+    if (state)
+    {
+        setMode(Mode::PIXEL_ANALYSIS_MODE);
+    }
+    else
     {
         setMode(Mode::NORMAL_MODE);
     }
+        getCurrentFile()->setPixelAnalysisMode(state);
 }
+
 
 Mode FITSExplorer::getMode()
 {
@@ -1041,8 +1063,8 @@ void FITSExplorer::modeChangeUpdateStatusbar(Mode mode)
         modestr = "NORMAL MODE";
         break;
 
-    case Mode::PIXEL_ANALYSE_MODE:
-        modestr = "PIXEL ANALYSE MODE";
+    case Mode::PIXEL_ANALYSIS_MODE:
+        modestr = "PIXEL ANALYSIS MODE";
         break;
 
     case Mode::SELECT_MODE:

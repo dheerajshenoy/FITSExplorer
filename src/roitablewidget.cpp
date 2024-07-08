@@ -13,11 +13,13 @@ ROITableWidget::ROITableWidget(QWidget *parent)
 
     m_menu->addAction(m_delete_action);
     m_menu->addAction(m_hide_action);
+    m_menu->addAction(m_show_action);
     m_menu->addAction(m_close_action);
     m_menu->addAction(m_zoom_action);
 
     connect(m_delete_action, &QAction::triggered, this, &ROITableWidget::handleDelete);
     connect(m_hide_action, &QAction::triggered, this, &ROITableWidget::handleHide);
+    connect(m_show_action, &QAction::triggered, this, &ROITableWidget::handleShow);
     connect(m_close_action, &QAction::triggered, this, &ROITableWidget::handleClose);
     connect(m_zoom_action, &QAction::triggered, this, &ROITableWidget::handleZoom);
 
@@ -27,19 +29,21 @@ void ROITableWidget::handleDelete()
 {
     QList<QTableWidgetItem*> selections = ui->table->selectedItems();
 
-    if (selections.size() == 2)
+    for (int i=0; i < selections.size(); i += 2)
     {
-        emit deleteROI(QUuid::fromString(selections[0]->text()));
-        ui->table->removeRow(selections[0]->row());
-    }
-    else if (selections.size() > 2)
-    {
+        emit deleteROI(QUuid::fromString(selections[i]->text()));
+        ui->table->removeRow(selections[i]->row());
     }
 }
 
 void ROITableWidget::handleHide()
 {
+    QList<QTableWidgetItem*> selections = ui->table->selectedItems();
 
+    for (int i=0; i < selections.size(); i += 2)
+    {
+        emit hideROI(QUuid::fromString(selections[i]->text()));
+    }
 }
 
 void ROITableWidget::handleClose()

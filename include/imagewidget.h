@@ -44,8 +44,6 @@ private:
     QImage scaledImage;
     QImage originalImage;
 
-    float *image_data;
-
     double scaleFactor = 1;
 
 };

@@ -69,6 +69,18 @@ void MyGraphicsView::ShowAllMarkers()
     emit markersHidden(false);
 }
 
+void MyGraphicsView::movePixAnalyser(QPoint loc)
+{
+    if (m_pix_analyser)
+        m_pix_analyser->move(loc);
+}
+
+void MyGraphicsView::setPixValue(float val)
+{
+    if (m_pix_analyser)
+        m_pix_analyser->setPixValue(val);
+}
+
 
 void MyGraphicsView::fitToWidth(qreal width)
 {
@@ -82,7 +94,6 @@ void MyGraphicsView::mouseMoveEvent(QMouseEvent *e)
     if (m_select_mode && m_rubberband)
     {
         m_rubberband->setGeometry(QRect(m_roi_start_pos, e->pos()).normalized());
-
     }
 
     QPointF imagePos = GetCursorPositionInPixmap(e->pos());
@@ -91,12 +102,18 @@ void MyGraphicsView::mouseMoveEvent(QMouseEvent *e)
     if (m_img->pixmap().rect().contains(imagePos.toPoint()))
     {
         emit mouseMoved(imagePos);
+        if (m_pix_analysis_mode)
+        {
+            emit pixelAnalysisRequested(e->pos());
+        }
     }
     else {
         emit mouseOutsidePixmap();
     }
-    QGraphicsView::mouseMoveEvent(e);
+
     emit viewportChanged();
+
+    QGraphicsView::mouseMoveEvent(e);
 }
 
 void MyGraphicsView::mouseReleaseEvent(QMouseEvent *e)
@@ -133,6 +150,11 @@ void MyGraphicsView::DeleteROIRect__for_table(QUuid uid)
     ROIRect* rect = m_roi_map[uid];
     scene()->removeItem(rect);
     m_roi_map.remove(uid);
+}
+
+void MyGraphicsView::HideROIRect__for_table(QUuid uid)
+{
+    m_roi_map[uid]->setVisible(false);
 }
 
 void MyGraphicsView::DeleteROIRect(QUuid uid)
@@ -297,6 +319,31 @@ void MyGraphicsView::setSelectMode(bool state)
     if (!state)
     {
         this->setDragMode(QGraphicsView::ScrollHandDrag);
+    }
+}
+
+void MyGraphicsView::setPixelAnalysisMode(bool state)
+{
+
+    fprintf(stderr, "%d", state);
+    m_pix_analysis_mode = state;
+    if (state)
+    {
+        if (!m_pix_analyser)
+        {
+            m_pix_analyser = new PixAnalyser(this);
+            QGraphicsProxyWidget* pw = scene()->addWidget(m_pix_analyser);
+            pw->setZValue(1);
+            m_pix_analyser->show();
+        }
+    }
+    else
+    {
+        if (m_pix_analyser)
+        {
+            delete m_pix_analyser;
+            m_pix_analyser = nullptr;
+        }
     }
 }
 

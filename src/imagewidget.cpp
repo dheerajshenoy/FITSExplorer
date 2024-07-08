@@ -13,6 +13,7 @@ ImageWidget::ImageWidget(QWidget *parent)
 
     connect(ui->slider, &QSlider::sliderReleased,
             [&]() { emit changeBrightness(); });
+
 }
 
 QSlider* ImageWidget::GetSlider() { return ui->slider; }

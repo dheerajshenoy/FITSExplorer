@@ -20,6 +20,8 @@
 #include "roirect.h"
 #include <QUuid>
 #include <QMap>
+#include "pixanalyser.h"
+#include <QGraphicsProxyWidget>
 
 class MyGraphicsView : public QGraphicsView
 {
@@ -42,14 +44,19 @@ public:
     void ZoomOut();
     void ShowAllMarkers();
     void setSelectMode(bool);
+    void setPixelAnalysisMode(bool);
     void ZoomIntoROI(QUuid uid);
     void ZoomIntoLastROI();
     void AddROIRect(ROIRect*);
     void DeleteROIRect(QUuid uid);
     void DeleteROIRect__for_table(QUuid uid);
     void HideROIRect(QUuid uid);
+    void HideROIRect__for_table(QUuid uid);
     int GetROIIndex();
     ROIRect* GetROIRect(QUuid uid);
+    PixAnalyser* getPixAnalyser();
+    void movePixAnalyser(QPoint);
+    void setPixValue(float);
 
 signals:
     void mouseMoved(QPointF);
@@ -61,6 +68,7 @@ signals:
     void markersHidden(bool);
     void newROIRect(QUuid, QRectF);
     void signalROITable(QUuid);
+    void pixelAnalysisRequested(QPoint);
 
 private slots:
     void __changeMarkerLineColor(int, QColor);
@@ -81,22 +89,20 @@ private:
 
     QShortcut *kb_zoom_in, *kb_zoom_out, *kb_roi_zoom;
     void initShortcuts();
-
     int m_roi_index = -1;
-
     QPixmap m_pix;
     QGraphicsScene *m_scene = new QGraphicsScene();
     QGraphicsPixmapItem *m_img;
     bool m_markerMode = false;
+    bool m_select_mode = false;
+    bool m_pix_analysis_mode = false;
     ListMarkers* lm = new ListMarkers();
     QVector<Marker*> m_markerList;
-
     QRubberBand *m_rubberband = nullptr;
-
     QPoint m_roi_start_pos, m_roi_end_pos;
-    bool m_select_mode = false;
-
     QMap<QUuid , ROIRect*> m_roi_map;
+
+    PixAnalyser *m_pix_analyser = nullptr;
 };
 
 #endif

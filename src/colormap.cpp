@@ -300,8 +300,6 @@ QImage CM::grayscale(const QImage& img)
     return ret;
 }
 
-
-
 QImage CM::SDO_AIA_171(const QImage& img)
 {
     QImage ret;

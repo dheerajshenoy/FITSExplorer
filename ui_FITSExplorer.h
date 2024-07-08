@@ -81,6 +81,7 @@ public:
     QAction *action1600;
     QAction *action4500;
     QAction *action1700;
+    QAction *actionPixel_Analysis;
     QWidget *centralwidget;
     QVBoxLayout *verticalLayout_3;
     QSplitter *splitter;
@@ -267,6 +268,9 @@ public:
         action1700 = new QAction(FITSExplorer);
         action1700->setObjectName("action1700");
         action1700->setCheckable(true);
+        actionPixel_Analysis = new QAction(FITSExplorer);
+        actionPixel_Analysis->setObjectName("actionPixel_Analysis");
+        actionPixel_Analysis->setCheckable(true);
         centralwidget = new QWidget(FITSExplorer);
         centralwidget->setObjectName("centralwidget");
         QSizePolicy sizePolicy1(QSizePolicy::Policy::Maximum, QSizePolicy::Policy::Minimum);
@@ -392,6 +396,7 @@ public:
         menuTools->addAction(menuStatistics->menuAction());
         menuTools->addAction(menuMarker->menuAction());
         menuImage->addAction(actionSelect);
+        menuImage->addAction(actionPixel_Analysis);
         menuStatistics->addAction(actionImageStatisticsOverview);
         menuStatistics->addAction(actionLight_Curve);
         menuMarker->addAction(actionMarker_Mode);
@@ -505,6 +510,7 @@ public:
         action1600->setText(QCoreApplication::translate("FITSExplorer", "1600", nullptr));
         action4500->setText(QCoreApplication::translate("FITSExplorer", "4500", nullptr));
         action1700->setText(QCoreApplication::translate("FITSExplorer", "1700", nullptr));
+        actionPixel_Analysis->setText(QCoreApplication::translate("FITSExplorer", "Pixel Analysis", nullptr));
         reset_brightness_btn->setText(QCoreApplication::translate("FITSExplorer", "Reset Image", nullptr));
         menuFile->setTitle(QCoreApplication::translate("FITSExplorer", "File", nullptr));
         menuEdit->setTitle(QCoreApplication::translate("FITSExplorer", "Edit", nullptr));

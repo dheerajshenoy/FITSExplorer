@@ -54,6 +54,7 @@ public:
     Colormap getColormap();
     int getNKEYS();
     float* getImgData();
+    float getImgDataAt(QPoint );
     int getStatus();
     int getImgDim();
     int getImgSize(long *naxes);
@@ -72,8 +73,11 @@ public:
     int getCurrentHDU();
     void fitToWidth(int);
     void setSelectMode(bool);
+    void setPixelAnalysisMode(bool);
     void setMode(Mode mode);
     Mode getMode();
+    void pix(QPoint);
+
 
 signals:
     void modeChanged(Mode);
@@ -99,7 +103,6 @@ private:
     QImage m_orig_img;
     ImageWidget *m_img_widget = new ImageWidget();
     bool m_should_copy_before_applying_colormap = true;
-    bool m_select_mode = false;
     Mode m_mode  = Mode::NORMAL_MODE;
 };
 

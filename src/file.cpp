@@ -8,6 +8,10 @@ File::File(QString &filename, QObject *parent)
     connect(m_img_widget, &ImageWidget::changeBrightness, this, [&]() {
         changeBrightness();
     });
+
+    auto gv = m_img_widget->GetGraphicsView();
+
+    connect(gv, &MyGraphicsView::pixelAnalysisRequested, this, &File::pix);
 }
 
 int File::getNHDU()
@@ -33,6 +37,14 @@ int File::getNKEYS()
 float* File::getImgData()
 {
     return m_image_data;
+}
+
+float File::getImgDataAt(QPoint p)
+{
+    if (m_image_data)
+        return m_image_data[p.y() * width + p.x()];
+
+    return -1.0f;
 }
 
 int File::getStatus()
@@ -372,19 +384,29 @@ void File::fitToWidth(int width)
 
 void File::setSelectMode(bool state)
 {
-    m_select_mode = state;
     setMode(Mode::SELECT_MODE);
     m_img_widget->GetGraphicsView()->setSelectMode(state);
+}
+
+void File::setPixelAnalysisMode(bool state)
+{
+    setMode(Mode::PIXEL_ANALYSIS_MODE);
+    m_img_widget->GetGraphicsView()->setPixelAnalysisMode(state);
 }
 
 void File::setMode(Mode mode)
 {
     m_mode = mode;
-
     emit modeChanged(mode);
 }
 
 Mode File::getMode()
 {
     return m_mode;
+}
+
+void File::pix(QPoint loc)
+{
+    m_img_widget->GetGraphicsView()->setPixValue(getImgDataAt(loc));
+    m_img_widget->GetGraphicsView()->movePixAnalyser(loc);
 }

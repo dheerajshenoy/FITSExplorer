@@ -78,7 +78,6 @@ public slots:
     void update_HDU_Table(int);
     void newROIRect(QUuid, QRectF);
     void removeUUIDFromTable(QUuid);
-
 private slots:
     void OpenFile(QString filename = nullptr);
     void OpenRecent();
@@ -130,6 +129,8 @@ private slots:
     void on_reset_brightness_btn_clicked();
     void on_actionSelect_triggered();
 
+    void on_actionPixel_Analysis_triggered();
+
 private:
 
     void modeChangeUpdateStatusbar(Mode mode);
@@ -138,7 +139,7 @@ private:
     File *m_cur_file_ptr = nullptr;
     int m_file_index = -1;
     Ui::FITSExplorer *ui;
-    ImageWidget *img_widget = new ImageWidget();
+    // ImageWidget *img_widget = new ImageWidget();
     fitsfile *fptr;
     int status = 0;
     float *image_data;
@@ -146,9 +147,9 @@ private:
     QCPItemStraightLine *m_line;
     int m_nhdu;
     int m_nkeys;
-    MyGraphicsView *gv = img_widget->GetGraphicsView();
+    // MyGraphicsView *gv = img_widget->GetGraphicsView();
     Overview *overview = new Overview();
-    LightCurve *lc = new LightCurve(img_widget);
+    // LightCurve *lc = new LightCurve(img_widget);
     toml::value TOMLCFG;
     Colormap m_cur_colormap = Colormap::None;
     QCustomPlot *lightCurvePlot;
@@ -156,9 +157,8 @@ private:
     void AddRecentFile(QString);
     QImage m_orig_img;
 
-    ImageWidget *m_img_widget = new ImageWidget();
+    // ImageWidget *m_img_widget = new ImageWidget();
     bool m_should_copy_before_applying_colormap = true;
 
-    friend class File;
 };
 #endif // DFITS_H

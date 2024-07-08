@@ -14,6 +14,7 @@ INCLUDEPATH += include/
 VPATH += src/
 
 SOURCES += \
+    src/pixanalyser.cpp \
     src/roitablewidget.cpp \
     src/file.cpp \
     src/image_statistics_overview.cpp \
@@ -43,6 +44,7 @@ HEADERS += \
     include/mygraphicsview.h \
     include/overview.h \
     include/colormap.h \
+    include/pixanalyser.h \
     include/qcustomplot.h \
     include/toml.hpp \
     include/mystatusbar.h \
@@ -50,13 +52,15 @@ HEADERS += \
     include/marker.h \
     include/preferences.h \
     include/roirect.h \
-    include/roitablewidget.h
+    include/roitablewidget.h \
+    include/pixanalyzer.h
 
 FORMS += \
     FITSExplorer.ui \
     aboutdialog.ui \
     image_statistics_overview.ui \
     imagewidget.ui \
+    pixanalyser.ui \
     lightcurve.ui \
     listmarkers.ui \
     mystatusbar.ui \

@@ -185,6 +185,7 @@
       <string>Image</string>
      </property>
      <addaction name="actionSelect"/>
+     <addaction name="actionPixel_Analysis"/>
     </widget>
     <widget class="QMenu" name="menuStatistics">
      <property name="enabled">
@@ -657,6 +658,14 @@
    </property>
    <property name="text">
     <string>1700</string>
+   </property>
+  </action>
+  <action name="actionPixel_Analysis">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Pixel Analysis</string>
    </property>
   </action>
  </widget>

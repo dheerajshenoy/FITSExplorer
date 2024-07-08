@@ -24,17 +24,21 @@ public:
 
 signals:
     void deleteROI(QUuid uid);
+    void hideROI(QUuid uid);
+    void showROI(QUuid uid);
 
 private:
     Ui::ROITableWidget *ui;
     void showContextMenu(const QPoint &pos);
 
     void handleHide();
+    void handleShow();
     void handleClose();
     void handleZoom();
     void handleDelete();
 
     QAction *m_delete_action = new QAction("Delete");
+    QAction * m_show_action = new QAction("Show");
     QAction * m_hide_action = new QAction("Hide");
     QAction *m_close_action = new QAction("Close");
     QAction* m_zoom_action = new QAction("Zoom");
