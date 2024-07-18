@@ -39,6 +39,7 @@ enum Colormap
     SDO_AIA_1600,
     SDO_AIA_4500,
     SDO_AIA_1700,
+    Temp
 };
 
 class File : public QObject

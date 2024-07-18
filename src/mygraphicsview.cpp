@@ -199,6 +199,26 @@ void MyGraphicsView::ZoomIntoROI(QUuid uid)
     }
 }
 
+void MyGraphicsView::SelectROI(QUuid uid)
+{
+
+    ROIRect* rect = m_roi_map[uid];
+    if (rect)
+    {
+        rect->changeBorderColor(QColor(255, 255, 255));
+    }
+}
+
+void MyGraphicsView::UnselectROI(QUuid uid)
+{
+
+    ROIRect* rect = m_roi_map[uid];
+    if (rect)
+    {
+        rect->revertBorderColor();
+    }
+}
+
 void MyGraphicsView::mouseDoubleClickEvent(QMouseEvent *e)
 {
     if(e->button() == Qt::LeftButton)

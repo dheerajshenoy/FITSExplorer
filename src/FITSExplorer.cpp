@@ -53,7 +53,7 @@ FITSExplorer::FITSExplorer(QStringList argv, QWidget *parent)
         OpenFile(argv[1]);
     }
 
-    OpenFile("/home/neo/Gits/Solar-Project/Data/09-04-2013/DATA_UNCALIBRATED/94/aia.lev1_euv_12s.2013-04-09T124003Z.94.image_lev1.fits");
+    // OpenFile("/home/neo/Gits/Solar-Project/Data/09-04-2013/DATA_UNCALIBRATED/94/aia.lev1_euv_12s.2013-04-09T124003Z.94.image_lev1.fits");
 }
 
 void FITSExplorer::INIT_Configuration()
@@ -181,7 +181,17 @@ void FITSExplorer::INIT_Connections()
         getCurrentFile()->getImgWidget()->GetGraphicsView()->HideROIRect__for_table(uid);
     });
 
+    connect(ui->roi_table, &ROITableWidget::zoomROI, this, [&](QUuid uid) {
+        getCurrentFile()->getImgWidget()->GetGraphicsView()->ZoomIntoROI(uid);
+    });
 
+    connect(ui->roi_table, &ROITableWidget::selectROI, this, [&](QUuid uid) {
+        getCurrentFile()->getImgWidget()->GetGraphicsView()->SelectROI(uid);
+    });
+
+    connect(ui->roi_table, &ROITableWidget::unselectROI, this, [&](QUuid uid) {
+        getCurrentFile()->getImgWidget()->GetGraphicsView()->UnselectROI(uid);
+    });
 }
 
 void FITSExplorer::update_HDU_Table(int index)
@@ -879,7 +889,8 @@ void FITSExplorer::on_actionHSV_triggered()
 
 void FITSExplorer::on_actionJet_triggered()
 {
-    HandleColorMapSelect(Colormap::Jet);
+    // HandleColorMapSelect(Colormap::Jet);
+    HandleColorMapSelect(Colormap::Temp);
 }
 
 void FITSExplorer::on_actionOcean_triggered()

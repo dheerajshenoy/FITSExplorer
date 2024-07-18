@@ -430,3 +430,28 @@ QImage CM::SDO_AIA_94(const QImage& img)
     }
     return ret;
 }
+
+// Jet colormap function
+QColor applyJetColormap(qreal value) {
+    qreal r = std::min(1.0, std::max(0.0, 1.5 - std::abs(4.0 * value - 3.0)));
+    qreal g = std::min(1.0, std::max(0.0, 1.5 - std::abs(4.0 * value - 2.0)));
+    qreal b = std::min(1.0, std::max(0.0, 1.5 - std::abs(4.0 * value - 1.0)));
+
+    return QColor(static_cast<int>(r * 255), static_cast<int>(g * 255), static_cast<int>(b * 255));
+}
+
+QImage CM::temp(const QImage &img)
+{
+    QImage ret(img.size(), QImage::Format_RGB32);
+
+    for (int y = 0; y < img.height(); ++y) {
+        for (int x = 0; x < img.width(); ++x) {
+            QRgb pixel = img.pixel(x, y);
+            qreal value = qGray(pixel) / 255.0;  // Normalize grayscale value to [0, 1]
+            QColor color = applyJetColormap(value);
+            ret.setPixel(x, y, color.rgb());
+        }
+    }
+
+    return img;
+}

@@ -57,6 +57,8 @@ public:
     PixAnalyser* getPixAnalyser();
     void movePixAnalyser(QPoint);
     void setPixValue(float);
+    void SelectROI(QUuid uid);
+    void UnselectROI(QUuid uid);
 
 signals:
     void mouseMoved(QPointF);

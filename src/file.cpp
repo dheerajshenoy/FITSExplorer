@@ -319,6 +319,11 @@ QImage File::ApplyColormap(QImage &img)
     case Colormap::SDO_AIA_211:
         return CM::SDO_AIA_211(img);
         break;
+
+
+    case Colormap::Temp:
+        return CM::temp(img);
+        break;
     }
 }
 

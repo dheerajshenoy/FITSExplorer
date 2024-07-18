@@ -43,8 +43,6 @@ class FITSExplorer;
 QT_END_NAMESPACE
 
 
-
-
 class FITSExplorer : public QMainWindow
 {
     Q_OBJECT

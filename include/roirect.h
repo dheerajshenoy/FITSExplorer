@@ -19,6 +19,9 @@ public:
 
     QUuid uid() { return m_uid; }
 
+    void changeBorderColor(QColor);
+    void revertBorderColor();
+
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
     void contextMenuEvent(QGraphicsSceneContextMenuEvent* event) override;
@@ -31,6 +34,8 @@ signals:
 
 private:
     QMenu *contextMenu;
+
+    QPen m_border_pen;
 
     QUuid m_uid;
 };

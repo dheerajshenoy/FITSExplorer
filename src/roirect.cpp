@@ -6,7 +6,8 @@ ROIRect::ROIRect(QRectF &rect)
 {
     contextMenu = new QMenu();
     this->setAcceptHoverEvents(true);
-    this->setPen(QPen(Qt::red, 2, Qt::DashLine));
+    m_border_pen = QPen(Qt::red, 2, Qt::DashLine);
+    this->setPen(m_border_pen);
     this->setBrush(QBrush(QColor(255, 255, 255, 50)));
 
     m_uid = QUuid::createUuid();
@@ -43,4 +44,16 @@ void ROIRect::contextMenuEvent(QGraphicsSceneContextMenuEvent* event) {
 void ROIRect::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
     // TODO: Display UID or something
+}
+
+void ROIRect::changeBorderColor(QColor color)
+{
+    m_border_pen.setColor(color);
+    this->setPen(m_border_pen);
+}
+
+void ROIRect::revertBorderColor()
+{
+    m_border_pen.setColor(Qt::red);
+    this->setPen(m_border_pen);
 }

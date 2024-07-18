@@ -26,6 +26,9 @@ signals:
     void deleteROI(QUuid uid);
     void hideROI(QUuid uid);
     void showROI(QUuid uid);
+    void zoomROI(QUuid uid);
+    void selectROI(QUuid uid);
+    void unselectROI(QUuid uid);
 
 private:
     Ui::ROITableWidget *ui;
@@ -36,6 +39,7 @@ private:
     void handleClose();
     void handleZoom();
     void handleDelete();
+    void handleSelect();
 
     QAction *m_delete_action = new QAction("Delete");
     QAction * m_show_action = new QAction("Show");
