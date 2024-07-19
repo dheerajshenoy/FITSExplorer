@@ -2,6 +2,16 @@
 
 * A modern FITS image viewer written using CFITSIO library.
 
+# Screenshots
+
+![img1](https://github.com/dheerajshenoy/FITSExplorer/blob/main/images/1.png)
+![img2](https://github.com/dheerajshenoy/FITSExplorer/blob/main/images/2.png)
+![img3](https://github.com/dheerajshenoy/FITSExplorer/blob/main/images/3.png)
+![img4](https://github.com/dheerajshenoy/FITSExplorer/blob/main/images/4.png)
+![img5](https://github.com/dheerajshenoy/FITSExplorer/blob/main/images/5.png)
+![img6](https://github.com/dheerajshenoy/FITSExplorer/blob/main/images/6.png)
+![img7](https://github.com/dheerajshenoy/FITSExplorer/blob/main/images/7.png)
+
 ## Libraries Used
 
 * CFITSIO
@@ -28,10 +38,6 @@
 - [x] Histogram and Statistics: Display histograms of pixel values and provide basic statistics (e.g., mean, median, standard deviation) of the image data to analyze its distribution.
 - [x] Export and Saving: Allow users to export images to various formats (e.g., FITS, PNG, JPEG) and save any modifications made during analysis.
 - [x] Cross-platform Compatibility: Ensure compatibility with multiple operating systems (e.g., Windows, macOS, Linux) to reach a broader audience of users.
-
-
-
-
 
 # TODO
 
