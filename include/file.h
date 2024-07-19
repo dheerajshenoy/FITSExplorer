@@ -55,7 +55,7 @@ public:
     Colormap getColormap();
     int getNKEYS();
     float* getImgData();
-    float getImgDataAt(QPoint );
+    int getImgDataAt(QPoint);
     int getStatus();
     int getImgDim();
     int getImgSize(long *naxes);

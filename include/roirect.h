@@ -21,11 +21,16 @@ public:
 
     void changeBorderColor(QColor);
     void revertBorderColor();
+    void changeBorderWidth(int);
+    void setName(QString name) { m_name = name; }
+    void setTextItem(QGraphicsTextItem *item);
+    QGraphicsTextItem* getTextItem() { return m_text_item; }
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
     void contextMenuEvent(QGraphicsSceneContextMenuEvent* event) override;
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
 
 signals:
     void deleteItem(QUuid uid);
@@ -34,9 +39,9 @@ signals:
 
 private:
     QMenu *contextMenu;
-
+    QString m_name = "Some Text";
     QPen m_border_pen;
-
+    QGraphicsTextItem *m_text_item = nullptr;
     QUuid m_uid;
 };
 

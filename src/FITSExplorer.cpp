@@ -161,6 +161,10 @@ void FITSExplorer::INIT_Connections()
         getCurrentFile()->getImgWidget()->GetGraphicsView()->HideROIRect__for_table(uid);
     });
 
+    connect(ui->roi_table, &ROITableWidget::showROI, this, [&](QUuid uid) {
+        getCurrentFile()->getImgWidget()->GetGraphicsView()->ShowROIRect__for_table(uid);
+    });
+
     connect(ui->roi_table, &ROITableWidget::zoomROI, this, [&](QUuid uid) {
         getCurrentFile()->getImgWidget()->GetGraphicsView()->ZoomIntoROI(uid);
     });
@@ -398,7 +402,6 @@ void FITSExplorer::OpenRecent() {
         ui->actionSave_toolbar->setEnabled(true);
         ui->actionxport->setEnabled(true);
         ui->statusbar->setMsg(QString("File {%1} Opened").arg(filename));
-        MSG(filename);
         ui->statusbar->setFile(filename);
         HandleFile(filename);
     }

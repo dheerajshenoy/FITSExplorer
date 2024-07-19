@@ -51,6 +51,12 @@ void ROITableWidget::handleHide()
 void ROITableWidget::handleShow()
 {
 
+    QList<QTableWidgetItem*> selections = ui->table->selectedItems();
+
+    for (int i=0; i < selections.size(); i += 2)
+    {
+        emit showROI(QUuid::fromString(selections[i]->text()));
+    }
 }
 
 void ROITableWidget::handleClose()
@@ -106,16 +112,14 @@ void ROITableWidget::showContextMenu(const QPoint &pos)
 void ROITableWidget::addItem(QUuid uid, QRectF rect)
 {
     QTableWidgetItem *item_uid = new QTableWidgetItem(uid.toString());
-    QTableWidgetItem *item_rect = new QTableWidgetItem(QString("DD"));
+    QTableWidgetItem *item_name = new QTableWidgetItem(QString("DD"));
 
     ui->table->insertRow(ui->table->rowCount());
 
     int row = ui->table->rowCount() - 1;
 
-    fprintf(stderr, "%d", row);
-
     ui->table->setItem(row, 0, item_uid);
-    ui->table->setItem(row, 1, item_rect);
+    ui->table->setItem(row, 1, item_name);
 }
 
 ROITableWidget::~ROITableWidget()

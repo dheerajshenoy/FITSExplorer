@@ -52,6 +52,8 @@ public:
     void DeleteROIRect__for_table(QUuid uid);
     void HideROIRect(QUuid uid);
     void HideROIRect__for_table(QUuid uid);
+    void ShowROIRect(QUuid uid);
+    void ShowROIRect__for_table(QUuid uid);
     int GetROIIndex();
     ROIRect* GetROIRect(QUuid uid);
     PixAnalyser* getPixAnalyser();

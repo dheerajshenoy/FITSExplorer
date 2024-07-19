@@ -39,12 +39,12 @@ float* File::getImgData()
     return m_image_data;
 }
 
-float File::getImgDataAt(QPoint p)
+int File::getImgDataAt(QPoint p)
 {
-    if (m_image_data)
-        return m_image_data[p.y() * width + p.x()];
+    // if (m_image_data)
+        // return m_image_data[p.y() * width + p.x()];
 
-    return -1.0f;
+    return static_cast<int>(m_img_widget->GetImage().pixel(p));
 }
 
 int File::getStatus()

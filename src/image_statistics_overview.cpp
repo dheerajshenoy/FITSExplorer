@@ -119,7 +119,6 @@ double ImageStatisticsOverview::StandardDeviation()
 
 void ImageStatisticsOverview::Gaussian()
 {
-
     // Generate Gaussian curve data points
     QVector<double> xData, yData;
     double mean = Mean();
@@ -140,10 +139,8 @@ void ImageStatisticsOverview::Gaussian()
 
     ui->gaussian_dist_plot->graph(0)->setData(xData, yData);
     ui->gaussian_dist_plot->replot();
-
     ui->gaussian_dist_plot->xAxis->setRange(-10, 10);
     ui->gaussian_dist_plot->yAxis->setRange(-0.25, maxYValue);
-
     ui->gaussian_dist_plot->show();
 }
 

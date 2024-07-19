@@ -143,6 +143,7 @@ void MyGraphicsView::AddROIRect(ROIRect* rect)
     connect(rect, &ROIRect::hideItem, this, &MyGraphicsView::HideROIRect);
     connect(rect, &ROIRect::zoomItem, this, &MyGraphicsView::ZoomIntoROI);
     scene()->addItem(rect);
+    scene()->addItem(rect->getTextItem());
 }
 
 void MyGraphicsView::DeleteROIRect__for_table(QUuid uid)
@@ -155,6 +156,11 @@ void MyGraphicsView::DeleteROIRect__for_table(QUuid uid)
 void MyGraphicsView::HideROIRect__for_table(QUuid uid)
 {
     m_roi_map[uid]->setVisible(false);
+}
+
+void MyGraphicsView::ShowROIRect__for_table(QUuid uid)
+{
+    m_roi_map[uid]->setVisible(true);
 }
 
 void MyGraphicsView::DeleteROIRect(QUuid uid)
@@ -178,6 +184,11 @@ ROIRect* MyGraphicsView::GetROIRect(QUuid uid)
 void MyGraphicsView::HideROIRect(QUuid uid)
 {
     m_roi_map[uid]->setVisible(false);
+}
+
+void MyGraphicsView::ShowROIRect(QUuid uid)
+{
+    m_roi_map[uid]->setVisible(true);
 }
 
 void MyGraphicsView::ZoomIntoLastROI()
@@ -206,6 +217,7 @@ void MyGraphicsView::SelectROI(QUuid uid)
     if (rect)
     {
         rect->changeBorderColor(QColor(255, 255, 255));
+        rect->changeBorderWidth(4);
     }
 }
 
