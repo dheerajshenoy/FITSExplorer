@@ -64,55 +64,35 @@ void FITSExplorer::INIT_Configuration()
     QDir configDir = XDG_CONFIG_DIR.filePath(APPNAME);
 
     // Check if  file exists
-    if (configDir.exists())
+    if (!configDir.exists())
     {
-        m_recentFile.setFileName(configDir.path() + "/recentf");
-
-        QAction *recent_action = ui->actionOpen_Recent;
-        QMenu *menu = new QMenu();
-        recent_action->setMenu(menu);
-        if (m_recentFile.exists()) {
-            if (m_recentFile.open(QIODevice::ReadWrite)) {
-                QTextStream in(&m_recentFile);
-                while (!in.atEnd()) {
-                    QAction *action = new QAction(in.readLine());
-                    menu->addAction(action);
-                    connect(action, &QAction::triggered, this, &FITSExplorer::OpenRecent);
-                }
-            } else {
-                MSG("Couldn't open recent files!");
-            }
-        } else {
-
-        }
-
-        /*
-        QFile configFile(configDir.path() + "config.toml");
-
-        if(configFile.exists())
-        {
-            // READ THE CONFIG FILE
-        }
-        else
-        {
-        }
-*/
+        QDir(XDG_CONFIG_DIR).mkdir(APPNAME);
     }
-    else {
-        /*
-        auto msgbox = QMessageBox();
-        msgbox.setText("Config directory doesn't exist, create it at " + configDir.path());
-        msgbox.setWindowTitle("Create Config Directory?");
-        msgbox.addButton("Ok", QMessageBox::AcceptRole);
-        msgbox.addButton("Cancel", QMessageBox::RejectRole);
-        msgbox.exec();
 
-        // If yes, create the config directory
-        if (msgbox.result() == QMessageBox::Ok)
-        {
-            QDir(XDG_CONFIG_DIR).mkdir(APPNAME);
+    m_recentFile.setFileName(configDir.path() + "/recentf");
+    QAction *recent_action = ui->actionOpen_Recent;
+    QMenu *menu = new QMenu();
+    recent_action->setMenu(menu);
+    if (m_recentFile.open(QIODevice::ReadWrite)) {
+        QTextStream in(&m_recentFile);
+        while (!in.atEnd()) {
+            QAction *action = new QAction(in.readLine());
+            menu->addAction(action);
+            connect(action, &QAction::triggered, this, &FITSExplorer::OpenRecent);
         }
-*/
+    } else {
+        MSG("Couldn't open recent files!");
+    }
+
+    QFile configFile(configDir.path() + "/config.toml");
+
+    if(configFile.exists())
+    {
+        // READ THE CONFIG FILE
+    }
+    else
+    {
+        // Cannot read the config file
     }
     //ReadConfigFile("/home/neo/.config/FITSExplorer/config.toml");
 }
@@ -395,7 +375,7 @@ void FITSExplorer::OpenFile(QString filename)
         ui->actionSave_toolbar->setEnabled(true);
         ui->actionxport->setEnabled(true);
         ui->statusbar->setMsg(QString("File {%1} Opened").arg(filename));
-        AddRecentFile(filename);
+        AddRecentFile(filename[0]);
         ui->statusbar->setFile(filename);
         HandleFile(filename);
         return;
@@ -601,6 +581,7 @@ int FITSExplorer::HandleImage()
 FITSExplorer::~FITSExplorer()
 {
     CloseFile();
+    m_recentFile.close();
     delete ui;
 }
 
@@ -1000,23 +981,26 @@ void FITSExplorer::on_actionHideAll_Markers_triggered(bool status)
 
 void FITSExplorer::AddRecentFile(QString filename)
 {
-    QTextStream in(&m_recentFile);
-
-    in.seek(0);
-    QStringList lines;
-
-    while (!in.atEnd()) {
-        if (in.readLine() != filename) {
-            lines << in.readLine();
+    QSet<QString> recentFiles;
+    if (m_recentFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QTextStream in(&m_recentFile);
+        while (!in.atEnd()) {
+            QString line = in.readLine().trimmed();
+            if (!line.isEmpty()) {
+                recentFiles.insert(line);
+            }
         }
+        m_recentFile.close();
     }
 
+    // Add the new filename to the set
+    recentFiles.insert(filename);
 
-    foreach(const QString line, lines) {
-        in << line;
+    QTextStream out(&m_recentFile);
+    for (const QString& file : qAsConst(recentFiles)) {
+        out << file << '\n';
     }
-
-    lines.insert(0, filename);
+    m_recentFile.close();
 }
 
 void FITSExplorer::on_reset_brightness_btn_clicked()
