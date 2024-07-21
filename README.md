@@ -28,9 +28,21 @@ This started off as a project I did for the Astronomy & Astrophysics class at my
 4. Add Region of Interests (ROI)
 5. Export FITS images to different file formats like PDF, JPEG, PNG etc.
 
-# Note
+## Note
 
 There are many features that are not yet implemented like adding and editing markers, image overview, image overview of selected ROI, resetting image.
+
+## Installation
+
+1. Install the necessary dependencies `Qt6-base`, `Qt6-charts`, `cfitsio`
+    - If you're on Arch Linux the install command will be
+      `sudo pacman -S qt6-base qt6-charts cfitsio`
+    - If you're on any other linux, check for these packages as they might be differently named
+       
+2. Clone this repo
+    - `git clone github.com/dheerajshenoy/FITSExplorer` 
+4. cd into the directory and run the following command
+    - `cd FITSExplorer && make`
 
 # Screenshots
 
