@@ -10,6 +10,16 @@ Flexible Image Transport System images or FITS for short are image formats used 
 
 Well....it looks modern and sleek.
 
+## Why did I create this ?
+
+This started off as a project I did for the Astronomy & Astrophysics class at my University during my Masters. Most of the FITS image viewers that exist like SAOImage DS9, qfitsview looked a bit ancient, and since I was working on FITS files extensively for my thesis, I went ahead and created this software.
+
+## How does it work ?
+
+1. CFITSIO library from NASA is a defacto-standard library for accessing these files. This is written in C.
+2. For the frontend, I use Qt framework
+3. I just made the two libraries talk to each other and create this magical software.
+
 ## Features
 
 1. View FITS Images
@@ -40,15 +50,6 @@ https://github.com/user-attachments/assets/d87524d0-8cf9-44b1-83fd-d46f96c861ee
 
 https://github.com/user-attachments/assets/cf7fe125-6aee-4c1c-822f-9ea5583c14c4
 
-
-
-
-
-## Libraries Used
-
-* CFITSIO
-* QT (for GUI)
-
 # DONE
 
 - [x] Open and display FITS images
@@ -74,15 +75,9 @@ https://github.com/user-attachments/assets/cf7fe125-6aee-4c1c-822f-9ea5583c14c4
 # TODO
 
 - [ ] Image Stretching: It should support different types of image stretching methods, such as linear, logarithmic, and histogram equalization, to enhance the visibility of faint details or adjust contrast.
-
 - [ ] Region of Interest (ROI)
-
-    - [ ] Allow users to define regions of interest (ROIs) within the image for analysis, such as measuring intensity profiles or extracting statistics.
-
-
+- [ ] Allow users to define regions of interest (ROIs) within the image for analysis, such as measuring intensity profiles or extracting statistics.
 - [ ] Image Comparison: Support the ability to open and compare multiple FITS images simultaneously for qualitative and quantitative analysis.
-
 - [ ] Performance Optimization: Optimize rendering performance for handling large, high-resolution images efficiently, ensuring smooth interaction and responsiveness.
-
 - [ ] Customization and Extensions: Provide options for customization and extension through plugins or scripting interfaces, allowing users to tailor the viewer to their specific needs.
 
