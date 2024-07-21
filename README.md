@@ -42,7 +42,7 @@ There are many features that are not yet implemented like adding and editing mar
 2. Clone this repo
     - `git clone github.com/dheerajshenoy/FITSExplorer` 
 4. cd into the directory and run the following command
-    - `cd FITSExplorer && qmake && make`
+    - `cd FITSExplorer && qmake6 && make`
 5. The software binary will be called `FITSExplorer`
 # Screenshots
 
