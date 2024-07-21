@@ -14,6 +14,10 @@ Well....it looks modern and sleek.
 4. Add Region of Interests (ROI)
 5. Export FITS images to different file formats like PDF, JPEG, PNG etc.
 
+# Note
+
+There are many features that are not yet implemented like adding and editing markers, image overview, image overview of selected ROI, resetting image.
+
 # Screenshots
 
 ![img1](https://github.com/dheerajshenoy/FITSExplorer/blob/main/images/1.png)
