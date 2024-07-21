@@ -2,6 +2,10 @@
 
 A modern FITS image viewer written in C++ using CFITSIO library.
 
+## What are FITS files ?
+
+Flexible Image Transport System images or FITS for short are image formats used extensively in Astronomy domain. These are completely different from your typical image formats like JPEG, PNG etc. when it comes to the way they store their data. FITS files can contain many kinds of data like BINARY TABLES, ASCII TABLES or IMAGE DATA. In addition to this, they also contain metadata which is the main focus of these file formats. These metadatas contain imoportant information like the location from which the image was taken, observer position, quality of the data, dimensions etc. which are very important for astronomical and astrophysical applications. For those interested, refer to this [wiki](https://en.wikipedia.org/wiki/FITS) or go straight to NASA [page](https://fits.gsfc.nasa.gov/fits_primer.html) who created the format.
+
 ## How is it modern ?
 
 Well....it looks modern and sleek.
