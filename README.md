@@ -1,6 +1,18 @@
-# DFITS
+# FITSExplorer
 
-* A modern FITS image viewer written using CFITSIO library.
+A modern FITS image viewer written in C++ using CFITSIO library.
+
+## How is it modern ?
+
+Well....it looks modern and sleek.
+
+## Features
+
+1. View FITS Images
+2. Apply colormap
+3. Check light curve
+4. Add Region of Interests (ROI)
+5. Export FITS images to different file formats like PDF, JPEG, PNG etc.
 
 # Screenshots
 
