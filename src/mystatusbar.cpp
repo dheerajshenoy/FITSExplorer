@@ -46,7 +46,6 @@ void MyStatusBar::setFile(const QString filename)
 {
     QFileInfo fileInfo(filename);
     ui->label_filename->setText(fileInfo.fileName());
-    fprintf(stderr, "%d", fileInfo.size());
     ui->label_filesize->setText(m_locale.formattedDataSize(fileInfo.size()));
 
     // If file path is more than 20 characters, make it a tooltip text

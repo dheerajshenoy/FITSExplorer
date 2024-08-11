@@ -10,6 +10,8 @@ FITSExplorer::FITSExplorer(QStringList argv, QWidget *parent)
     INIT_Shortcuts();
     ui->splitter->setStretchFactor(1, 1);
 
+    this->setAcceptDrops(true);
+
     ui->HDU_List->setHorizontalHeaderLabels({"HDU", "HDU Type"});
 
     /*auto overview_image_widget = new OverviewGraphicsView(gv->scene(), gv);*/
@@ -188,8 +190,8 @@ void FITSExplorer::update_HDU_Table(int index)
     ui->HDU_List->clear();
     ui->HDU_List->setRowCount(file->getNHDU());
 
-    QList<int> types = file->getHDUTypes();
-    int type;
+    QList<ExtType> types = file->getHDUTypes();
+    ExtType type;
     QString type_string;
 
     for(int i=0; i < types.size(); i++)
@@ -197,16 +199,18 @@ void FITSExplorer::update_HDU_Table(int index)
         type = types[i];
         switch(type)
         {
-        case IMAGE_HDU:
+        case ExtType::Image:
             type_string = "IMAGE";
             break;
 
-        case ASCII_TBL:
+        case ExtType::ASCII:
             type_string = "ASCII TBL";
+            QMessageBox::information(this, "Error", "This is an ASCII Table. Not yet implemented");
             break;
 
-        case BINARY_TBL:
+        case ExtType::Binary:
             type_string = "BINARY TBL";
+            QMessageBox::information(this, "Error", "This is a Binary Table. Not yet implemented");
             break;
 
         }
@@ -256,7 +260,7 @@ int FITSExplorer::HDU_Table_Double_Clicked(int row, int col)
 
     status = file->moveAbsRow(row + 1, type);
 
-    if (status)
+    if (!status)
     {
         QMessageBox::critical(this, "Error", "Unable to move to the HDU");
         return status;
@@ -454,6 +458,7 @@ int FITSExplorer::HandleFile(QString filename)
 
     bool status;
     status = file->Open();
+
     if(!status)
     {
         QMessageBox::critical(this, "Error", "Cannot Open File!");
@@ -464,24 +469,25 @@ int FITSExplorer::HandleFile(QString filename)
 
     ui->HDU_List->setRowCount(file->getNHDU());
 
-    QList<int> types = file->getHDUTypes();
-    int type;
+    QList<ExtType> types = file->getHDUTypes();
+    ExtType type;
     QString type_string;
+
 
     for(int i=0; i < types.size(); i++)
     {
         type = types[i];
         switch(type)
         {
-        case IMAGE_HDU:
+        case ExtType::Image:
             type_string = "IMAGE";
             break;
 
-        case ASCII_TBL:
+        case ExtType::ASCII:
             type_string = "ASCII TBL";
             break;
 
-        case BINARY_TBL:
+        case ExtType::Binary:
             type_string = "BINARY TBL";
             break;
 
@@ -529,39 +535,34 @@ int FITSExplorer::HandleImage()
         return -1;
     }
 
-    int naxis = file->getImgDim();
+    std::vector<long>naxes = file->getImgDim();
 
-    long naxes[naxis];
-    file->getImgSize(naxes);
-
-    if (!naxes)
+    if (naxes.size() == 0)
     {
         QMessageBox::critical(this, "Error", "Cannot get the image dimension");
         return -1;
     }
 
-    if(file->getImgType() == -1)
+    if (naxes[0] <= 0 && naxes[1] <= 0)
     {
-        QMessageBox::critical(this, "Error", "Cannot get the image type");
+        QMessageBox::critical(this, "Error", "Invalid Image Dimensions");
         return -1;
     }
 
-    if(!file->checkIfValidDim())
-    {
-        QMessageBox::critical(this, "Error", "Undefined height and width for Image");
-        return -1;
-    }
-
+    fprintf(stderr, "\n\n%ld", naxes[1]);
     file->initImgData();
 
     auto width = naxes[0];
     auto height = naxes[1];
 
-    auto image_data = file->getImgData();
+    const auto &image_data = file->getImgData();
 
     ui->statusbar->hideProgressBar(false);
 
     QImage image(width, height, QImage::Format_Grayscale8);
+
+    int totalsamples = width * height;
+    int i = 1;
 
     // Read the image data and put to QImage, pixel by pixel
     for (uint x = 0; x < width; ++x) {
@@ -569,10 +570,12 @@ int FITSExplorer::HandleImage()
             float value = image_data[y * width + x];
             image.setPixel(x, y, qRgb(value, value, value)); // Assuming grayscale image
             //ui->statusbar->setProgress( ((x + 1) * (y + 1))/(width * height)* 100);
+            ui->statusbar->setProgress(i/static_cast<double>(totalsamples) * 100);
+            i++;
         }
 
-        ui->statusbar->setProgress((x + 1)/width  * 100);
     }
+
 
     ui->statusbar->hideProgressBar(true);
     // lc->setData(image_data, width, height);
@@ -597,7 +600,6 @@ int FITSExplorer::ShowOverview()
 {
     // Overview for all the HDUs present
     File *file = getCurrentFile();
-    fprintf(stderr, "%d", file->getCurrentHDU());
     if(file->getCurrentHDU() == 0)
     {
         if(fits_movabs_hdu(fptr, 1, NULL, &status))
@@ -788,7 +790,6 @@ void FITSExplorer::CloseFile()
     if(fptr)
     {
         delete fptr;
-        delete [] image_data;
         status = 0;
     }
 }
@@ -963,7 +964,7 @@ void FITSExplorer::on_actionMarker_Mode_triggered(bool state)
 
 void FITSExplorer::on_actionImageStatisticsOverview_triggered()
 {
-    ImageStatisticsOverview *img_stat_overview = new ImageStatisticsOverview(nullptr, image_data);
+    // ImageStatisticsOverview *img_stat_overview = new ImageStatisticsOverview(nullptr, image_data);
 }
 
 void FITSExplorer::changeMarkerLineColor(int index, QColor color)
@@ -1082,4 +1083,25 @@ void FITSExplorer::newROIRect(QUuid uid, QRectF rect)
 void FITSExplorer::removeUUIDFromTable(QUuid uid)
 {
     ui->roi_table->removeItem(uid);
+}
+
+
+void FITSExplorer::dragEnterEvent(QDragEnterEvent *e)
+{
+    if (e->mimeData()->hasUrls())
+    {
+        e->acceptProposedAction();
+    }
+}
+
+void FITSExplorer::dragMoveEvent(QDragMoveEvent *e)
+{}
+
+void FITSExplorer::dropEvent(QDropEvent *e)
+{
+    auto files = e->mimeData()->urls();
+    for (const auto &file: files)
+    {
+        OpenFile(file.toString());
+    }
 }

@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=FITSExplorer
+GenericName=FITS File Viewer
+Comment=Analyse FITS Files
+TryExec=fitsexplorer
+Exec=fitsexplorer %F
+Type=Application
+Keywords=FITS;Viewer;
+Icon=FITSExplorer
+Categories=Utility;Viewer;
+StartupNotify=false
+MimeType=application/fits;

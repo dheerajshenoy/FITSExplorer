@@ -357,7 +357,6 @@ void MyGraphicsView::setSelectMode(bool state)
 void MyGraphicsView::setPixelAnalysisMode(bool state)
 {
 
-    fprintf(stderr, "%d", state);
     m_pix_analysis_mode = state;
     if (state)
     {

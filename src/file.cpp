@@ -4,6 +4,7 @@ File::File(QString &filename, QObject *parent)
     : QObject(parent), m_filename(filename)
 {
 
+    CCfits::FITS::setVerboseMode(true);
     // Change brightness when slider is moved and released
     connect(m_img_widget, &ImageWidget::changeBrightness, this, [&]() {
         changeBrightness();
@@ -34,16 +35,13 @@ int File::getNKEYS()
     return m_nkeys;
 }
 
-float* File::getImgData()
+const std::valarray<unsigned long>& File::getImgData()
 {
     return m_image_data;
 }
 
 int File::getImgDataAt(QPoint p)
 {
-    // if (m_image_data)
-        // return m_image_data[p.y() * width + p.x()];
-
     return static_cast<int>(m_img_widget->GetImage().pixel(p));
 }
 
@@ -54,19 +52,21 @@ int File::getStatus()
 
 bool File::Open()
 {
-    // set status before opening the file according to then norms of cfitsio
-    m_status = 0;
-    if(fits_open_file(&m_fptr, m_filename.toStdString().c_str(), READONLY, &m_status))
+    try
     {
-        fits_report_error(stderr, m_status);
+        m_fitsptr = std::make_unique<CCfits::FITS>(m_filename.toStdString(), CCfits::Read, true);
+    }
+    catch (const CCfits::FitsException &e)
+    {
+        qDebug() << "Unable to open the file: " << e.message();
         return false;
     }
 
-    if(fits_get_num_hdus(m_fptr, &m_nhdu, &m_status))
-    {
-        fits_report_error(stderr, m_status);
-        return false;;
-    }
+    fprintf(stderr, "\n\nDD");
+
+    const CCfits::ExtMap hduList = m_fitsptr->extension();
+
+    m_nhdu = hduList.size();
 
     if (m_nhdu < 1)
         return false;
@@ -80,119 +80,82 @@ ImageWidget* File::getImgWidget()
 }
 
 
-QList<int> File::getHDUTypes()
+QList<ExtType> File::getHDUTypes()
 {
-    QList <int> typelist;
+    QList <ExtType> typelist;
     typelist.resize(m_nhdu);
-    m_status = 0;
-    for(int i=1; i <= m_nhdu; i++)
-    {
 
-        if(fits_movabs_hdu(m_fptr, i, nullptr, &m_status))
-        {
-            fits_report_error(stderr, m_status);
-            return {-1};
+    auto exts = m_fitsptr->extension();
+    std::vector<const CCfits::HDU*> extVector;
+
+    for (const auto& extPair : exts) {
+        extVector.push_back(extPair.second);
+    }
+
+    // Iterate using an index
+    for (size_t i = 0; i < extVector.size(); ++i) {
+        const CCfits::HDU* hdu = extVector[i];
+
+        // You can check for the type of HDU here
+        if (dynamic_cast<const CCfits::ExtHDU*>(hdu)) {
+            typelist[i] = ExtType::Image;
+        } else if (dynamic_cast<const CCfits::BinTable*>(hdu)) {
+            typelist[i] = ExtType::Binary;
+        } else if (dynamic_cast<const CCfits::AsciiTable*>(hdu)) {
+            typelist[i] = ExtType::ASCII;
         }
-
-        int type;
-
-        if(fits_get_hdu_type(m_fptr, &type, &m_status))
-        {
-            fits_report_error(stderr, m_status);
-            return {-1};
-        }
-
-        typelist[i] = type;
-
     }
 
     return typelist;
 }
 
-int File::moveAbsRow(const int &row, int &type)
+bool File::moveAbsRow(const int &row, int &type)
 {
-
-    if(fits_movabs_hdu(m_fptr, row, &type, &m_status))
-    {
-        fits_report_error(stderr, m_status);
-        return m_status;
-    }
-
     m_row = row;
-
-    return m_status;
+    try
+    {
+        const auto &neweext = m_fitsptr->extension(m_row);
+        neweext.makeThisCurrent();
+        return true;
+    } catch (const CCfits::FitsException &e)
+    {
+        qDebug() << "Error moving to the extension: " << e.message();
+        return false;
+    }
 }
 
-int File::getImgDim()
+std::vector<long> File::getImgDim()
 {
-    if(fits_get_img_dim(m_fptr, &m_naxis, &m_status))
-    {
-        fits_report_error(stderr, m_status);
-        return -1;
-    }
+    CCfits::ExtHDU &img = m_fitsptr->currentExtension();
 
-    return m_naxis;
+    //img.readAllKeys();
+
+    return std::vector<long>{img.axis(0), img.axis(1)};
 }
 
 int File::getImgSize(long *naxes)
 {
-    if(fits_get_img_size(m_fptr, m_naxis, naxes, &m_status))
-    {
-        fits_report_error(stderr, m_status);
-        return m_status;
-    }
-
     m_naxes = naxes;
     return m_status;
 }
 
 int File::getImgType()
 {
-
-    if(fits_get_img_type(m_fptr, &m_bitpix, &m_status))
-    {
-        fits_report_error(stderr, m_status);
-        return -1;
-    }
-
-    return m_bitpix;
-}
-
-bool File::checkIfValidDim()
-{
-    if (!m_naxes) return false;
-
-    width = m_naxes[0];
-    height = m_naxes[1];
-
-    if(width <= 0 || height <= 0)
-    {
-        return false;
-    }
-
-    return true;
+    return m_fitsptr->currentExtension().bitpix();
 }
 
 int File::initImgData()
 {
 
-    try {
-        m_image_data = new float[width * height];
-    }
-    catch(const std::bad_array_new_length &e)
-    {
-        qCritical() << "Caught std::bad_array_new_length: " << e.what();
-        // QMessageBox::critical(this, "Error", "Bad array length");
-        return 1;
-    }
+    auto &img = m_fitsptr->currentExtension();
 
-    long fpixel = 1; // Starting pixel
-
-    if(fits_read_img(m_fptr, TFLOAT, fpixel, width * height,
-                      NULL, m_image_data, NULL, &m_status))
+    try
     {
-        fits_report_error(stderr, m_status);
-        return m_status;
+        img.read(m_image_data);
+    } catch (const CCfits::FitsException &e)
+    {
+        fprintf(stderr, "\nCannot read Image:%s", e.message().c_str());
+        return -1;
     }
 
     return 0;
@@ -202,6 +165,8 @@ void File::changeBrightness()
 {
 
     QImage image = m_img_widget->GetImage();
+    auto height = image.height();
+    auto width = image.width();
 
     for (int y = 0; y < height; ++y)
     {
@@ -325,14 +290,17 @@ QImage File::ApplyColormap(QImage &img)
         return CM::temp(img);
         break;
     }
+
+    return CM::grayscale(img);
 }
 
 File::~File()
 {
 
     // fprintf(stderr, "DD");
-    if(fits_close_file(m_fptr, &m_status))
-        fits_report_error(stderr, m_status);
+    // if(fits_close_file(m_fptr, &m_status))
+        // fits_report_error(stderr, m_status);
+    m_fitsptr->destroy();
 
     if (overview != nullptr)
     {
@@ -351,12 +319,6 @@ File::~File()
         // delete [] m_naxes;
         // m_naxes = nullptr;
     // }
-
-    if (m_image_data != nullptr)
-    {
-        delete [] m_image_data;
-        m_image_data = nullptr;
-    }
 
 }
 

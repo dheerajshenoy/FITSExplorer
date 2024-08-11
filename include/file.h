@@ -10,6 +10,10 @@
 #include <QMessageBox>
 #include <QObject>
 #include "mode.h"
+#include "exttype.h"
+#include <QtDebug>
+#include <CCfits/CCfits>
+
 
 enum Colormap
 {
@@ -54,17 +58,16 @@ public:
     fitsfile* getFPTR();
     Colormap getColormap();
     int getNKEYS();
-    float* getImgData();
+    const std::valarray<unsigned long>& getImgData();
     int getImgDataAt(QPoint);
     int getStatus();
-    int getImgDim();
+    std::vector<long> getImgDim();
     int getImgSize(long *naxes);
     int getImgType();
-    bool checkIfValidDim();
-    QList<int> getHDUTypes();
+    QList<ExtType> getHDUTypes();
     void changeBrightness();
     void resetBrightness();
-    int moveAbsRow(const int &row, int &type);
+    bool moveAbsRow(const int &row, int &type);
     int initImgData();
     int getCols();
     int getRows();
@@ -86,11 +89,13 @@ signals:
 private:
 
     fitsfile *m_fptr;
+    std::unique_ptr<CCfits::FITS> m_fitsptr;
     QString m_filename;
 
     int m_row = -1;
     int m_status = 0;
-    float *m_image_data = nullptr;
+    // float *m_image_data = nullptr;
+    std::valarray<unsigned long> m_image_data;
     int width, height;
     int m_bitpix;
     int m_nhdu;

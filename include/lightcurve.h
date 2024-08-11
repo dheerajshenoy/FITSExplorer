@@ -2,9 +2,6 @@
 #define LIGHTCURVE_H
 
 #include <QWidget>
-#include <QChart>
-#include <QLineSeries>
-#include <QChartView>
 #include <QVBoxLayout>
 #include "imagewidget.h"
 #include "qcustomplot.h"

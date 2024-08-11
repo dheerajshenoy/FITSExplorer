@@ -6,9 +6,8 @@
 #include <qt6/QtWidgets/QMainWindow>
 #include <qt6/QtWidgets/QFileDialog>
 #include <qt6/QtWidgets/QDialog>
-#include <fitsio2.h>
 #include <qt6/QtWidgets/QMessageBox>
-#include <qt6/QtCore/QDebug>
+#include <QtDebug>
 #include <qt6/QtWidgets/QTableWidget>
 #include <qt6/QtWidgets/QTableWidgetItem>
 #include <qt6/QtGui/QTextCursor>
@@ -21,6 +20,12 @@
 #include <qt6/QtGui/QKeySequence>
 #include <QShortcut>
 #include <QKeySequence>
+#include <QMimeData>
+#include <QMimeType>
+#include <QDragEnterEvent>
+#include <QDragLeaveEvent>
+#include <QDragMoveEvent>
+#include <QDropEvent>
 
 #include "overview.h"
 #include "imagewidget.h"
@@ -71,11 +76,17 @@ public:
     void setMode(Mode mode);
     Mode getMode();
 
+protected:
+    void dragEnterEvent(QDragEnterEvent *e) override;
+    void dragMoveEvent(QDragMoveEvent *e) override;
+    void dropEvent(QDropEvent *e) override;
+
 public slots:
     void HandleColorMapSelect(Colormap);
     void update_HDU_Table(int);
     void newROIRect(QUuid, QRectF);
     void removeUUIDFromTable(QUuid);
+
 private slots:
     void OpenFile(QString filename = nullptr);
     void OpenRecent();
@@ -140,7 +151,8 @@ private:
     // ImageWidget *img_widget = new ImageWidget();
     fitsfile *fptr;
     int status = 0;
-    float *image_data;
+    // float *image_data;
+
     int width, height;
     QCPItemStraightLine *m_line;
     int m_nhdu;
